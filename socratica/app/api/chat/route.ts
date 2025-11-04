@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Context window overflow (400)
-        if (error.status === 400 && error.message?.includes("context")) {
+        if (error.status === 400 && error.message?.toLowerCase().includes("context")) {
           return NextResponse.json(
             {
               success: false,
@@ -299,4 +299,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 

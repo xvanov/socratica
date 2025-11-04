@@ -122,3 +122,5 @@ export async function extractTextFromImage(
   }
 }
 
+
+
