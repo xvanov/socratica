@@ -1,0 +1,258 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>Image Upload Interface</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-03 16:44</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-2-image-upload-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>upload a screenshot or photo of my math problem</iWant>
+    <soThat>I don't have to manually type complex equations or problems from textbooks</soThat>
+    <tasks>
+      <task id="1" title="Create ImageUpload component">
+        <subtasks>
+          <subtask>Create `components/problem-input/ImageUpload.tsx` file</subtask>
+          <subtask>Implement file input element (hidden input with button trigger)</subtask>
+          <subtask>Add file type validation (accept JPG, PNG, WebP)</subtask>
+          <subtask>Implement file size validation (max 10MB)</subtask>
+          <subtask>Add image preview display after file selection</subtask>
+          <subtask>Add remove/clear button for selected image</subtask>
+          <subtask>Add loading state during upload process</subtask>
+          <subtask>Style with Tailwind CSS following existing patterns</subtask>
+          <subtask>Ensure component is accessible (ARIA labels, keyboard navigation)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Implement file validation">
+        <subtasks>
+          <subtask>Validate file type before upload (check MIME type)</subtask>
+          <subtask>Show user-friendly error message for invalid file types</subtask>
+          <subtask>Validate file size and show error message if over 10MB</subtask>
+          <subtask>Handle corrupted image files with appropriate error message</subtask>
+          <subtask>Implement file validation error display component</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Implement error handling">
+        <subtasks>
+          <subtask>Create error state management</subtask>
+          <subtask>Display error messages with user-friendly text</subtask>
+          <subtask>Add retry option for failed uploads</subtask>
+          <subtask>Handle network errors during upload with retry mechanism</subtask>
+          <subtask>Implement error recovery flow</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Integrate ImageUpload into main interface">
+        <subtasks>
+          <subtask>Update `app/page.tsx` to display ImageUpload component alongside TextInput</subtask>
+          <subtask>Ensure ImageUpload is visible and accessible on main interface</subtask>
+          <subtask>Verify component renders correctly alongside TextInput</subtask>
+          <subtask>Layout components side-by-side or stacked appropriately</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Add state management">
+        <subtasks>
+          <subtask>Use React useState for image file state</subtask>
+          <subtask>Manage upload state (loading, success, error)</subtask>
+          <subtask>Manage preview state (image URL, preview display)</subtask>
+          <subtask>Manage error state (error messages, error types)</subtask>
+          <subtask>Ensure proper state updates on file selection and upload</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Testing and verification">
+        <subtasks>
+          <subtask>Test component renders correctly</subtask>
+          <subtask>Test file picker opens on button click</subtask>
+          <subtask>Test image format validation (JPG, PNG, WebP)</subtask>
+          <subtask>Test file size validation (max 10MB)</subtask>
+          <subtask>Test image preview displays after selection</subtask>
+          <subtask>Test remove/clear functionality</subtask>
+          <subtask>Test loading state during upload</subtask>
+          <subtask>Test error handling (invalid file types, file size errors, corrupted images, network errors)</subtask>
+          <subtask>Test retry functionality</subtask>
+          <subtask>Verify accessibility (keyboard navigation, screen reader)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Image upload button/file picker is visible on interface</criterion>
+    <criterion id="2">Supports common image formats (JPG, PNG, WebP)</criterion>
+    <criterion id="3">Image preview displays after selection</criterion>
+    <criterion id="4">Image can be removed/cleared before submission</criterion>
+    <criterion id="5">File size limits are enforced with user feedback (max 10MB)</criterion>
+    <criterion id="6">Loading state shows during upload process</criterion>
+    <criterion id="7">Error Handling: Validates file type before upload (reject non-image files), shows user-friendly error message for invalid file types, handles file size errors gracefully with clear messaging, handles corrupted image files with appropriate error message, provides retry option for failed uploads, handles network errors during upload with retry mechanism</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 1: Problem Input - Story 1.2</section>
+        <snippet>Story 1.2: Image Upload Interface defines the image upload functionality for problem input. As a student, I want to upload a screenshot or photo of my math problem, so that I don't have to manually type complex equations or problems from textbooks. Includes 7 acceptance criteria covering file picker visibility, image format support, preview display, image removal, file size limits, loading state, and comprehensive error handling.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Epic 1: Problem Input</section>
+        <snippet>Epic 1 components include TextInput component, ImageUpload component, and ProblemPreview component located in `components/problem-input/` directory. ImageUpload component is the image upload interface for problem input functionality. Image validation includes file type validation (JPG, PNG, WebP) and size limits (max 10MB).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Project Structure</section>
+        <snippet>Problem input components located in `components/problem-input/` directory. ImageUpload.tsx is the image upload component for Epic 1. Components follow Next.js App Router patterns and use TypeScript for type safety. Component should be a client component (use "use client" directive).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Naming Patterns</section>
+        <snippet>Components use PascalCase matching file name (e.g., `ImageUpload.tsx` contains `ImageUpload` component). Files match component name exactly. Functions use camelCase (e.g., `handleFileSelect()`, `handleUpload()`). Constants use UPPER_SNAKE_CASE (e.g., `MAX_FILE_SIZE`, `ALLOWED_FILE_TYPES`). Types/Interfaces use PascalCase (e.g., `ImageUploadProps`, `UploadError`).</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Goalpost 1: Problem Input</section>
+        <snippet>MVP requirement: Image upload with OCR/Vision LLM parsing. Image upload interface enables students to upload screenshots or photos of math problems without manual typing. Image parsing must extract problem text accurately from screenshots/photos.</snippet>
+      </doc>
+      <doc path="docs/stories/1-1-text-input-interface.md" title="Story 1.1: Text Input Interface">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>TextInput component created at `components/problem-input/TextInput.tsx` with full functionality. Component includes accessibility features (ARIA labels, keyboard navigation), styled with Tailwind CSS v4 following architecture patterns. Component integrated into `app/page.tsx` main interface. Use this component as reference for ImageUpload component patterns including state management (useState), accessibility, and styling.</snippet>
+      </doc>
+      <doc path="docs/stories/0-2-firebase-project-setup.md" title="Story 0.2: Firebase Project Setup">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Firebase SDK v12.5.0 installed and configured. Firebase Storage available at `lib/firebase/storage.ts`. For this story, image upload is client-side only (no server upload yet). File preview and validation happen client-side. Actual upload to Firebase Storage will be implemented in future stories.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" reason="Reference component for ImageUpload patterns. TextInput component uses React useState for state management, includes accessibility features (ARIA labels, keyboard navigation), styled with Tailwind CSS v4, and follows Next.js App Router patterns. ImageUpload should follow similar patterns for component structure, styling, and accessibility.">
+        <note>TextInput component uses "use client" directive, React useState for state, FormEvent handling, and Tailwind CSS utility classes. Use as reference for ImageUpload component structure.</note>
+      </file>
+      <file path="socratica/app/page.tsx" kind="component" symbol="Home" reason="Main interface page that displays TextInput component. Currently displays TextInput component. Needs to be updated to display ImageUpload component alongside TextInput. Follows existing Tailwind CSS styling patterns with proper layout.">
+        <note>Page uses "use client" directive, imports TextInput using `@/components/problem-input/TextInput` import alias. ImageUpload should be integrated alongside TextInput in the same interface.</note>
+      </file>
+      <file path="socratica/lib/firebase/storage.ts" kind="service" symbol="storage" reason="Firebase Storage instance available for future image uploads. For this story, image upload is client-side only (preview and validation). Actual upload to Firebase Storage will be implemented in future stories.">
+        <note>Firebase Storage initialized and exported. Not used in this story for upload, but available for future integration.</note>
+      </file>
+      <file path="socratica/components/problem-input" kind="directory" symbol="components/problem-input/" reason="Problem input components directory. Contains TextInput.tsx component. ImageUpload.tsx should be created in this same directory following the existing component structure.">
+        <note>Directory exists from Story 1.1. ImageUpload component should be created alongside TextInput component.</note>
+      </file>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Project dependencies. Contains Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4, Firebase SDK v12.5.0. All dependencies available for ImageUpload component development.">
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration with strict mode enabled and import alias `@/*` configured. Use for ImageUpload component type definitions and imports.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. ImageUpload component uses Next.js App Router patterns. Client components may need 'use client' directive.">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components. Use React hooks (useState) for component state management (file state, upload state, preview state, error state).">
+        </package>
+        <package name="react-dom" version="19.2.0" reason="React DOM renderer for client-side rendering.">
+        </package>
+        <package name="typescript" version="^5" reason="TypeScript language for type safety. Strict mode enabled. Use for ImageUpload component type definitions (props, state, error types).">
+        </package>
+        <package name="tailwindcss" version="^4" reason="Tailwind CSS v4 for utility-first styling. Use Tailwind utility classes following existing patterns from TextInput component and `app/page.tsx`.">
+        </package>
+        <package name="firebase" version="^12.5.0" reason="Firebase SDK available. Firebase Storage initialized but not used in this story (client-side only). Infrastructure ready for future stories.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      <name>Component Structure</name>
+      <description>ImageUpload component must be created in `components/problem-input/` directory. Component file name must match component name exactly (ImageUpload.tsx contains ImageUpload component). Component should be a client component (use "use client" directive).</description>
+      <source>docs/architecture.md#Project-Structure</source>
+    </constraint>
+    <constraint type="architecture">
+      <name>Next.js App Router</name>
+      <description>Component must follow Next.js App Router patterns. Client components must use "use client" directive if using React hooks or browser APIs (file input, URL.createObjectURL).</description>
+      <source>docs/architecture.md#Project-Structure</source>
+    </constraint>
+    <constraint type="styling">
+      <name>Tailwind CSS v4</name>
+      <description>Use Tailwind CSS v4 utility classes for styling. Follow existing styling patterns from TextInput component and `app/page.tsx`. Use theme variables for dark mode support.</description>
+      <source>docs/stories/1-1-text-input-interface.md#Dev-Agent-Record</source>
+    </constraint>
+    <constraint type="accessibility">
+      <name>Accessibility Requirements</name>
+      <description>Component must be accessible: ARIA labels for screen readers, keyboard navigation support, proper semantic HTML. Follow WCAG guidelines for educational platform accessibility. Follow existing accessibility patterns from TextInput component.</description>
+      <source>docs/PRD.md#Accessibility-Requirements</source>
+    </constraint>
+    <constraint type="naming">
+      <name>Naming Patterns</name>
+      <description>Follow naming patterns: Components (PascalCase), Files (match component name), Functions (camelCase), Constants (UPPER_SNAKE_CASE), Types/Interfaces (PascalCase).</description>
+      <source>docs/architecture.md#Naming-Patterns</source>
+    </constraint>
+    <constraint type="typescript">
+      <name>TypeScript Strict Mode</name>
+      <description>TypeScript strict mode enabled. Use proper type definitions for component props, state, and error types. Import alias `@/*` configured for path resolution.</description>
+      <source>docs/stories/0-2-firebase-project-setup.md#Dev-Notes</source>
+    </constraint>
+    <constraint type="file-handling">
+      <name>File Validation</name>
+      <description>Validate file type (MIME type validation) before upload. Support common image formats: JPG, PNG, WebP. Enforce file size limits (max 10MB) with user feedback. Handle corrupted image files with appropriate error message.</description>
+      <source>docs/architecture.md#Image-Upload</source>
+    </constraint>
+    <constraint type="error-handling">
+      <name>Error Handling</name>
+      <description>Implement comprehensive error handling: file type validation errors, file size errors, corrupted image files, network errors during upload. Provide retry mechanism for failed uploads. Display user-friendly error messages.</description>
+      <source>docs/epics.md#Story-1.2</source>
+    </constraint>
+    <constraint type="state-management">
+      <name>State Management</name>
+      <description>Use React useState for component-level state: file state (selected file), upload state (loading, success, error), preview state (image URL), error state (error messages, error types). Clean up preview URL on component unmount using URL.revokeObjectURL().</description>
+      <source>docs/stories/1-2-image-upload-interface.md#Dev-Notes</source>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="ImageUpload Component" kind="React component" signature="ImageUpload component with props interface" path="components/problem-input/ImageUpload.tsx">
+      <description>React component for image upload interface. Accepts image file selection via file input element. Validates file type (JPG, PNG, WebP) and file size (max 10MB). Displays image preview after selection. Includes remove/clear functionality. Shows loading state during upload process. Handles file validation errors and network errors with retry mechanism.</description>
+    </interface>
+    <interface name="Main Interface" kind="Next.js page" signature="Home page component that displays ImageUpload alongside TextInput" path="app/page.tsx">
+      <description>Main interface page that integrates ImageUpload component alongside TextInput component. Currently displays TextInput component. Needs to be updated to show ImageUpload component for image-based problem input.</description>
+    </interface>
+    <interface name="React useState" kind="React hook" signature="useState&lt;File&gt;() for file state, useState&lt;string&gt;() for preview URL, useState&lt;boolean&gt;() for loading state, useState&lt;string | null&gt;() for error state" path="components/problem-input/ImageUpload.tsx">
+      <description>React useState hook for managing component state. Use for file state (selected file), upload state (loading, success, error), preview state (image URL created with URL.createObjectURL()), error state (error messages, error types).</description>
+    </interface>
+    <interface name="File Input Handler" kind="function" signature="handleFileChange(event: React.ChangeEvent&lt;HTMLInputElement&gt;)" path="components/problem-input/ImageUpload.tsx">
+      <description>Handler function for file input change event. Validates file type and size. Creates preview URL using URL.createObjectURL(). Updates file state and preview state. Handles validation errors.</description>
+    </interface>
+    <interface name="Remove Image Handler" kind="function" signature="handleRemoveImage()" path="components/problem-input/ImageUpload.tsx">
+      <description>Handler function for removing/clearing selected image. Resets file input, clears file state, revokes preview URL using URL.revokeObjectURL(), and resets error state.</description>
+    </interface>
+    <interface name="URL.createObjectURL" kind="browser API" signature="URL.createObjectURL(file: File): string" path="components/problem-input/ImageUpload.tsx">
+      <description>Browser API for creating preview URL from file object. Creates object URL for image preview. Must be revoked using URL.revokeObjectURL() on component unmount or when image is removed to prevent memory leaks.</description>
+    </interface>
+    <interface name="Firebase Storage" kind="service" signature="storage instance from lib/firebase/storage.ts" path="lib/firebase/storage.ts">
+      <description>Firebase Storage instance available for future image uploads. Not used in this story (client-side only). Infrastructure ready for future integration in Story 1.3 (OCR/Vision LLM Integration).</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing standards for this story focus on verifying image upload component functionality, file validation, error handling, and accessibility. Key verification points include: component renders correctly, file picker opens on button click, image format validation (JPG, PNG, WebP), file size validation (max 10MB), image preview displays after selection, remove/clear functionality works, loading state displays during upload, error handling works (invalid file types, file size errors, corrupted images, network errors), retry functionality works, component is accessible (keyboard navigation, screen reader support). Manual verification is appropriate for this foundational component story. Component testing should follow React testing patterns (React Testing Library recommended for future stories). Accessibility testing should verify ARIA labels, keyboard navigation, and screen reader compatibility. File validation testing should verify MIME type validation and file size limits.
+    </standards>
+    <locations>
+      <location>Manual verification (no test files yet for component story)</location>
+      <location>Future tests will be co-located with components: `components/problem-input/ImageUpload.test.tsx`</location>
+      <location>Integration tests: `app/**/*.test.tsx` (for page integration)</location>
+    </locations>
+    <ideas>
+      <test id="ac1" criterion="AC: 1" description="Verify ImageUpload component is visible: Check component renders in main interface, verify file picker button is visible and accessible, verify component is accessible (ARIA labels present), verify keyboard navigation works.">
+      </test>
+      <test id="ac2" criterion="AC: 2" description="Verify image format support: Check file input accept attribute includes JPG, PNG, WebP, verify MIME type validation accepts image/jpeg, image/png, image/webp, verify validation rejects non-image files, verify user-friendly error message displays for invalid file types.">
+      </test>
+      <test id="ac3" criterion="AC: 3" description="Verify image preview displays: Check preview displays after file selection, verify preview uses URL.createObjectURL() for local preview, verify preview image loads correctly, verify preview handles image loading errors appropriately.">
+      </test>
+      <test id="ac4" criterion="AC: 4" description="Verify image removal/clearing: Check remove/clear button exists and works, verify file input resets on removal, verify preview URL is revoked using URL.revokeObjectURL(), verify state resets correctly after removal.">
+      </test>
+      <test id="ac5" criterion="AC: 5" description="Verify file size limits: Check file size validation enforces max 10MB, verify user-friendly error message displays for files over 10MB, verify file size validation happens before upload, verify error message is clear and actionable.">
+      </test>
+      <test id="ac6" criterion="AC: 6" description="Verify loading state: Check loading state displays during upload process, verify loading state is visible and clear to user, verify loading state prevents duplicate uploads, verify loading state hides after upload completes or fails.">
+      </test>
+      <test id="ac7" criterion="AC: 7" description="Verify error handling: Check file type validation rejects non-image files with user-friendly error, verify file size errors display clear messaging, verify corrupted image files show appropriate error message, verify retry option available for failed uploads, verify network errors handled with retry mechanism, verify all error messages are user-friendly and actionable.">
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

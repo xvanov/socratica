@@ -1,0 +1,140 @@
+# generated: 2025-11-03 15:59
+# project: socratica
+# project_key: socratica
+# tracking_system: file-system
+# story_location: "{project-root}/docs/stories"
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic exists in epic file but not contexted
+#   - contexted: Epic tech context created (required before drafting stories)
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - drafted: Story file created in stories folder
+#   - ready-for-dev: Draft approved and story context created
+#   - in-progress: Developer actively working on implementation
+#   - review: Under SM review (via code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - completed: Retrospective has been done
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epics should be 'contexted' before stories can be 'drafted'
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically drafts next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
+
+generated: 2025-11-03 15:59
+project: socratica
+project_key: socratica
+tracking_system: file-system
+story_location: "{project-root}/docs/stories"
+
+development_status:
+  # Foundation Stories
+  0-1-project-initialization: done
+  0-2-firebase-project-setup: done
+
+  # Epic 1: Problem Input
+  epic-1: backlog
+  1-1-text-input-interface: done
+  1-2-image-upload-interface: done
+  1-3-ocr-vision-llm-integration: done
+  1-4-problem-input-validation: done
+  epic-1-retrospective: optional
+
+  # Epic 2: Chat Interface & LLM Integration
+  epic-2: backlog
+  2-1-basic-chat-ui-layout: review
+  2-2-message-sending-and-display: review
+  2-3-llm-api-integration: review
+  2-4-conversation-context-management: ready-for-dev
+  2-5-session-management: ready-for-dev
+  epic-2-retrospective: optional
+
+  # Epic 3: Socratic Dialogue Logic
+  epic-3: backlog
+  3-1-socratic-system-prompt-design: backlog
+  3-2-stuck-detection-logic: backlog
+  3-3-hint-generation-logic: backlog
+  3-4-response-validation-framework: backlog
+  3-5-adaptive-questioning-logic: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Math Rendering
+  epic-4: backlog
+  4-1-latex-rendering-library-integration: backlog
+  4-2-math-rendering-in-chat-messages: backlog
+  4-3-math-rendering-in-problem-input: backlog
+  4-4-advanced-math-notation-support: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: UI Polish
+  epic-5: backlog
+  5-1-responsive-layout-design: backlog
+  5-2-modern-visual-design-system: backlog
+  5-3-loading-states-and-feedback: backlog
+  5-4-accessibility-features: backlog
+  5-5-error-handling-and-user-guidance: backlog
+  5-6-testing-suite-5-algebra-problems: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Interactive Whiteboard
+  epic-6: backlog
+  6-1-whiteboard-canvas-foundation: backlog
+  6-2-drawing-tools-and-controls: backlog
+  6-3-real-time-synchronization: backlog
+  6-4-mathematical-diagram-support: backlog
+  6-5-whiteboard-persistence: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Step Visualization
+  epic-7: backlog
+  7-1-step-breakdown-logic: backlog
+  7-2-progressive-step-reveal: backlog
+  7-3-visual-step-representation: backlog
+  7-4-animated-step-transitions: backlog
+  7-5-step-insights-and-explanations: backlog
+  epic-7-retrospective: optional
+
+  # Epic 8: Voice Interface
+  epic-8: backlog
+  8-1-speech-to-text-input: backlog
+  8-2-natural-language-math-processing: backlog
+  8-3-text-to-speech-output: backlog
+  8-4-voice-commands: backlog
+  8-5-voice-settings-and-preferences: backlog
+  epic-8-retrospective: optional
+
+  # Epic 9: Animated Avatar
+  epic-9: backlog
+  9-1-avatar-character-design: backlog
+  9-2-expression-system: backlog
+  9-3-animated-gestures: backlog
+  9-4-avatar-voice-synchronization: backlog
+  9-5-avatar-customization: backlog
+  epic-9-retrospective: optional
+
+  # Epic 10: Difficulty Modes
+  epic-10: backlog
+  10-1-difficulty-level-selection: backlog
+  10-2-grade-appropriate-question-adaptation: backlog
+  10-3-adaptive-scaffolding-logic: backlog
+  10-4-progressive-difficulty-adjustment: backlog
+  10-5-difficulty-mode-indicators: backlog
+  epic-10-retrospective: optional
+
+  # Epic 11: Problem Generation
+  epic-11: backlog
+  11-1-problem-analysis-and-categorization: backlog
+  11-2-problem-generation-algorithm: backlog
+  11-3-practice-problem-interface: backlog
+  11-4-problem-set-generation: backlog
+  11-5-adaptive-problem-generation: backlog
+  epic-11-retrospective: optional
+

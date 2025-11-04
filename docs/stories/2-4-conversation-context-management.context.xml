@@ -1,0 +1,250 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>4</storyId>
+    <title>Conversation Context Management</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-03 19:05</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-4-conversation-context-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>the AI tutor to remember our previous messages in the session</iWant>
+    <soThat>we can have a multi-turn conversation about solving my problem</soThat>
+    <tasks>
+      <task id="1" title="Enhance ChatInterface to maintain conversation history">
+        <subtasks>
+          <subtask>Update ChatInterface to maintain conversation history array</subtask>
+          <subtask>Ensure conversation history includes all messages (student and tutor)</subtask>
+          <subtask>Ensure each message includes role (student/tutor) and content</subtask>
+          <subtask>Ensure messages are stored in chronological order</subtask>
+          <subtask>Ensure conversation history persists during session</subtask>
+          <subtask>Verify conversation history is maintained correctly</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Create conversation context utility functions">
+        <subtasks>
+          <subtask>Create `lib/openai/context.ts` file (if not exists)</subtask>
+          <subtask>Implement function to convert Message[] to OpenAI API format</subtask>
+          <subtask>Implement function to maintain chronological order of messages</subtask>
+          <subtask>Implement context window management (truncate if too long)</subtask>
+          <subtask>Implement function to calculate context window size</subtask>
+          <subtask>Implement function to truncate messages if context window exceeded</subtask>
+          <subtask>Export context utility functions for use in chat API route</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Update chat API route to use conversation context">
+        <subtasks>
+          <subtask>Update chat API route to receive conversation history from request</subtask>
+          <subtask>Convert conversation history from Message[] to OpenAI API format</subtask>
+          <subtask>Ensure context includes all previous messages in chronological order</subtask>
+          <subtask>Implement context window management (truncate if too long)</subtask>
+          <subtask>Send full conversation context with system prompt to OpenAI API</subtask>
+          <subtask>Verify conversation context is sent correctly to API</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Update ChatInterface to send conversation context">
+        <subtasks>
+          <subtask>Update ChatInterface to send conversation history with API call</subtask>
+          <subtask>Ensure conversation history includes all previous messages</subtask>
+          <subtask>Ensure conversation history is sent in chronological order</subtask>
+          <subtask>Verify conversation context is sent correctly to API</subtask>
+          <subtask>Handle API response with updated conversation context</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Implement context window management">
+        <subtasks>
+          <subtask>Define context window size limit (e.g., 4096 tokens for GPT-4 Turbo)</subtask>
+          <subtask>Implement function to calculate message token count</subtask>
+          <subtask>Implement function to truncate messages if context window exceeded</subtask>
+          <subtask>Ensure system prompt is preserved when truncating</subtask>
+          <subtask>Ensure most recent messages are preserved when truncating</subtask>
+          <subtask>Handle context window overflow gracefully</subtask>
+          <subtask>Log context window truncation (dev only)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Ensure session persistence">
+        <subtasks>
+          <subtask>Verify conversation history persists during single problem solving session</subtask>
+          <subtask>Ensure conversation history is maintained across page refreshes (optional)</subtask>
+          <subtask>Ensure conversation history is cleared when starting new problem (future)</subtask>
+          <subtask>Verify session persistence works correctly</subtask>
+        </subtasks>
+      </task>
+      <task id="7" title="Testing and verification">
+        <subtasks>
+          <subtask>Test conversation history array maintains all messages</subtask>
+          <subtask>Test conversation history includes all previous messages in chronological order</subtask>
+          <subtask>Test conversation context is sent with each API call</subtask>
+          <subtask>Test context window management (truncates if too long)</subtask>
+          <subtask>Test each message includes role (student/tutor) and content</subtask>
+          <subtask>Test session persists during single problem solving session</subtask>
+          <subtask>Test context window truncation preserves system prompt</subtask>
+          <subtask>Test context window truncation preserves most recent messages</subtask>
+          <subtask>Test conversation context conversion (Message[] to OpenAI API format)</subtask>
+          <subtask>Test conversation history is maintained correctly across multiple turns</subtask>
+          <subtask>Test conversation context is sent correctly to OpenAI API</subtask>
+          <subtask>Test API responses maintain conversation context</subtask>
+          <subtask>Verify accessibility (keyboard navigation, screen reader)</subtask>
+          <subtask>Test responsive design (mobile, tablet, desktop)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Maintains conversation history array for current session</criterion>
+    <criterion id="2">Sends full conversation context with each API call</criterion>
+    <criterion id="3">Context includes all previous messages in chronological order</criterion>
+    <criterion id="4">Context window management (truncates if too long)</criterion>
+    <criterion id="5">Each message includes role (student/tutor) and content</criterion>
+    <criterion id="6">Session persists during single problem solving session</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 2: Chat Interface &amp; LLM Integration - Story 2.4</section>
+        <snippet>Story 2.4: Conversation Context Management defines the conversation history management for multi-turn conversations. As a student, I want the AI tutor to remember our previous messages in the session, so that we can have a multi-turn conversation about solving my problem. Includes 6 acceptance criteria covering conversation history array maintenance, sending full conversation context with each API call, chronological order, context window management (truncates if too long), message role and content, and session persistence.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Communication Patterns</section>
+        <snippet>State Updates: Use React Context API for conversation state, context provider wraps chat interface, hooks (useChat, useConversation) access context. Follow these patterns for conversation context management. Note: ChatInterface currently uses useState for message state, which is acceptable for MVP.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>API Contracts</section>
+        <snippet>POST /api/chat: Request includes message (string), conversationHistory (Message[]), userId (optional string). Response includes success (boolean), data (message, messageId, timestamp) or null, error (string or null). Chat API route already receives conversationHistory and converts it to OpenAI API format. Needs enhancement for context window management.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Data Architecture</section>
+        <snippet>Message: interface with role (user | assistant | system), content (string), timestamp (string ISO 8601), messageId (string). Conversation: interface with id, userId, messages (Message[]), createdAt, updatedAt, problemType. Follow these patterns for conversation context management.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Goalpost 2: Basic Chat + LLM Integration</section>
+        <snippet>Chat interface for multi-turn dialogue between student and AI tutor. LLM integration for conversation and Socratic questioning. Conversation history maintenance throughout sessions. This story enhances conversation context management for multi-turn conversations.</snippet>
+      </doc>
+      <doc path="docs/stories/2-3-llm-api-integration.md" title="Story 2.3: LLM API Integration">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.3 Implementation Complete - 2025-11-03. Chat API route created in `app/api/chat/route.ts` with POST handler. Route integrates with OpenAI client to send messages to GPT-4 Turbo model. Route receives student message and conversation history from request. Route has `convertMessagesToOpenAIFormat` function that converts Message[] (role: student | tutor) to OpenAI API format (role: user | assistant | system). Route sends system prompt and conversation context to OpenAI API. ChatInterface updated to call chat API route when student message is sent. ChatInterface sends student message and conversation history to API. ChatInterface maintains message state with React useState. Ready for enhancement to implement context window management.</snippet>
+      </doc>
+      <doc path="docs/stories/2-2-message-sending-and-display.md" title="Story 2.2: Message Sending and Display">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.2 Implementation Complete - 2025-11-03. MessageInput component created in `components/chat/MessageInput.tsx`. ChatInterface maintains message state with React useState. Message array structure supports chronological display. Messages include role (student | tutor), content (string), and timestamp (Date | string). Ready for conversation context management enhancement.</snippet>
+      </doc>
+      <doc path="docs/stories/2-1-basic-chat-ui-layout.md" title="Story 2.1: Basic Chat UI Layout">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.1 Implementation Complete - 2025-11-03. ChatInterface, MessageList, and Message components created. Message data structure established in `types/chat.ts` with Message interface. State management patterns use React useState for message state management. Ready for conversation context management.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" reason="Main chat interface component from Story 2.1, 2.2, and 2.3. Component manages message state with React useState. Component maintains conversation history array with all messages (student and tutor). Component sends conversation history with each API call (line 48). Component receives AI response and adds it to message state. Component already maintains conversation history correctly. Needs verification that conversation history includes all messages in chronological order. May need enhancement for context window management if truncation is needed in ChatInterface (though truncation should be in API route).">
+        <note>ChatInterface already sends conversationHistory with each API call (line 48). Conversation history is maintained in messages state array. Verify that conversation history includes all messages in chronological order. Context window management should be implemented in API route, not ChatInterface.</note>
+      </file>
+      <file path="socratica/app/api/chat/route.ts" kind="api-route" symbol="Chat API Route" reason="Chat API route from Story 2.3. Route receives conversation history from request (line 96). Route has `convertMessagesToOpenAIFormat` function that converts Message[] (role: student | tutor) to OpenAI API format (role: user | assistant | system) (lines 60-86). Route sends full conversation context with system prompt to OpenAI API (lines 134-148). Route already handles conversation context conversion. Needs enhancement for context window management (truncate if too long). Currently handles context window overflow errors (400 status) but doesn't proactively truncate before sending. Should implement proactive context window management to prevent context overflow errors.">
+        <note>Chat API route already converts conversation history to OpenAI API format. Route already sends full conversation context with system prompt. Needs enhancement for proactive context window management (truncate messages if context window exceeded before sending to API). Currently only handles context window overflow errors reactively (line 183-194).</note>
+      </file>
+      <file path="socratica/lib/openai/prompts.ts" kind="utility" symbol="prompts" reason="Socratic system prompt from Story 2.3. Exports SOCRATIC_MATH_TUTOR_PROMPT constant for use in chat API route. Prompt is already included in conversation context as first message with role: 'system'. Prompt should be preserved when truncating context window. Context window management should always keep system prompt.">
+        <note>Socratic system prompt is already included in conversation context. When implementing context window management, system prompt should always be preserved (never truncated).</note>
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="chat" reason="Chat-related type definitions from Story 2.1. Defines Message interface with role (student | tutor), content (string), and timestamp (Date | string). Defines MessageRole type as 'student' | 'tutor'. Message interface already includes role and content. Ready for conversation context management. Chat API route converts Message[] to OpenAI API format (role: user | assistant | system).">
+        <note>Message interface already includes role (student | tutor) and content (string). Message array structure supports chronological display. Ready for conversation context management enhancement.</note>
+      </file>
+      <file path="socratica/lib/openai" kind="directory" symbol="lib/openai/" reason="OpenAI utilities directory. Contains `client.ts` from Story 1.3 and `prompts.ts` from Story 2.3. Conversation context utility file `lib/openai/context.ts` needs to be created in this directory. File should contain functions for context window management (calculate token count, truncate messages, preserve system prompt, preserve most recent messages).">
+        <note>OpenAI utilities directory exists. Conversation context utility file needs to be created in `lib/openai/context.ts` with context window management functions.</note>
+      </file>
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" reason="Message list component from Story 2.1. Component displays messages in chronological order. Component implements auto-scrolling to latest message. Component will automatically display all messages in conversation history. No changes needed for conversation context management. Component already displays messages in chronological order from messages array.">
+        <note>MessageList already displays messages in chronological order. Component will automatically display all messages in conversation history. No changes needed for conversation context management.</note>
+      </file>
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" reason="Individual message component from Story 2.1. Component displays messages with role-based styling. Component already displays messages with role and content. No changes needed for conversation context management. Component will automatically display all messages in conversation history with correct styling.">
+        <note>Message component already displays messages with role and content. Component will automatically display all messages in conversation history with correct styling. No changes needed for conversation context management.</note>
+      </file>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Project dependencies. Contains Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4, OpenAI SDK v6.7.0. All dependencies available for conversation context management development. No additional dependencies needed for this story.">
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration with strict mode enabled and import alias `@/*` configured. Use for conversation context utility type definitions and imports.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. Chat API route uses Next.js App Router patterns. Context window management functions will be used in API route.">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components. ChatInterface uses React hooks (useState, useEffect) for state management and side effects. Conversation history is maintained in ChatInterface component state.">
+        </package>
+        <package name="openai" version="^6.7.0" reason="OpenAI SDK for Node.js. Already installed. Context window management will calculate token count for messages. OpenAI API has context window limits (e.g., 128K tokens for GPT-4 Turbo). Context window management should truncate messages before sending to API to prevent context overflow errors.">
+        </package>
+        <package name="typescript" version="^5.7.3" reason="TypeScript for type safety. Define conversation context utility types (ConversationContext, OpenAIMessage, token count functions). Use Message type from types/chat.ts for conversation history. Use OpenAI SDK types for API responses.">
+        </package>
+        <package name="tailwindcss" version="^4.0.0" reason="Tailwind CSS v4 for styling. No direct styling needed for conversation context management. Components already styled. Context window management is backend logic.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <testing>
+    <strategy>
+      <unit>
+        <test>Test conversation context utility functions (convertMessagesToOpenAIFormat)</test>
+        <test>Test conversation context utility functions (calculateTokenCount)</test>
+        <test>Test conversation context utility functions (truncateContextWindow)</test>
+        <test>Test context window truncation preserves system prompt</test>
+        <test>Test context window truncation preserves most recent messages</test>
+        <test>Test context window truncation removes oldest messages first</test>
+        <test>Test context window calculation is accurate (approximate: 4 characters per token)</test>
+        <test>Test context window management handles edge cases (empty messages, single message, very long messages)</test>
+        <test>Test conversation history array maintains all messages</test>
+        <test>Test conversation history includes all previous messages in chronological order</test>
+        <test>Test each message includes role (student/tutor) and content</test>
+        <test>Test conversation context conversion (Message[] to OpenAI API format)</test>
+        <test>Test message role mapping (student -> user, tutor -> assistant)</test>
+        <test>Test system prompt is included in conversation context</test>
+      </unit>
+      <integration>
+        <test>Test ChatInterface maintains conversation history array</test>
+        <test>Test ChatInterface sends conversation history with API call</test>
+        <test>Test ChatInterface sends conversation history in chronological order</test>
+        <test>Test chat API route receives conversation history from request</test>
+        <test>Test chat API route converts conversation history to OpenAI API format</test>
+        <test>Test chat API route implements context window management</test>
+        <test>Test chat API route sends full conversation context to OpenAI API</test>
+        <test>Test conversation context is sent correctly to OpenAI API</test>
+        <test>Test API responses maintain conversation context</test>
+        <test>Test conversation history is maintained correctly across multiple turns</test>
+        <test>Test session persists during single problem solving session</test>
+        <test>Test context window management prevents context overflow errors</test>
+        <test>Test context window truncation works correctly with long conversations</test>
+      </integration>
+      <accessibility>
+        <test>Test ARIA labels are present and correct</test>
+        <test>Test keyboard navigation works correctly</test>
+        <test>Test screen reader compatibility (NVDA, JAWS, VoiceOver)</test>
+        <test>Test conversation history is announced by screen reader</test>
+        <test>Test context window truncation is logged (dev only, not user-facing)</test>
+      </accessibility>
+      <ui>
+        <test>Test conversation history array maintains all messages</test>
+        <test>Test conversation history includes all previous messages in chronological order</test>
+        <test>Test conversation context is sent with each API call</test>
+        <test>Test context window management (truncates if too long)</test>
+        <test>Test each message includes role (student/tutor) and content</test>
+        <test>Test session persists during single problem solving session</test>
+        <test>Test conversation history is maintained correctly across multiple turns</test>
+        <test>Test responsive design on mobile devices (320px, 375px, 414px)</test>
+        <test>Test responsive design on tablet devices (768px, 1024px)</test>
+        <test>Test responsive design on desktop devices (1280px, 1920px)</test>
+      </ui>
+    </strategy>
+    <standards>
+      <standard>WCAG 2.1 Level AA compliance for accessibility</standard>
+      <standard>TypeScript strict mode compliance</standard>
+      <standard>Next.js App Router patterns</standard>
+      <standard>React 19.2.0 best practices</standard>
+      <standard>Tailwind CSS v4 utility class patterns</standard>
+      <standard>OpenAI API best practices</standard>
+      <standard>Context window management patterns (preserve system prompt, preserve most recent messages)</standard>
+      <standard>Token calculation patterns (approximate: 4 characters per token)</standard>
+      <standard>API contract format from architecture.md</standard>
+    </standards>
+  </testing>
+</story-context>
+

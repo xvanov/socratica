@@ -1,0 +1,274 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>3</storyId>
+    <title>LLM API Integration</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-03 18:56</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-3-llm-api-integration.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>the AI tutor to respond to my messages</iWant>
+    <soThat>I can have a conversation about my math problem</soThat>
+    <tasks>
+      <task id="1" title="Create chat API route">
+        <subtasks>
+          <subtask>Create `app/api/chat/route.ts` file</subtask>
+          <subtask>Implement POST handler for chat API route</subtask>
+          <subtask>Integrate with OpenAI client using architecture patterns</subtask>
+          <subtask>Send student message to API with appropriate system prompt</subtask>
+          <subtask>Receive AI response from API</subtask>
+          <subtask>Return AI response in API response format</subtask>
+          <subtask>Handle request validation (message, conversationHistory)</subtask>
+          <subtask>Follow API contract from architecture.md</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Create Socratic system prompt">
+        <subtasks>
+          <subtask>Create `lib/openai/prompts.ts` file (if not exists)</subtask>
+          <subtask>Implement Socratic system prompt for math tutoring</subtask>
+          <subtask>Prompt should guide AI to ask questions, not give answers</subtask>
+          <subtask>Prompt should encourage Socratic method (questions, not answers)</subtask>
+          <subtask>Prompt should be appropriate for math tutoring context</subtask>
+          <subtask>Export system prompt for use in chat API route</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Integrate chat API route with ChatInterface">
+        <subtasks>
+          <subtask>Update ChatInterface to call chat API route when student message is sent</subtask>
+          <subtask>Send student message and conversation history to API</subtask>
+          <subtask>Receive AI response from API</subtask>
+          <subtask>Add AI response to message state as tutor message</subtask>
+          <subtask>Show loading indicator while waiting for AI response</subtask>
+          <subtask>Handle API response errors gracefully</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Implement loading indicator">
+        <subtasks>
+          <subtask>Add isAIResponding state to ChatInterface or MessageInput</subtask>
+          <subtask>Show loading indicator in chat interface while waiting for AI response</subtask>
+          <subtask>Disable message input while AI is responding</subtask>
+          <subtask>Show loading message or TypingIndicator component (future)</subtask>
+          <subtask>Update UI to indicate AI is processing</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Implement error handling">
+        <subtasks>
+          <subtask>Handle OpenAI API errors in API route</subtask>
+          <subtask>Implement retry logic (up to 3 attempts with exponential backoff)</subtask>
+          <subtask>Handle rate limit errors (429) with appropriate messaging</subtask>
+          <subtask>Handle network timeout errors with retry option</subtask>
+          <subtask>Handle authentication errors (401) with clear error message</subtask>
+          <subtask>Handle context window overflow errors (conversation too long)</subtask>
+          <subtask>Handle invalid response format errors with fallback handling</subtask>
+          <subtask>Show specific error messages: "Unable to get tutor response. Please try again."</subtask>
+          <subtask>Log errors to console (dev) or Firebase Analytics (prod)</subtask>
+          <subtask>Display error state in UI with retry button</subtask>
+          <subtask>Maintain conversation context even after errors</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Update ChatInterface to handle AI responses">
+        <subtasks>
+          <subtask>Update ChatInterface to display AI response as tutor message</subtask>
+          <subtask>Ensure AI response appears with tutor's text and styling</subtask>
+          <subtask>Ensure auto-scrolling works when AI response is added</subtask>
+          <subtask>Verify API response time is acceptable (< 5 seconds typical)</subtask>
+          <subtask>Handle API response errors in ChatInterface</subtask>
+          <subtask>Display error messages in UI</subtask>
+          <subtask>Provide retry functionality for failed requests</subtask>
+        </subtasks>
+      </task>
+      <task id="7" title="Testing and verification">
+        <subtasks>
+          <subtask>Test chat API route integrates with OpenAI client</subtask>
+          <subtask>Test system prompt is sent correctly to API</subtask>
+          <subtask>Test student message is sent to API correctly</subtask>
+          <subtask>Test AI response is received and displayed correctly</subtask>
+          <subtask>Test loading indicator appears while waiting for AI response</subtask>
+          <subtask>Test API response time is acceptable (< 5 seconds typical)</subtask>
+          <subtask>Test error handling (rate limit, network timeout, authentication errors)</subtask>
+          <subtask>Test retry logic (up to 3 attempts with exponential backoff)</subtask>
+          <subtask>Test error messages are user-friendly</subtask>
+          <subtask>Test error state displays retry button</subtask>
+          <subtask>Test conversation context is maintained after errors</subtask>
+          <subtask>Test loading indicator disappears after response or error</subtask>
+          <subtask>Test message input is disabled while AI is responding</subtask>
+          <subtask>Verify accessibility (keyboard navigation, screen reader)</subtask>
+          <subtask>Test responsive design (mobile, tablet, desktop)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Integrates with LLM API (OpenAI GPT-4 Turbo) using architecture patterns</criterion>
+    <criterion id="2">Sends student message to API with appropriate system prompt</criterion>
+    <criterion id="3">Receives and displays AI response in chat</criterion>
+    <criterion id="4">Shows loading indicator while waiting for AI response</criterion>
+    <criterion id="5">API response time is acceptable (< 5 seconds typical)</criterion>
+    <criterion id="6">Error Handling: Handles OpenAI API errors gracefully with user-friendly messages, implements retry logic (up to 3 attempts with exponential backoff), handles rate limit errors with appropriate messaging, handles network timeout errors with retry option, handles authentication errors with clear error message, handles context window overflow errors gracefully, handles invalid response format errors with fallback handling, shows specific error messages, logs errors to console (dev) or Firebase Analytics (prod), displays error state in UI with retry button, maintains conversation context even after errors</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 2: Chat Interface &amp; LLM Integration - Story 2.3</section>
+        <snippet>Story 2.3: LLM API Integration defines the integration with OpenAI GPT-4 Turbo for AI tutor responses. As a student, I want the AI tutor to respond to my messages, so that I can have a conversation about my math problem. Includes 6 acceptance criteria covering API integration, system prompt, AI response display, loading indicator, API response time, and comprehensive error handling (rate limits, timeouts, authentication, context overflow, retry logic, error messages, logging, retry button, conversation context maintenance).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>API Contracts</section>
+        <snippet>POST /api/chat: Request includes message (string), conversationHistory (Message[]), userId (optional string). Response includes success (boolean), data (message, messageId, timestamp) or null, error (string or null). Error codes: INVALID_REQUEST, API_ERROR, RATE_LIMIT, UNAUTHORIZED. Follow this API contract format for chat API route implementation.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Error Handling</section>
+        <snippet>Error Recovery: Display user-friendly error messages, provide retry mechanisms for transient failures, log errors to console (dev) or Firebase Analytics (prod). Retry Logic: Retry failed API calls up to 3 times with exponential backoff, show retry button to user on final failure. Follow these patterns for chat API route error handling.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Lifecycle Patterns</section>
+        <snippet>Loading States: Show loading indicators during API calls, disable buttons during processing, use `isLoading` state flags. Follow these patterns for loading indicator implementation in ChatInterface.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Goalpost 2: Basic Chat + LLM Integration</section>
+        <snippet>Chat interface for multi-turn dialogue between student and AI tutor. LLM integration for conversation and Socratic questioning. Conversation history maintenance throughout sessions. This story establishes the LLM API integration for AI tutor responses.</snippet>
+      </doc>
+      <doc path="docs/stories/2-2-message-sending-and-display.md" title="Story 2.2: Message Sending and Display">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.2 Implementation Complete - 2025-11-03. MessageInput component created in `components/chat/MessageInput.tsx`. Component handles message input, validation, submission, and loading states. Component connects to ChatInterface's addMessage function to add student messages. ChatInterface integrated with MessageInput component. MessageInput positioned at bottom of chat interface. MessageInput connects to ChatInterface's addMessage function. Student messages appear immediately in chat after sending. Ready for integration with chat API route to send student messages and receive AI responses.</snippet>
+      </doc>
+      <doc path="docs/stories/1-3-ocr-vision-llm-integration.md" title="Story 1.3: OCR/Vision LLM Integration">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 1.3 Implementation Complete - 2025-11-03. OpenAI client created in `lib/openai/client.ts` with OpenAI SDK initialization. Client uses `OPENAI_API_KEY` environment variable (server-side only, not `NEXT_PUBLIC_` prefix). Client includes error handling for rate limits, API errors, and network errors. API route created in `app/api/ocr/route.ts` following Next.js App Router patterns. Route includes retry logic with exponential backoff (up to 3 attempts). Route handles file uploads, error handling, and response formatting. Use this as reference for chat API route patterns.</snippet>
+      </doc>
+      <doc path="docs/stories/2-1-basic-chat-ui-layout.md" title="Story 2.1: Basic Chat UI Layout">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.1 Implementation Complete - 2025-11-03. ChatInterface, MessageList, and Message components created in `components/chat/` directory. ChatInterface has `addMessage` function ready for integration. MessageList implements auto-scrolling to latest message. Message component displays messages with role-based styling (student on right, tutor on left). Message data structure established in `types/chat.ts` with Message interface. State management patterns use React useState for message state management. Ready for adding AI responses as tutor messages.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/lib/openai/client.ts" kind="utility" symbol="openai" reason="OpenAI client from Story 1.3. Client initialized with OpenAI SDK using `OPENAI_API_KEY` environment variable (server-side only, not `NEXT_PUBLIC_` prefix). Client includes error handling for rate limits, API errors, and network errors. Exports `openai` instance for use in chat API route. Use this client to call OpenAI GPT-4 Turbo model for chat completions.">
+        <note>OpenAI client is ready for use in chat API route. Use `openai.chat.completions.create()` to send messages to GPT-4 Turbo model.</note>
+      </file>
+      <file path="socratica/app/api/ocr/route.ts" kind="api-route" symbol="OCR API Route" reason="OCR API route from Story 1.3. Route demonstrates Next.js App Router patterns, error handling, retry logic with exponential backoff (up to 3 attempts), request validation, response formatting, and error messages. Use this route as reference for chat API route implementation patterns. Key patterns: retryWithBackoff function, error handling for rate limits (429), network timeouts, API errors, user-friendly error messages, logging to console (dev) or Firebase Analytics (prod).">
+        <note>OCR API route provides excellent reference for chat API route implementation. Follow similar patterns for error handling, retry logic, request validation, and response formatting.</note>
+      </file>
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" reason="Main chat interface component from Story 2.1 and Story 2.2. Component manages message state with React useState. Component has `addMessage` function for adding messages. Component has `handleMessageSubmit` function that creates student messages and adds them to state. Component needs to be updated to call chat API route when student message is sent, receive AI response, and add AI response as tutor message. Component needs loading indicator (isAIResponding state) and error handling for API responses.">
+        <note>ChatInterface needs to be updated to integrate with chat API route. Add API call in handleMessageSubmit or create separate function to send message to API and receive AI response. Add isAIResponding state for loading indicator. Add error handling for API responses with retry button.</note>
+      </file>
+      <file path="socratica/components/chat/MessageInput.tsx" kind="component" symbol="MessageInput" reason="Message input component from Story 2.2. Component handles message input, validation, submission, and loading states. Component calls `onMessageSubmit` callback with message text when message is submitted. Component needs to be updated to disable input while AI is responding. Component may need to pass isAIResponding state from ChatInterface to disable input.</note>
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="chat" reason="Chat-related type definitions from Story 2.1. Defines Message interface with role (student | tutor), content (string), and timestamp (Date | string). Defines MessageRole type as 'student' | 'tutor'. ChatInterface will create tutor messages with role: 'tutor' when receiving AI responses from API. API route will convert conversation history from Message[] format to OpenAI API format (messages with role: 'user' | 'assistant' | 'system').">
+        <note>Message interface is ready for tutor messages. ChatInterface will create tutor messages with role: 'tutor' when receiving AI responses from API. API route will need to convert Message[] to OpenAI API format (role: 'user' | 'assistant' | 'system').</note>
+      </file>
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" reason="Message list component from Story 2.1. Component displays messages in chronological order. Implements auto-scrolling to latest message using React useEffect and scrollIntoView with smooth behavior. Auto-scrolling works when new messages are added to the array. Component will automatically display AI responses as tutor messages when they are added to the messages array. No changes needed for this component.">
+        <note>MessageList will automatically display AI responses as tutor messages when they are added to the messages array. Auto-scrolling will work automatically when AI responses are added.</note>
+      </file>
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" reason="Individual message component from Story 2.1. Component displays messages with role-based styling. Student messages appear on right side with blue background, tutor messages appear on left side with gray background. Component will automatically display AI responses as tutor messages with correct styling when they are added to the messages array. No changes needed for this component.">
+        <note>Message component will automatically display AI responses as tutor messages with correct styling (left side, gray background) when they are added to the messages array.</note>
+      </file>
+      <file path="socratica/app/api" kind="directory" symbol="app/api/" reason="API routes directory. Contains `ocr/route.ts` from Story 1.3. Chat API route `app/api/chat/route.ts` needs to be created in this directory following Next.js App Router patterns. Route should follow API contract from architecture.md and error handling patterns from OCR API route.">
+        <note>API routes directory exists. Chat API route needs to be created in `app/api/chat/route.ts` following Next.js App Router patterns and API contract from architecture.md.</note>
+      </file>
+      <file path="socratica/lib/openai" kind="directory" symbol="lib/openai/" reason="OpenAI utilities directory. Contains `client.ts` from Story 1.3. Socratic system prompt file `lib/openai/prompts.ts` needs to be created in this directory. Prompt should guide AI to ask questions, not give answers, and encourage Socratic method for math tutoring.">
+        <note>OpenAI utilities directory exists. Socratic system prompt file needs to be created in `lib/openai/prompts.ts` with appropriate prompt for math tutoring using Socratic method.</note>
+      </file>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Project dependencies. Contains Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4, OpenAI SDK v6.7.0 (already installed). All dependencies available for chat API route development. No additional dependencies needed for this story.">
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration with strict mode enabled and import alias `@/*` configured. Use for chat API route type definitions and imports.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. Chat API route uses Next.js App Router patterns. Route should be in `app/api/chat/route.ts` with POST handler. Use NextResponse for API responses.">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components. ChatInterface uses React hooks (useState, useEffect) for state management and side effects. Use React hooks for loading state (isAIResponding) and error handling in ChatInterface.">
+        </package>
+        <package name="openai" version="^6.7.0" reason="OpenAI SDK for Node.js. Already installed. Use OpenAI client from `lib/openai/client.ts` to call OpenAI GPT-4 Turbo model for chat completions. Use `openai.chat.completions.create()` to send messages with system prompt and conversation history.">
+        </package>
+        <package name="typescript" version="^5.7.3" reason="TypeScript for type safety. Define chat API route types (ChatAPIRequest, ChatAPIResponse). Use Message type from types/chat.ts for conversation history. Use OpenAI SDK types for API responses.">
+        </package>
+        <package name="tailwindcss" version="^4.0.0" reason="Tailwind CSS v4 for styling. Use Tailwind utility classes for loading indicator styling, error message display, and retry button styling. Follow existing styling patterns from chat components.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <testing>
+    <strategy>
+      <unit>
+        <test>Test chat API route POST handler receives request correctly</test>
+        <test>Test chat API route validates request (message, conversationHistory)</test>
+        <test>Test chat API route integrates with OpenAI client</test>
+        <test>Test system prompt is sent correctly to OpenAI API</test>
+        <test>Test student message is sent correctly to OpenAI API</test>
+        <test>Test conversation history is converted to OpenAI API format correctly</test>
+        <test>Test AI response is received from OpenAI API correctly</test>
+        <test>Test AI response is formatted correctly for API response</test>
+        <test>Test error handling for rate limit errors (429)</test>
+        <test>Test error handling for network timeout errors</test>
+        <test>Test error handling for authentication errors (401)</test>
+        <test>Test error handling for context window overflow errors</test>
+        <test>Test error handling for invalid response format errors</test>
+        <test>Test retry logic (up to 3 attempts with exponential backoff)</test>
+        <test>Test error messages are user-friendly</test>
+        <test>Test error logging to console (dev) or Firebase Analytics (prod)</test>
+        <test>Test Socratic system prompt is appropriate for math tutoring</test>
+        <test>Test system prompt guides AI to ask questions, not give answers</test>
+      </unit>
+      <integration>
+        <test>Test ChatInterface calls chat API route when student message is sent</test>
+        <test>Test ChatInterface sends student message and conversation history to API</test>
+        <test>Test ChatInterface receives AI response from API</test>
+        <test>Test ChatInterface adds AI response to message state as tutor message</test>
+        <test>Test loading indicator appears while waiting for AI response</test>
+        <test>Test message input is disabled while AI is responding</test>
+        <test>Test loading indicator disappears after response or error</test>
+        <test>Test AI response appears in MessageList with tutor styling</test>
+        <test>Test auto-scrolling works when AI response is added</test>
+        <test>Test error handling in ChatInterface for API response errors</test>
+        <test>Test error messages are displayed in UI</test>
+        <test>Test retry button appears in error state</test>
+        <test>Test retry functionality works for failed requests</test>
+        <test>Test conversation context is maintained after errors</test>
+        <test>Test API response time is acceptable (< 5 seconds typical)</test>
+      </integration>
+      <accessibility>
+        <test>Test ARIA labels are present and correct for loading indicator</test>
+        <test>Test ARIA labels are present and correct for error messages</test>
+        <test>Test ARIA labels are present and correct for retry button</test>
+        <test>Test keyboard navigation works correctly for retry button</test>
+        <test>Test screen reader compatibility (NVDA, JAWS, VoiceOver)</test>
+        <test>Test loading indicator is announced by screen reader</test>
+        <test>Test error messages are announced by screen reader</test>
+        <test>Test disabled message input is announced by screen reader</test>
+      </accessibility>
+      <ui>
+        <test>Test loading indicator appears while waiting for AI response</test>
+        <test>Test loading indicator disappears after response or error</test>
+        <test>Test message input is disabled while AI is responding</test>
+        <test>Test AI response appears in chat with tutor's text and styling</test>
+        <test>Test auto-scrolling works when AI response is added</test>
+        <test>Test error messages are displayed in UI</test>
+        <test>Test retry button appears in error state</test>
+        <test>Test retry button works correctly</test>
+        <test>Test responsive design on mobile devices (320px, 375px, 414px)</test>
+        <test>Test responsive design on tablet devices (768px, 1024px)</test>
+        <test>Test responsive design on desktop devices (1280px, 1920px)</test>
+      </ui>
+    </strategy>
+    <standards>
+      <standard>WCAG 2.1 Level AA compliance for accessibility</standard>
+      <standard>TypeScript strict mode compliance</standard>
+      <standard>Next.js App Router patterns</standard>
+      <standard>React 19.2.0 best practices</standard>
+      <standard>Tailwind CSS v4 utility class patterns</standard>
+      <standard>OpenAI API best practices</standard>
+      <standard>Error handling patterns from OCR API route</standard>
+      <standard>Retry logic patterns from OCR API route</standard>
+      <standard>API contract format from architecture.md</standard>
+    </standards>
+  </testing>
+</story-context>
+

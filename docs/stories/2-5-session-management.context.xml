@@ -1,0 +1,258 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>5</storyId>
+    <title>Session Management</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-03 19:09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-5-session-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>to start a new problem session when needed</iWant>
+    <soThat>I can work on multiple problems without confusion</soThat>
+    <tasks>
+      <task id="1" title="Create ClearChat button component">
+        <subtasks>
+          <subtask>Create `components/chat/ClearChatButton.tsx` file (or add to ChatInterface)</subtask>
+          <subtask>Implement "New Problem" or "Clear Chat" button</subtask>
+          <subtask>Style button with Tailwind CSS following architecture patterns</subtask>
+          <subtask>Position button appropriately in chat interface (e.g., top-right or header)</subtask>
+          <subtask>Ensure button is accessible (ARIA labels, keyboard navigation)</subtask>
+          <subtask>Add icon or text label for button</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Create confirmation dialog component">
+        <subtasks>
+          <subtask>Create `components/ui/ConfirmationDialog.tsx` file (or inline in ChatInterface)</subtask>
+          <subtask>Implement confirmation dialog for clearing chat</subtask>
+          <subtask>Dialog shows confirmation message: "Are you sure you want to clear the chat? This will reset the conversation."</subtask>
+          <subtask>Dialog has "Cancel" and "Clear Chat" buttons</subtask>
+          <subtask>Dialog can be dismissed (Escape key, click outside, or Cancel button)</subtask>
+          <subtask>Style dialog with Tailwind CSS following architecture patterns</subtask>
+          <subtask>Ensure dialog is accessible (ARIA labels, focus management, keyboard navigation)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Integrate ClearChat button into ChatInterface">
+        <subtasks>
+          <subtask>Add ClearChat button to ChatInterface layout</subtask>
+          <subtask>Position button appropriately (e.g., top-right or header area)</subtask>
+          <subtask>Connect button to confirmation dialog</subtask>
+          <subtask>Show confirmation dialog when button is clicked</subtask>
+          <subtask>Handle dialog confirmation and cancellation</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Implement clear chat functionality">
+        <subtasks>
+          <subtask>Create clearChat function in ChatInterface</subtask>
+          <subtask>Clear conversation history (reset messages array to empty)</subtask>
+          <subtask>Clear error state and retry message state</subtask>
+          <subtask>Clear loading state (isAIResponding)</subtask>
+          <subtask>Reset conversation context for new session</subtask>
+          <subtask>Verify conversation history is cleared correctly</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Handle confirmation dialog state">
+        <subtasks>
+          <subtask>Add showConfirmDialog state to ChatInterface</subtask>
+          <subtask>Show confirmation dialog when ClearChat button is clicked</subtask>
+          <subtask>Hide confirmation dialog when Cancel is clicked or dialog is dismissed</subtask>
+          <subtask>Hide confirmation dialog when Clear Chat is confirmed</subtask>
+          <subtask>Handle Escape key to dismiss dialog</subtask>
+          <subtask>Handle click outside to dismiss dialog (optional)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Ensure session persistence rules">
+        <subtasks>
+          <subtask>Verify previous session is not automatically saved (for MVP)</subtask>
+          <subtask>Verify conversation history is cleared when starting new problem</subtask>
+          <subtask>Verify new session starts with fresh conversation context</subtask>
+          <subtask>Verify conversation history persists during single problem solving session (until cleared)</subtask>
+          <subtask>Document session persistence rules for MVP</subtask>
+        </subtasks>
+      </task>
+      <task id="7" title="Testing and verification">
+        <subtasks>
+          <subtask>Test "New Problem" or "Clear Chat" button is available</subtask>
+          <subtask>Test button appears in chat interface</subtask>
+          <subtask>Test button is accessible (keyboard navigation, screen reader)</subtask>
+          <subtask>Test confirmation dialog appears when button is clicked</subtask>
+          <subtask>Test confirmation dialog shows correct message</subtask>
+          <subtask>Test confirmation dialog can be dismissed (Escape key, Cancel button)</subtask>
+          <subtask>Test clearing chat resets conversation history</subtask>
+          <subtask>Test new session starts fresh conversation context</subtask>
+          <subtask>Test previous session is not automatically saved</subtask>
+          <subtask>Test conversation history is cleared correctly</subtask>
+          <subtask>Test error state and loading state are cleared</subtask>
+          <subtask>Test conversation context is reset for new session</subtask>
+          <subtask>Verify accessibility (keyboard navigation, screen reader, focus management)</subtask>
+          <subtask>Test responsive design (mobile, tablet, desktop)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">"New Problem" or "Clear Chat" button is available</criterion>
+    <criterion id="2">Clearing chat resets conversation history</criterion>
+    <criterion id="3">Confirmation dialog prevents accidental clearing</criterion>
+    <criterion id="4">New session starts fresh conversation context</criterion>
+    <criterion id="5">Previous session is not automatically saved (for MVP)</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 2: Chat Interface &amp; LLM Integration - Story 2.5</section>
+        <snippet>Story 2.5: Session Management defines the session management functionality for starting new problem sessions. As a student, I want to start a new problem session when needed, so that I can work on multiple problems without confusion. Includes 5 acceptance criteria covering "New Problem" or "Clear Chat" button availability, clearing chat resets conversation history, confirmation dialog prevents accidental clearing, new session starts fresh conversation context, and previous session is not automatically saved (for MVP).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Project Structure</section>
+        <snippet>Chat components in `components/chat/` directory: ChatInterface.tsx (main chat interface), MessageList.tsx (message list component), MessageInput.tsx (message input component). UI components in `components/ui/` directory: Button.tsx, Loading.tsx, ErrorBoundary.tsx (future components). Follow existing component patterns for ClearChat button and ConfirmationDialog components.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>UI/UX Patterns</section>
+        <snippet>Use Tailwind CSS utility classes for styling. Follow existing styling patterns from problem input components and chat components. Ensure accessibility (ARIA labels, keyboard navigation). Confirmation dialog should follow existing modal/dialog patterns. Button styling should follow existing button patterns.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Goalpost 2: Basic Chat + LLM Integration</section>
+        <snippet>Chat interface for multi-turn dialogue between student and AI tutor. LLM integration for conversation and Socratic questioning. Conversation history maintenance throughout sessions. This story adds session management for starting new problem sessions.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Session Management Capability</section>
+        <snippet>FR-11: Conversation History - System saves conversation history across sessions (future). For MVP, previous session is not automatically saved. Conversation history is cleared when starting new problem. New session starts with fresh conversation context.</snippet>
+      </doc>
+      <doc path="docs/stories/2-4-conversation-context-management.md" title="Story 2.4: Conversation Context Management">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.4 Implementation Complete - 2025-11-03. ChatInterface maintains conversation history array with all messages (student and tutor). Conversation history is maintained in chronological order. Conversation history is sent with each API call. Conversation history persists during single problem solving session. Ready for enhancement to clear conversation history when starting new problem.</snippet>
+      </doc>
+      <doc path="docs/stories/2-3-llm-api-integration.md" title="Story 2.3: LLM API Integration">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.3 Implementation Complete - 2025-11-03. ChatInterface integrated with chat API route. ChatInterface sends conversation history with each API call. ChatInterface maintains message state with React useState. ChatInterface handles loading states, error states, and retry functionality. Ready for enhancement to clear conversation history.</snippet>
+      </doc>
+      <doc path="docs/stories/2-2-message-sending-and-display.md" title="Story 2.2: Message Sending and Display">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.2 Implementation Complete - 2025-11-03. MessageInput component created in `components/chat/MessageInput.tsx`. ChatInterface maintains message state with React useState. Message array structure supports chronological display. Messages include role (student | tutor), content (string), and timestamp (Date | string). Ready for session management enhancement.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" reason="Main chat interface component from Story 2.1, 2.2, 2.3, and 2.4. Component manages message state with React useState (messages, isAIResponding, error, retryMessage). Component maintains conversation history array with all messages (student and tutor). Component sends conversation history with each API call. Component needs to be enhanced with clearChat function to reset conversation history, error state, retry message state, and loading state. Component needs showConfirmDialog state to manage confirmation dialog visibility. Component needs ClearChat button integrated into layout. Component needs confirmation dialog component integrated.">
+        <note>ChatInterface needs to be enhanced with clearChat function, showConfirmDialog state, ClearChat button, and confirmation dialog. Clear chat function should reset messages array to empty, clear error state, clear retryMessage state, clear isAIResponding state, and reset conversation context for new session.</note>
+      </file>
+      <file path="socratica/components/chat/MessageInput.tsx" kind="component" symbol="MessageInput" reason="Message input component from Story 2.2. Component handles message input, validation, submission, and loading states. Component integrates with ChatInterface. Component will work correctly with cleared chat state (messages array will be empty, component will still function normally). No changes needed for this component.">
+        <note>MessageInput component will work correctly with cleared chat state. Component doesn't depend on messages array, only on onMessageSubmit callback. No changes needed for session management.</note>
+      </file>
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" reason="Message list component from Story 2.1. Component displays messages in chronological order. Component handles empty state (shows "No messages yet. Start a conversation!"). Component will automatically display empty state when messages array is cleared. No changes needed for this component.">
+        <note>MessageList component already handles empty state. When messages array is cleared, component will automatically display empty state message. No changes needed for session management.</note>
+      </file>
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" reason="Individual message component from Story 2.1. Component displays messages with role-based styling. Component will automatically display all messages in conversation history. When messages array is cleared, component will not be rendered (no messages to display). No changes needed for this component.">
+        <note>Message component will automatically handle cleared chat state. When messages array is empty, component will not be rendered. No changes needed for session management.</note>
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="chat" reason="Chat-related type definitions from Story 2.1. Defines Message interface with role (student | tutor), content (string), and timestamp (Date | string). Message interface is ready for session management. May need to add types for confirmation dialog props if creating separate component.">
+        <note>Message interface is ready for session management. May need to add types for confirmation dialog props if creating separate ConfirmationDialog component.</note>
+      </file>
+      <file path="socratica/components/chat" kind="directory" symbol="components/chat/" reason="Chat components directory. Contains ChatInterface.tsx, MessageList.tsx, MessageInput.tsx, Message.tsx from previous stories. ClearChatButton.tsx component needs to be created in this directory (or inline in ChatInterface). Component will follow similar patterns to existing chat components.">
+        <note>Chat components directory exists. ClearChatButton.tsx component needs to be created in this directory (or inline in ChatInterface) following similar patterns to existing chat components.</note>
+      </file>
+      <file path="socratica/components/ui" kind="directory" symbol="components/ui/" reason="UI components directory. Directory may not exist yet. ConfirmationDialog.tsx component needs to be created in this directory (or inline in ChatInterface). Component will follow existing modal/dialog patterns. Component should be accessible with ARIA labels, focus management, and keyboard navigation.">
+        <note>UI components directory may not exist yet. ConfirmationDialog.tsx component needs to be created in this directory (or inline in ChatInterface) following existing modal/dialog patterns.</note>
+      </file>
+      <file path="socratica/components/problem-input/ImageUpload.tsx" kind="component" symbol="ImageUpload" reason="Image upload component from Epic 1. Component demonstrates button patterns, error display patterns, and accessibility features. Use this component as reference for button styling, error display, and accessibility patterns when creating ClearChat button and confirmation dialog.">
+        <note>ImageUpload component provides reference for button patterns, error display patterns, and accessibility features. Use this as reference for ClearChat button and confirmation dialog implementation.</note>
+      </file>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Project dependencies. Contains Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4. All dependencies available for session management development. No additional dependencies needed for this story.">
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration with strict mode enabled and import alias `@/*` configured. Use for ClearChat button and confirmation dialog type definitions and imports.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. ClearChat button and confirmation dialog components use Next.js App Router patterns. Components should be client components (use 'use client' directive).">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components. Use React hooks (useState) for confirmation dialog state management. Use React useEffect for Escape key handling and focus management. Use React KeyboardEvent for keyboard navigation (Escape key to dismiss dialog).">
+        </package>
+        <package name="typescript" version="^5.7.3" reason="TypeScript for type safety. Define ClearChatButtonProps and ConfirmationDialogProps interfaces. Use Message type from types/chat.ts for conversation history. Use TypeScript for component props and state types.">
+        </package>
+        <package name="tailwindcss" version="^4.0.0" reason="Tailwind CSS v4 for styling. Use Tailwind utility classes for ClearChat button styling, confirmation dialog styling, modal overlay, button states (hover, active, disabled), and responsive design. Follow existing styling patterns from chat components and problem input components.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <testing>
+    <strategy>
+      <unit>
+        <test>Test ClearChat button component renders correctly</test>
+        <test>Test ClearChat button shows correct label ("New Problem" or "Clear Chat")</test>
+        <test>Test ClearChat button is accessible (ARIA labels, keyboard navigation)</test>
+        <test>Test ClearChat button triggers confirmation dialog when clicked</test>
+        <test>Test confirmation dialog component renders correctly</test>
+        <test>Test confirmation dialog shows correct message</test>
+        <test>Test confirmation dialog has "Cancel" and "Clear Chat" buttons</test>
+        <test>Test confirmation dialog can be dismissed (Escape key, Cancel button)</test>
+        <test>Test confirmation dialog is accessible (ARIA labels, focus management, keyboard navigation)</test>
+        <test>Test clearChat function resets messages array to empty</test>
+        <test>Test clearChat function clears error state</test>
+        <test>Test clearChat function clears retry message state</test>
+        <test>Test clearChat function clears loading state (isAIResponding)</test>
+        <test>Test showConfirmDialog state management</test>
+      </unit>
+      <integration>
+        <test>Test ClearChat button integration into ChatInterface</test>
+        <test>Test ClearChat button positioned correctly in chat interface</test>
+        <test>Test confirmation dialog appears when ClearChat button is clicked</test>
+        <test>Test confirmation dialog can be dismissed (Escape key, Cancel button, click outside)</test>
+        <test>Test clearing chat resets conversation history</test>
+        <test>Test clearing chat clears error state and loading state</test>
+        <test>Test new session starts with fresh conversation context</test>
+        <test>Test conversation history persists during single problem solving session (until cleared)</test>
+        <test>Test previous session is not automatically saved</test>
+        <test>Test MessageList displays empty state when chat is cleared</test>
+        <test>Test MessageInput works correctly after clearing chat</test>
+        <test>Test conversation context is reset for new session</test>
+      </integration>
+      <accessibility>
+        <test>Test ARIA labels are present and correct for ClearChat button</test>
+        <test>Test ARIA labels are present and correct for confirmation dialog</test>
+        <test>Test keyboard navigation works correctly for ClearChat button</test>
+        <test>Test keyboard navigation works correctly for confirmation dialog</test>
+        <test>Test focus management works correctly for confirmation dialog</test>
+        <test>Test Escape key dismisses confirmation dialog</test>
+        <test>Test screen reader compatibility (NVDA, JAWS, VoiceOver)</test>
+        <test>Test confirmation dialog is announced by screen reader</test>
+        <test>Test ClearChat button is announced by screen reader</test>
+        <test>Test focus returns to ClearChat button after dialog is dismissed</test>
+      </accessibility>
+      <ui>
+        <test>Test "New Problem" or "Clear Chat" button is available</test>
+        <test>Test button appears in chat interface</test>
+        <test>Test button is positioned appropriately (e.g., top-right or header area)</test>
+        <test>Test confirmation dialog appears when button is clicked</test>
+        <test>Test confirmation dialog shows correct message</test>
+        <test>Test confirmation dialog can be dismissed (Escape key, Cancel button)</test>
+        <test>Test clearing chat resets conversation history</test>
+        <test>Test new session starts fresh conversation context</test>
+        <test>Test previous session is not automatically saved</test>
+        <test>Test conversation history is cleared correctly</test>
+        <test>Test error state and loading state are cleared</test>
+        <test>Test MessageList displays empty state when chat is cleared</test>
+        <test>Test responsive design on mobile devices (320px, 375px, 414px)</test>
+        <test>Test responsive design on tablet devices (768px, 1024px)</test>
+        <test>Test responsive design on desktop devices (1280px, 1920px)</test>
+      </ui>
+    </strategy>
+    <standards>
+      <standard>WCAG 2.1 Level AA compliance for accessibility</standard>
+      <standard>TypeScript strict mode compliance</standard>
+      <standard>Next.js App Router patterns</standard>
+      <standard>React 19.2.0 best practices</standard>
+      <standard>Tailwind CSS v4 utility class patterns</standard>
+      <standard>Component structure patterns from Epic 1 (problem-input components) and Epic 2 (chat components)</standard>
+      <standard>Modal/dialog patterns (focus management, keyboard navigation, Escape key dismissal)</standard>
+      <standard>Confirmation dialog patterns (prevent accidental actions, clear messaging)</standard>
+    </standards>
+  </testing>
+</story-context>
+

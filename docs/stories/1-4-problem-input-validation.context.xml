@@ -1,0 +1,271 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Problem Input Validation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-03 17:44</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-4-problem-input-validation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>feedback if my problem input is invalid or unclear</iWant>
+    <soThat>I can correct issues before starting a tutoring session</soThat>
+    <tasks>
+      <task id="1" title="Enhance TextInput validation">
+        <subtasks>
+          <subtask>Add validation for empty text input before submission</subtask>
+          <subtask>Add validation for text that's only whitespace</subtask>
+          <subtask>Add validation for minimum text length (e.g., at least 3 characters)</subtask>
+          <subtask>Display user-friendly error messages for invalid text inputs</subtask>
+          <subtask>Show error messages inline near the input field</subtask>
+          <subtask>Ensure error messages are clear and actionable</subtask>
+          <subtask>Prevent submission when validation fails</subtask>
+          <subtask>Style error messages to match existing error display patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Enhance ImageUpload validation">
+        <subtasks>
+          <subtask>Verify existing file type validation is comprehensive</subtask>
+          <subtask>Verify existing file size validation is working</subtask>
+          <subtask>Verify existing image corruption detection is working</subtask>
+          <subtask>Add validation for text-only images (images with no visible math content)</subtask>
+          <subtask>Enhance error messages for edge cases</subtask>
+          <subtask>Ensure error messages are clear and actionable</subtask>
+          <subtask>Add validation feedback for invalid images before OCR processing</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Create validation utilities">
+        <subtasks>
+          <subtask>Create `lib/utils/validation.ts` file</subtask>
+          <subtask>Implement `validateProblemText()` function</subtask>
+          <subtask>Implement helpers for text validation (empty, whitespace, min length)</subtask>
+          <subtask>Implement helpers for error message generation</subtask>
+          <subtask>Export validation functions for reuse</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Add validation to main interface">
+        <subtasks>
+          <subtask>Add validation before submitting problem from main interface</subtask>
+          <subtask>Validate both text input and OCR extracted text</subtask>
+          <subtask>Show validation errors before submission</subtask>
+          <subtask>Prevent submission when validation fails</subtask>
+          <subtask>Display helpful error messages for invalid inputs</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Handle edge cases">
+        <subtasks>
+          <subtask>Handle corrupted images (already implemented, verify)</subtask>
+          <subtask>Handle text-only images (images with no math content)</subtask>
+          <subtask>Handle images that OCR cannot process</subtask>
+          <subtask>Handle empty text after OCR extraction</subtask>
+          <subtask>Handle whitespace-only text after OCR extraction</subtask>
+          <subtask>Ensure all edge cases show appropriate error messages</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Testing and verification">
+        <subtasks>
+          <subtask>Test empty text input validation</subtask>
+          <subtask>Test whitespace-only text input validation</subtask>
+          <subtask>Test minimum text length validation</subtask>
+          <subtask>Test error message display for invalid text inputs</subtask>
+          <subtask>Test image validation (file type, size, corruption)</subtask>
+          <subtask>Test edge cases (corrupted images, text-only images)</subtask>
+          <subtask>Test validation prevents submission when invalid</subtask>
+          <subtask>Test error messages are clear and actionable</subtask>
+          <subtask>Verify validation works for both text input and OCR extracted text</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Validates problem text is not empty before submission</criterion>
+    <criterion id="2">Provides helpful error messages for invalid inputs</criterion>
+    <criterion id="3">Validates image files are valid images before processing</criterion>
+    <criterion id="4">Handles edge cases (corrupted images, text-only images, etc.)</criterion>
+    <criterion id="5">Error messages are clear and actionable</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 1: Problem Input - Story 1.4</section>
+        <snippet>Story 1.4: Problem Input Validation defines validation functionality for problem input. As a student, I want feedback if my problem input is invalid or unclear, so that I can correct issues before starting a tutoring session. Includes 5 acceptance criteria covering text validation, error messages, image validation, edge cases, and clear actionable error messages.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Input Validation</section>
+        <snippet>Text Input: Sanitize user input, validate message length, prevent injection attacks. Image Upload: Validate file type (JPG, PNG, WebP), enforce size limits (max 10MB), scan for malicious content. Validation ensures data integrity and security before processing.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Project Structure</section>
+        <snippet>Validation utilities in `lib/utils/validation.ts` (reusable validation functions). Components enhanced with validation error display. Main interface adds validation before submission. Validation patterns follow existing error handling patterns from ImageUpload component.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Goalpost 1: Problem Input</section>
+        <snippet>MVP requirement: Problem input validation ensures students can correct issues before starting a tutoring session. Validation provides immediate feedback for invalid inputs, preventing wasted time and improving user experience.</snippet>
+      </doc>
+      <doc path="docs/stories/1-3-ocr-vision-llm-integration.md" title="Story 1.3: OCR/Vision LLM Integration">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 1.3 Implementation Complete - 2025-11-03. OCR functionality is fully implemented and working. TextInput component has basic validation (`if (!inputValue.trim() || isSubmitting) return;`), but error messages are not displayed to the user. ImageUpload component has comprehensive file validation (file type, file size, image corruption detection). Validation errors are displayed to the user. This story will enhance validation with user-visible error messages.</snippet>
+      </doc>
+      <doc path="docs/stories/1-2-image-upload-interface.md" title="Story 1.2: Image Upload Interface">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 1.2 Implementation Complete - 2025-11-03. ImageUpload component includes comprehensive file validation (MIME type, file extension, file size), image corruption detection, error handling with user-friendly messages, and retry functionality. Validation errors are displayed to the user. Use this component as reference for validation error display patterns.</snippet>
+      </doc>
+      <doc path="docs/stories/1-1-text-input-interface.md" title="Story 1.1: Text Input Interface">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 1.1 Implementation Complete - 2025-11-03. TextInput component created with basic validation (`if (!inputValue.trim() || isSubmitting) return;`), but error messages are not displayed to the user. This story will enhance validation with user-visible error messages.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" reason="Text input component with basic validation but no user-visible error messages. Component has `if (!inputValue.trim() || isSubmitting) return;` validation that prevents submission, but doesn't display error to user. Component needs enhancement to display validation errors inline near the input field. Component accepts external value prop for OCR extracted text. Use this component as reference for validation enhancement patterns.">
+        <note>TextInput component needs validation error display enhancement. Current validation prevents submission but doesn't show error messages to user. Follow ImageUpload component error display patterns.</note>
+      </file>
+      <file path="socratica/components/problem-input/ImageUpload.tsx" kind="component" symbol="ImageUpload" reason="Image upload component with comprehensive file validation. Component includes file type validation (MIME type, file extension), file size validation (max 10MB), image corruption detection, error handling with user-friendly messages, and retry functionality. Validation errors are displayed to the user. Use this component as reference for validation error display patterns. Component validation needs verification and enhancement for edge cases (text-only images).">
+        <note>ImageUpload component has comprehensive validation that needs verification and enhancement. Error display patterns should be followed for TextInput component validation errors.</note>
+      </file>
+      <file path="socratica/app/page.tsx" kind="component" symbol="Home" reason="Main interface page that coordinates TextInput and ImageUpload components. Component handles problem submission but doesn't validate input before submission. Component needs validation before submitting problem from main interface. Component validates both text input and OCR extracted text. Component shows validation errors before submission and prevents submission when validation fails.">
+        <note>Main interface page needs validation before submission. Component should validate both text input and OCR extracted text before allowing submission.</note>
+      </file>
+      <file path="socratica/lib" kind="directory" symbol="lib/" reason="Utilities and configurations directory. Contains firebase/ and openai/ directories. Validation utilities directory `lib/utils/` needs to be created. Validation utility file `lib/utils/validation.ts` needs to be created for reusable validation functions.">
+        <note>Utilities directory exists. Validation utilities directory and files need to be created.</note>
+      </file>
+      <file path="socratica/components/problem-input/ImageUpload.tsx" kind="component" symbol="validateFile" reason="ImageUpload component's validateFile function provides file validation (file type, file size, file extension). Validation function returns error message string or null. Error messages are user-friendly. Use this function as reference for validation patterns.">
+        <note>ImageUpload component's validateFile function provides good reference for validation patterns. Similar validation functions should be created for text validation.</note>
+      </file>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Project dependencies. Contains Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4, Firebase SDK v12.5.0, OpenAI SDK v6.7.0. All dependencies available for validation utility development.">
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration with strict mode enabled and import alias `@/*` configured. Use for validation utility type definitions and imports.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. Validation utilities use Next.js patterns. Components use Next.js App Router patterns.">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components. Use React hooks (useState) for validation error state management in components.">
+        </package>
+        <package name="react-dom" version="19.2.0" reason="React DOM renderer for client-side rendering.">
+        </package>
+        <package name="typescript" version="^5" reason="TypeScript language for type safety. Strict mode enabled. Use for validation utility type definitions (ValidationResult, ValidationError, etc.).">
+        </package>
+        <package name="tailwindcss" version="^4" reason="Tailwind CSS v4 for utility-first styling. Use Tailwind utility classes following existing error display patterns from ImageUpload component.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      <name>Validation Utilities</name>
+      <description>Validation utilities must be created in `lib/utils/validation.ts` (reusable validation functions). Functions should be pure and testable. Export validation functions for reuse across components.</description>
+      <source>docs/architecture.md#Input-Validation</source>
+    </constraint>
+    <constraint type="architecture">
+      <name>Component Validation</name>
+      <description>Components must display validation errors inline near input fields. Follow existing error display patterns from ImageUpload component. Validation errors must be clear and actionable.</description>
+      <source>docs/stories/1-2-image-upload-interface.md#Dev-Agent-Record</source>
+    </constraint>
+    <constraint type="architecture">
+      <name>Next.js App Router</name>
+      <description>Components must follow Next.js App Router patterns. Client components may need "use client" directive if using React hooks or browser APIs.</description>
+      <source>docs/architecture.md#Project-Structure</source>
+    </constraint>
+    <constraint type="styling">
+      <name>Tailwind CSS v4</name>
+      <description>Use Tailwind CSS v4 utility classes for styling. Follow existing error display patterns from ImageUpload component. Use consistent styling (red error messages, clear text) for validation errors.</description>
+      <source>docs/stories/1-2-image-upload-interface.md#Dev-Agent-Record</source>
+    </constraint>
+    <constraint type="accessibility">
+      <name>Accessibility Requirements</name>
+      <description>Validation errors must be accessible: ARIA labels for screen readers, keyboard navigation support, proper semantic HTML. Follow WCAG guidelines for educational platform accessibility.</description>
+      <source>docs/PRD.md#Accessibility-Requirements</source>
+    </constraint>
+    <constraint type="naming">
+      <name>Naming Patterns</name>
+      <description>Follow naming patterns: Validation functions (camelCase, e.g., `validateProblemText()`), Validation utilities (`validation.ts` in `lib/utils/` directory), Error state (camelCase, e.g., `validationError`, `textError`).</description>
+      <source>docs/architecture.md#Naming-Patterns</source>
+    </constraint>
+    <constraint type="typescript">
+      <name>TypeScript Strict Mode</name>
+      <description>TypeScript strict mode enabled. Use proper type definitions for validation functions, validation results, and error types. Import alias `@/*` configured for path resolution.</description>
+      <source>docs/stories/0-2-firebase-project-setup.md#Dev-Notes</source>
+    </constraint>
+    <constraint type="validation">
+      <name>Text Validation</name>
+      <description>Validate problem text: not empty, not only whitespace, minimum length (e.g., at least 3 characters). Sanitize user input, validate message length, prevent injection attacks. Display clear, actionable error messages.</description>
+      <source>docs/architecture.md#Input-Validation</source>
+    </constraint>
+    <constraint type="validation">
+      <name>Image Validation</name>
+      <description>Validate image files: file type (JPG, PNG, WebP), file size (max 10MB), image corruption detection. Verify existing validation is comprehensive. Enhance error messages for edge cases. Add validation for text-only images.</description>
+      <source>docs/architecture.md#Input-Validation</source>
+    </constraint>
+    <constraint type="error-handling">
+      <name>Error Display</name>
+      <description>Display validation errors inline near input fields. Error messages must be clear and actionable. Follow existing error display patterns from ImageUpload component. Use consistent styling (red error messages, clear text).</description>
+      <source>docs/stories/1-2-image-upload-interface.md#Dev-Agent-Record</source>
+    </constraint>
+    <constraint type="state-management">
+      <name>State Management</name>
+      <description>Use React useState for validation error state. Manage validation state at component level (TextInput, ImageUpload). Manage validation state at main interface level for submission validation.</description>
+      <source>docs/stories/1-3-ocr-vision-llm-integration.md#Dev-Notes</source>
+    </constraint>
+    <constraint type="integration">
+      <name>Validation Integration</name>
+      <description>Validation utilities used by TextInput component, ImageUpload component, and main interface (`app/page.tsx`). Validation prevents submission when invalid. Validation works for both text input and OCR extracted text.</description>
+      <source>docs/stories/1-4-problem-input-validation.md#Dev-Notes</source>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Validation Utilities" kind="service" signature="Validation utility functions in lib/utils/validation.ts" path="lib/utils/validation.ts">
+      <description>Validation utility functions for problem input validation. Includes `validateProblemText()` function and helpers for text validation (empty, whitespace, min length). Provides helpers for error message generation. Functions are pure and testable. Export validation functions for reuse across components.</description>
+    </interface>
+    <interface name="TextInput Component" kind="React component" signature="TextInput component enhanced with validation error display" path="components/problem-input/TextInput.tsx">
+      <description>Text input component enhanced with validation error display. Component validates problem text: not empty, not only whitespace, minimum length. Displays user-friendly error messages inline near the input field. Prevents submission when validation fails. Error messages are clear and actionable.</description>
+    </interface>
+    <interface name="ImageUpload Component" kind="React component" signature="ImageUpload component with enhanced validation" path="components/problem-input/ImageUpload.tsx">
+      <description>Image upload component with enhanced validation. Component verifies existing file validation (file type, file size, image corruption detection). Enhances error messages for edge cases. Adds validation for text-only images. Validation errors are displayed to the user with clear, actionable messages.</description>
+    </interface>
+    <interface name="Main Interface" kind="Next.js page" signature="Home page component with validation before submission" path="app/page.tsx">
+      <description>Main interface page with validation before submission. Component validates both text input and OCR extracted text before allowing submission. Shows validation errors before submission. Prevents submission when validation fails. Displays helpful error messages for invalid inputs.</description>
+    </interface>
+    <interface name="React useState" kind="React hook" signature="useState&lt;string | null&gt;() for validation error state" path="components/problem-input/TextInput.tsx">
+      <description>React useState hook for managing validation error state. Use for validation error messages in TextInput component, ImageUpload component, and main interface. Validation errors are displayed inline near input fields.</description>
+    </interface>
+    <interface name="validateProblemText" kind="function" signature="validateProblemText(text: string): ValidationResult" path="lib/utils/validation.ts">
+      <description>Validation function for problem text. Validates text is not empty, not only whitespace, and meets minimum length requirements. Returns ValidationResult with isValid flag and error message. Used by TextInput component and main interface.</description>
+    </interface>
+    <interface name="validateFile" kind="function" signature="validateFile(file: File): string | null" path="components/problem-input/ImageUpload.tsx">
+      <description>ImageUpload component's validateFile function provides file validation (file type, file size, file extension). Returns error message string or null if valid. Used by ImageUpload component for file validation. Enhanced to handle edge cases (text-only images).</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing standards for this story focus on verifying validation functionality, error message display, and edge case handling. Key verification points include: empty text input validation, whitespace-only text input validation, minimum text length validation, error message display for invalid text inputs, image validation (file type, size, corruption), edge cases (corrupted images, text-only images), validation prevents submission when invalid, error messages are clear and actionable, validation works for both text input and OCR extracted text. Manual verification is appropriate for this validation story. Component testing should verify validation error display and submission prevention. Validation utility testing should verify validation functions work correctly. Accessibility testing should verify validation errors are accessible (screen reader support, keyboard navigation).
+    </standards>
+    <locations>
+      <location>Manual verification (no test files yet for validation story)</location>
+      <location>Future tests will be co-located with utilities: `lib/utils/validation.test.ts`</location>
+      <location>Future tests will be co-located with components: `components/problem-input/TextInput.test.tsx`</location>
+      <location>Integration tests: `app/**/*.test.tsx` (for page integration)</location>
+    </locations>
+    <ideas>
+      <test id="ac1" criterion="AC: 1" description="Verify problem text validation: Check empty text input is validated before submission, verify whitespace-only text is validated, verify minimum text length validation (e.g., at least 3 characters), verify validation prevents submission when invalid, verify error messages are displayed for invalid text inputs.">
+      </test>
+      <test id="ac2" criterion="AC: 2" description="Verify helpful error messages: Check error messages are displayed for invalid text inputs, verify error messages are clear and actionable, verify error messages are user-friendly, verify error messages provide guidance on how to fix the issue.">
+      </test>
+      <test id="ac3" criterion="AC: 3" description="Verify image file validation: Check file type validation (JPG, PNG, WebP), verify file size validation (max 10MB), verify image corruption detection, verify validation happens before OCR processing, verify error messages are displayed for invalid images.">
+      </test>
+      <test id="ac4" criterion="AC: 4" description="Verify edge case handling: Check corrupted images are handled with appropriate error messages, verify text-only images are handled, verify images that OCR cannot process are handled, verify empty text after OCR extraction is handled, verify whitespace-only text after OCR extraction is handled, verify all edge cases show appropriate error messages.">
+      </test>
+      <test id="ac5" criterion="AC: 5" description="Verify error messages are clear and actionable: Check error messages are user-friendly, verify error messages provide guidance on how to fix the issue, verify error messages are displayed inline near input fields, verify error messages follow existing error display patterns, verify error messages are accessible (screen reader support, keyboard navigation).">
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

@@ -1,0 +1,221 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>0</epicId>
+    <storyId>1</storyId>
+    <title>Project Initialization</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03 16:03</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/0-1-project-initialization.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>initialize the Next.js 15 project with TypeScript and Tailwind CSS</iWant>
+    <soThat>I have a working foundation to build upon</soThat>
+    <tasks>
+      <task id="1" title="Initialize Next.js project">
+        <subtasks>
+          <subtask>Run `npx create-next-app@latest socratica --typescript --tailwind --app --no-src-dir --import-alias "@/*"`</subtask>
+          <subtask>Verify project was created in correct location</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Verify project structure">
+        <subtasks>
+          <subtask>Check `app/` directory exists with App Router structure</subtask>
+          <subtask>Create `components/` directory</subtask>
+          <subtask>Create `lib/` directory</subtask>
+          <subtask>Create `hooks/` directory</subtask>
+          <subtask>Create `types/` directory</subtask>
+          <subtask>Verify `public/` directory exists</subtask>
+          <subtask>Compare structure with `docs/architecture.md` and ensure alignment</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Configure TypeScript">
+        <subtasks>
+          <subtask>Verify `tsconfig.json` exists</subtask>
+          <subtask>Enable strict mode in TypeScript configuration</subtask>
+          <subtask>Verify import alias `@/*` is configured</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Verify Tailwind CSS configuration">
+        <subtasks>
+          <subtask>Check `tailwind.config.js` exists</subtask>
+          <subtask>Verify Tailwind is properly configured in `globals.css` or equivalent</subtask>
+          <subtask>Test Tailwind utility classes work</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Verify ESLint configuration">
+        <subtasks>
+          <subtask>Check ESLint config file exists</subtask>
+          <subtask>Verify ESLint is working with sample code</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Verify build process">
+        <subtasks>
+          <subtask>Run `npm run build`</subtask>
+          <subtask>Verify build completes successfully without errors</subtask>
+        </subtasks>
+      </task>
+      <task id="7" title="Verify development server">
+        <subtasks>
+          <subtask>Run `npm run dev`</subtask>
+          <subtask>Verify development server starts successfully</subtask>
+          <subtask>Verify server is accessible in browser</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Run `npx create-next-app@latest socratica --typescript --tailwind --app --no-src-dir --import-alias "@/*"`</criterion>
+    <criterion id="2">Project structure matches architecture document (`docs/architecture.md`)</criterion>
+    <criterion id="3">TypeScript configuration is correct (strict mode enabled)</criterion>
+    <criterion id="4">Tailwind CSS is configured and working</criterion>
+    <criterion id="5">ESLint is configured and working</criterion>
+    <criterion id="6">Project builds successfully (`npm run build`)</criterion>
+    <criterion id="7">Development server runs successfully (`npm run dev`)</criterion>
+    <criterion id="8">Project structure includes: `app/` directory with App Router structure, `components/` directory, `lib/` directory, `hooks/` directory, `types/` directory, `public/` directory</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Project Setup (Foundation Stories) - Story 0.1</section>
+        <snippet>Story 0.1: Project Initialization defines the foundation story for initializing the Next.js 15 project with TypeScript and Tailwind CSS. Includes acceptance criteria for project structure, TypeScript configuration, Tailwind CSS setup, ESLint configuration, build process, and development server.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Project Initialization</section>
+        <snippet>Specifies the first implementation story using Next.js 15 starter template. Establishes base architecture decisions: Next.js 15 with App Router, TypeScript, Tailwind CSS, App Router organization, Turbopack build tooling, ESLint configured, and REST API pattern via `/app/api/` routes.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Project Structure</section>
+        <snippet>Defines the expected directory structure for the socratica project including `app/` for Next.js App Router, `components/` for React components, `lib/` for utilities, `hooks/` for custom React hooks, `types/` for TypeScript types, and `public/` for static assets.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Naming Patterns</section>
+        <snippet>Establishes naming conventions: Components use PascalCase matching file name, files match component name exactly, functions use camelCase, constants use UPPER_SNAKE_CASE, types/interfaces use PascalCase.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Development Environment</section>
+        <snippet>Requires Node.js 18+, npm package manager. Development server runs on default Next.js port (typically 3000). Setup commands include npm install, environment variable configuration, and running npm run dev.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Project Classification</section>
+        <snippet>Classifies Socratica as a Level 3 web application project requiring comprehensive planning with greenfield approach. Technical stack includes web interface, LaTeX-based equation rendering, OCR/Vision LLM, and multi-turn dialogue with context maintenance.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Defines project dependencies and scripts. Currently has Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4, and ESLint configured.">
+        <note>Project already initialized with Next.js, but needs structure verification and directory creation per architecture.</note>
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration file. Must verify strict mode is enabled and import alias @/* is configured.">
+      </file>
+      <file path="socratica/next.config.ts" kind="config" symbol="next.config.ts" reason="Next.js configuration file. Part of the project initialization setup.">
+      </file>
+      <file path="socratica/eslint.config.mjs" kind="config" symbol="eslint.config.mjs" reason="ESLint configuration file. Must verify ESLint is working correctly.">
+      </file>
+      <file path="socratica/postcss.config.mjs" kind="config" symbol="postcss.config.mjs" reason="PostCSS configuration for Tailwind CSS processing.">
+      </file>
+      <file path="socratica/app" kind="directory" symbol="app/" reason="Next.js App Router directory. Should contain layout.tsx, page.tsx, and globals.css. Verify App Router structure matches architecture.">
+      </file>
+      <file path="socratica/public" kind="directory" symbol="public/" reason="Static assets directory. Should exist and contain default Next.js assets.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. Note: Architecture specifies Next.js 15, but 16.0.1 is installed.">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components.">
+        </package>
+        <package name="react-dom" version="19.2.0" reason="React DOM renderer.">
+        </package>
+        <package name="typescript" version="^5" reason="TypeScript language for type safety. Must verify strict mode enabled.">
+        </package>
+        <package name="tailwindcss" version="^4" reason="Tailwind CSS v4 for utility-first styling. Must verify configuration.">
+        </package>
+        <package name="@tailwindcss/postcss" version="^4" reason="PostCSS plugin for Tailwind CSS v4.">
+        </package>
+        <package name="eslint" version="^9" reason="ESLint for code linting. Must verify configuration.">
+        </package>
+        <package name="eslint-config-next" version="16.0.1" reason="Next.js ESLint configuration.">
+        </package>
+        <package name="babel-plugin-react-compiler" version="1.0.0" reason="React Compiler plugin for Babel.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      <name>Project Structure</name>
+      <description>Must match architecture document structure: `app/` directory with App Router, `components/` directory, `lib/` directory, `hooks/` directory, `types/` directory, `public/` directory.</description>
+      <source>docs/architecture.md#Project-Structure</source>
+    </constraint>
+    <constraint type="configuration">
+      <name>TypeScript Strict Mode</name>
+      <description>TypeScript configuration must have strict mode enabled.</description>
+      <source>docs/architecture.md#Technology-Stack-Details</source>
+    </constraint>
+    <constraint type="configuration">
+      <name>Import Alias</name>
+      <description>Import alias `@/*` must be configured in TypeScript configuration for path resolution.</description>
+      <source>docs/epics.md#Story-0.1</source>
+    </constraint>
+    <constraint type="naming">
+      <name>Naming Patterns</name>
+      <description>Follow naming patterns: Components (PascalCase), Files (match component name), Functions (camelCase), Constants (UPPER_SNAKE_CASE), Types/Interfaces (PascalCase).</description>
+      <source>docs/architecture.md#Naming-Patterns</source>
+    </constraint>
+    <constraint type="environment">
+      <name>Node.js Version</name>
+      <description>Requires Node.js 18+ (LTS recommended).</description>
+      <source>docs/architecture.md#Development-Environment</source>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Next.js App Router" kind="framework" signature="App Router structure with `app/` directory for pages and API routes" path="socratica/app/">
+      <description>Next.js 15+ App Router pattern. Uses `app/` directory for routing, `layout.tsx` for root layout, `page.tsx` for pages, and `route.ts` files for API endpoints.</description>
+    </interface>
+    <interface name="TypeScript Config" kind="configuration" signature="tsconfig.json with strict mode and path aliases" path="socratica/tsconfig.json">
+      <description>TypeScript configuration must enable strict mode and configure `@/*` import alias for path resolution.</description>
+    </interface>
+    <interface name="Tailwind CSS Config" kind="configuration" signature="tailwind.config.js with PostCSS integration" path="socratica/postcss.config.mjs">
+      <description>Tailwind CSS v4 configuration via PostCSS. Must be properly configured in globals.css and working with utility classes.</description>
+    </interface>
+    <interface name="ESLint Config" kind="configuration" signature="eslint.config.mjs with Next.js preset" path="socratica/eslint.config.mjs">
+      <description>ESLint configuration using Next.js preset. Must be working correctly for code linting.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing standards for this story focus on verifying project initialization setup rather than application functionality. Key verification points include: successful project creation via `npx create-next-app`, correct directory structure matching architecture document, TypeScript configuration with strict mode enabled, Tailwind CSS configuration and functionality, ESLint configuration and functionality, successful build process (`npm run build`), and successful development server startup (`npm run dev`). Manual verification is appropriate for this foundational story, with automated tests to be added in subsequent stories once the application codebase is established.
+    </standards>
+    <locations>
+      <location>Manual verification (no test files yet for initialization story)</location>
+      <location>Future tests will be co-located with components: `components/**/*.test.tsx`</location>
+      <location>API route tests: `app/api/**/*.test.ts`</location>
+    </locations>
+    <ideas>
+      <test id="ac1" criterion="AC: 1" description="Verify project was created successfully by checking package.json exists and contains expected Next.js dependencies.">
+      </test>
+      <test id="ac2" criterion="AC: 2" description="Verify project structure matches architecture: check all required directories exist (app/, components/, lib/, hooks/, types/, public/).">
+      </test>
+      <test id="ac3" criterion="AC: 3" description="Verify TypeScript strict mode: check tsconfig.json has `strict: true` and import alias `@/*` is configured in paths.">
+      </test>
+      <test id="ac4" criterion="AC: 4" description="Verify Tailwind CSS: check tailwind.config.js exists, verify PostCSS config, test utility classes work in a component.">
+      </test>
+      <test id="ac5" criterion="AC: 5" description="Verify ESLint: run `npm run lint` and confirm no errors, check eslint.config.mjs exists.">
+      </test>
+      <test id="ac6" criterion="AC: 6" description="Verify build: run `npm run build` and confirm build completes successfully without errors.">
+      </test>
+      <test id="ac7" criterion="AC: 7" description="Verify dev server: run `npm run dev` and confirm server starts, check server is accessible at http://localhost:3000.">
+      </test>
+      <test id="ac8" criterion="AC: 8" description="Verify directory structure: check all directories from AC 8 exist and match architecture document structure.">
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

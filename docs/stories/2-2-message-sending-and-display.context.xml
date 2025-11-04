@@ -1,0 +1,247 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2</storyId>
+    <title>Message Sending and Display</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-03 18:51</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-2-message-sending-and-display.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>to send messages and see them appear immediately in the chat</iWant>
+    <soThat>I can communicate naturally with the AI tutor</soThat>
+    <tasks>
+      <task id="1" title="Create MessageInput component">
+        <subtasks>
+          <subtask>Create `components/chat/MessageInput.tsx` file</subtask>
+          <subtask>Implement message input field (textarea or input)</subtask>
+          <subtask>Add Send button for message submission</subtask>
+          <subtask>Implement Enter key submission (Shift+Enter for new line)</subtask>
+          <subtask>Clear input field after successful submission</subtask>
+          <subtask>Disable send button while message is being processed</subtask>
+          <subtask>Style with Tailwind CSS following architecture patterns</subtask>
+          <subtask>Ensure component is accessible (ARIA labels, keyboard navigation)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Integrate MessageInput into ChatInterface">
+        <subtasks>
+          <subtask>Add MessageInput component to ChatInterface layout</subtask>
+          <subtask>Position MessageInput at bottom of chat interface</subtask>
+          <subtask>Connect MessageInput to ChatInterface's addMessage function</subtask>
+          <subtask>Ensure student message appears immediately in chat after sending</subtask>
+          <subtask>Ensure message appears with student's text and styling</subtask>
+          <subtask>Handle message state management in ChatInterface</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Implement message submission logic">
+        <subtasks>
+          <subtask>Create message submission handler in MessageInput</subtask>
+          <subtask>Create message from input text with student role</subtask>
+          <subtask>Generate timestamp for new message</subtask>
+          <subtask>Add message to ChatInterface message state</subtask>
+          <subtask>Clear input field after message added</subtask>
+          <subtask>Handle empty message validation (prevent sending empty messages)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Add loading state management">
+        <subtasks>
+          <subtask>Add isSubmitting state to MessageInput component</subtask>
+          <subtask>Disable send button when isSubmitting is true</subtask>
+          <subtask>Show loading indicator in send button (optional)</subtask>
+          <subtask>Prevent multiple submissions while processing</subtask>
+          <subtask>Reset loading state after message sent</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Update ChatInterface to handle new messages">
+        <subtasks>
+          <subtask>Update ChatInterface's addMessage function to be used by MessageInput</subtask>
+          <subtask>Ensure addMessage creates message with student role</subtask>
+          <subtask>Ensure addMessage generates timestamp</subtask>
+          <subtask>Ensure new messages appear immediately in MessageList</subtask>
+          <subtask>Verify auto-scrolling works when new message added</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Add input validation">
+        <subtasks>
+          <subtask>Validate message is not empty before submission</subtask>
+          <subtask>Validate message is not only whitespace before submission</subtask>
+          <subtask>Validate minimum message length (e.g., at least 1 character)</subtask>
+          <subtask>Show validation error if message is invalid</subtask>
+          <subtask>Prevent submission when validation fails</subtask>
+        </subtasks>
+      </task>
+      <task id="7" title="Testing and verification">
+        <subtasks>
+          <subtask>Test message input field appears at bottom of chat interface</subtask>
+          <subtask>Test Send button submits message</subtask>
+          <subtask>Test Enter key submits message</subtask>
+          <subtask>Test Shift+Enter creates new line (doesn't submit)</subtask>
+          <subtask>Test student message appears immediately in chat after sending</subtask>
+          <subtask>Test input field clears after sending</subtask>
+          <subtask>Test message appears with student's text and styling</subtask>
+          <subtask>Test send button is disabled while message is being processed</subtask>
+          <subtask>Test empty message validation prevents submission</subtask>
+          <subtask>Test whitespace-only message validation prevents submission</subtask>
+          <subtask>Test auto-scrolling works when new message added</subtask>
+          <subtask>Verify accessibility (keyboard navigation, screen reader)</subtask>
+          <subtask>Test responsive design (mobile, tablet, desktop)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Message input field at bottom of chat interface</criterion>
+    <criterion id="2">Send button or Enter key submits message</criterion>
+    <criterion id="3">Student message appears immediately in chat after sending</criterion>
+    <criterion id="4">Input field clears after sending</criterion>
+    <criterion id="5">Message appears with student's text and styling</criterion>
+    <criterion id="6">Disable send button while message is being processed</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 2: Chat Interface &amp; LLM Integration - Story 2.2</section>
+        <snippet>Story 2.2: Message Sending and Display defines the message input functionality for the chat interface. As a student, I want to send messages and see them appear immediately in the chat, so that I can communicate naturally with the AI tutor. Includes 6 acceptance criteria covering message input field, send button/Enter key submission, immediate message display, input clearing, student message styling, and disabled send button during processing.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Project Structure</section>
+        <snippet>Chat components in `components/chat/` directory: ChatInterface.tsx (main chat interface), MessageList.tsx (message list component), Message.tsx (individual message component), MessageInput.tsx (message input component - to be created). Components follow Next.js App Router patterns with TypeScript and Tailwind CSS v4.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>UI/UX Patterns</section>
+        <snippet>Use Tailwind CSS utility classes for styling. Follow existing styling patterns from TextInput component (Epic 1). Ensure accessibility (ARIA labels, keyboard navigation). Message input field at bottom of chat interface. Send button or Enter key submits message. Shift+Enter creates new line (doesn't submit). Disable send button while message is being processed.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>State Management</section>
+        <snippet>Use React useState for input state management. Use React useState for isSubmitting state. Integrate with ChatInterface's addMessage function. Message submission creates message with student role and timestamp. Message appears immediately in MessageList (auto-scrolling handles display).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Input Validation</section>
+        <snippet>Text Input: Sanitize user input, validate message length, prevent injection attacks. Validate message is not empty before submission. Validate message is not only whitespace before submission. Validate minimum message length (e.g., at least 1 character). Show validation error if message is invalid. Prevent submission when validation fails.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Goalpost 2: Basic Chat + LLM Integration</section>
+        <snippet>Chat interface for multi-turn dialogue between student and AI tutor. LLM integration for conversation and Socratic questioning. Conversation history maintenance throughout sessions. This story establishes the message input functionality for sending student messages to the chat interface.</snippet>
+      </doc>
+      <doc path="docs/stories/2-1-basic-chat-ui-layout.md" title="Story 2.1: Basic Chat UI Layout">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 2.1 Implementation Complete - 2025-11-03. ChatInterface, MessageList, and Message components created in `components/chat/` directory. ChatInterface has `addMessage` function ready for integration (currently unused, marked for future use). MessageList implements auto-scrolling to latest message. Message component displays messages with role-based styling (student on right, tutor on left). Message data structure established in `types/chat.ts` with Message interface. State management patterns use React useState for message state management. Ready for integration with message input component (Story 2.2).</snippet>
+      </doc>
+      <doc path="docs/stories/1-4-problem-input-validation.md" title="Story 1.4: Problem Input Validation">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 1.4 Implementation Complete - 2025-11-03. Validation utilities created at `lib/utils/validation.ts` with `validateProblemText()` function. TextInput component enhanced with validation error display, inline error messages, and submission prevention. Input component patterns demonstrate input handling with validation, error display, submission handling, and accessibility features. Use TextInput as reference for MessageInput component patterns.</snippet>
+      </doc>
+      <doc path="docs/stories/1-1-text-input-interface.md" title="Story 1.1: Text Input Interface">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Story 1.1 Implementation Complete - 2025-11-03. TextInput component created with validation, error display, and accessibility features. Component includes keyboard handling (Enter to submit, Shift+Enter for new line). Component uses isSubmitting state to prevent multiple submissions. Use this component as reference for MessageInput component patterns.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" reason="Main chat interface component from Story 2.1. Component manages message state with React useState. Has `addMessage` function ready for integration (currently unused, marked for future use). Function signature: `addMessage(message: Message) => void`. MessageInput component will connect to this function to add new student messages. Component integrates MessageList component which displays messages and implements auto-scrolling.">
+        <note>ChatInterface's addMessage function is ready for integration. MessageInput will call this function to add new student messages to the chat.</note>
+      </file>
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" reason="Message list component from Story 2.1. Component displays messages in chronological order. Implements auto-scrolling to latest message using React useEffect and scrollIntoView with smooth behavior. Auto-scrolling works when new messages are added to the array. Component accepts messages prop and displays them using Message component. Ready for new messages from MessageInput component.">
+        <note>MessageList implements auto-scrolling that will work automatically when new messages are added via ChatInterface's addMessage function.</note>
+      </file>
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" reason="Individual message component from Story 2.1. Component displays messages with role-based styling. Student messages appear on right side with blue background, tutor messages appear on left side with gray background. Timestamp formatting with fallback to sequence indicator. Component accepts message and index props. Ready to display student messages from MessageInput component.">
+        <note>Message component will display student messages with correct styling (right side, blue background) when messages are added via MessageInput.</note>
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="chat" reason="Chat-related type definitions from Story 2.1. Defines Message interface with role (student | tutor), content (string), and timestamp (Date | string). Defines MessageRole type as 'student' | 'tutor'. Defines component prop interfaces (MessageProps, MessageListProps, ChatInterfaceProps). MessageInput component will create messages with student role using this interface.">
+        <note>Message interface is ready for MessageInput component to create new student messages. MessageInput will create messages with role: 'student', content from input, and timestamp (Date or ISO string).</note>
+      </file>
+      <file path="socratica/components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" reason="Text input component from Epic 1. Component demonstrates input handling patterns with validation, error display, submission handling, and accessibility features. Component uses React useState for input state and isSubmitting state. Component handles Enter key submission (Shift+Enter for new line). Component clears input after successful submission. Component includes validation error display. Use this component as reference for MessageInput component patterns.">
+        <note>TextInput component provides excellent reference for MessageInput component patterns. Follow similar patterns for input handling, validation, submission, and accessibility.</note>
+      </file>
+      <file path="socratica/lib/utils/validation.ts" kind="utility" symbol="validation" reason="Validation utilities from Story 1.4. Contains `validateProblemText()` function that validates text is not empty, not only whitespace, and meets minimum length requirement. Returns ValidationResult with isValid flag and error message. Use this as reference for message validation patterns. May need to create similar validation function for messages (e.g., `validateMessage()` with minimum length of 1 character instead of 3).">
+        <note>Validation utilities provide reference for message validation patterns. May need to create similar validation function for messages (minimum length of 1 character instead of 3 for problem text).</note>
+      </file>
+      <file path="socratica/components/chat" kind="directory" symbol="components/chat/" reason="Chat components directory. Contains ChatInterface.tsx, MessageList.tsx, Message.tsx from Story 2.1. MessageInput.tsx component needs to be created in this directory. Component will follow similar patterns to existing chat components and TextInput component from Epic 1.">
+        <note>Chat components directory exists. MessageInput.tsx component needs to be created in this directory following similar patterns to existing chat components.</note>
+      </file>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Project dependencies. Contains Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4. All dependencies available for MessageInput component development. No additional dependencies needed for this story.">
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration with strict mode enabled and import alias `@/*` configured. Use for MessageInput component type definitions and imports.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. MessageInput component uses Next.js App Router patterns. Component should be a client component (use 'use client' directive).">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components. Use React hooks (useState) for input state management and isSubmitting state. Use React FormEvent for form submission handling. Use React KeyboardEvent for keyboard input handling (Enter key, Shift+Enter).">
+        </package>
+        <package name="typescript" version="^5.7.3" reason="TypeScript for type safety. Define MessageInputProps interface with onMessageSubmit callback. Use Message type from types/chat.ts for message creation. Use MessageRole type for message role validation.">
+        </package>
+        <package name="tailwindcss" version="^4.0.0" reason="Tailwind CSS v4 for styling. Use Tailwind utility classes for message input field styling, send button styling, error display, disabled states, focus states. Follow existing styling patterns from TextInput component and chat components.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <testing>
+    <strategy>
+      <unit>
+        <test>Test MessageInput component renders correctly</test>
+        <test>Test message input field appears in component</test>
+        <test>Test Send button appears in component</test>
+        <test>Test message input field accepts text input</test>
+        <test>Test Send button submits message when clicked</test>
+        <test>Test Enter key submits message</test>
+        <test>Test Shift+Enter creates new line (doesn't submit)</test>
+        <test>Test input field clears after successful submission</test>
+        <test>Test send button is disabled when isSubmitting is true</test>
+        <test>Test empty message validation prevents submission</test>
+        <test>Test whitespace-only message validation prevents submission</test>
+        <test>Test validation error display when message is invalid</test>
+        <test>Test message creation with student role</test>
+        <test>Test timestamp generation for new message</test>
+      </unit>
+      <integration>
+        <test>Test MessageInput integration into ChatInterface</test>
+        <test>Test MessageInput positioned at bottom of chat interface</test>
+        <test>Test MessageInput connects to ChatInterface's addMessage function</test>
+        <test>Test student message appears immediately in MessageList after sending</test>
+        <test>Test message appears with student's text and styling</test>
+        <test>Test auto-scrolling works when new message added</test>
+        <test>Test message state management in ChatInterface</test>
+        <test>Test message submission flow (input -> ChatInterface -> MessageList)</test>
+      </integration>
+      <accessibility>
+        <test>Test ARIA labels are present and correct</test>
+        <test>Test keyboard navigation works correctly</test>
+        <test>Test screen reader compatibility (NVDA, JAWS, VoiceOver)</test>
+        <test>Test focus management for message input field</test>
+        <test>Test Enter key submission works with keyboard navigation</test>
+        <test>Test Shift+Enter creates new line with keyboard navigation</test>
+        <test>Test disabled send button is properly announced by screen reader</test>
+      </accessibility>
+      <ui>
+        <test>Test message input field appears at bottom of chat interface</test>
+        <test>Test Send button submits message</test>
+        <test>Test Enter key submits message</test>
+        <test>Test Shift+Enter creates new line (doesn't submit)</test>
+        <test>Test student message appears immediately in chat after sending</test>
+        <test>Test input field clears after sending</test>
+        <test>Test message appears with student's text and styling</test>
+        <test>Test send button is disabled while message is being processed</test>
+        <test>Test validation error display when message is invalid</test>
+        <test>Test responsive design on mobile devices (320px, 375px, 414px)</test>
+        <test>Test responsive design on tablet devices (768px, 1024px)</test>
+        <test>Test responsive design on desktop devices (1280px, 1920px)</test>
+      </ui>
+    </strategy>
+    <standards>
+      <standard>WCAG 2.1 Level AA compliance for accessibility</standard>
+      <standard>TypeScript strict mode compliance</standard>
+      <standard>Next.js App Router patterns</standard>
+      <standard>React 19.2.0 best practices</standard>
+      <standard>Tailwind CSS v4 utility class patterns</standard>
+      <standard>Component structure patterns from Epic 1 (problem-input components) and Epic 2 (chat components)</standard>
+    </standards>
+  </testing>
+</story-context>
+

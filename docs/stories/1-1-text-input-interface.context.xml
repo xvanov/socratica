@@ -1,0 +1,211 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>Text Input Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03 16:34</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-1-text-input-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>type my math problem into a text input field</iWant>
+    <soThat>I can easily share my homework problem with the AI tutor</soThat>
+    <tasks>
+      <task id="1" title="Create TextInput component">
+        <subtasks>
+          <subtask>Create `components/problem-input/` directory</subtask>
+          <subtask>Create `components/problem-input/TextInput.tsx` file</subtask>
+          <subtask>Implement text input field with multi-line support (textarea)</subtask>
+          <subtask>Add placeholder text that guides students</subtask>
+          <subtask>Ensure component is accessible (ARIA labels, keyboard navigation)</subtask>
+          <subtask>Style with Tailwind CSS following architecture patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Integrate TextInput into main interface">
+        <subtasks>
+          <subtask>Update `app/page.tsx` to display TextInput component</subtask>
+          <subtask>Ensure TextInput is visible and accessible on main interface</subtask>
+          <subtask>Verify component renders correctly</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Implement submit functionality">
+        <subtasks>
+          <subtask>Add submit button to TextInput component</subtask>
+          <subtask>Implement Enter key submission (handle Enter key press)</subtask>
+          <subtask>Create handler function for submission</subtask>
+          <subtask>Verify submit button and Enter key both work</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Clear input after submission">
+        <subtasks>
+          <subtask>Implement input clearing logic after successful submission</subtask>
+          <subtask>Reset input field state after submit</subtask>
+          <subtask>Verify input clears correctly</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Add state management">
+        <subtasks>
+          <subtask>Use React useState for input value state</subtask>
+          <subtask>Manage submission state (loading, success, error)</subtask>
+          <subtask>Ensure proper state updates on submit</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Testing and verification">
+        <subtasks>
+          <subtask>Test component renders correctly</subtask>
+          <subtask>Test multi-line text input works</subtask>
+          <subtask>Test placeholder text displays</subtask>
+          <subtask>Test submit button functionality</subtask>
+          <subtask>Test Enter key submission</subtask>
+          <subtask>Test input clearing after submission</subtask>
+          <subtask>Verify accessibility (keyboard navigation, screen reader)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Text input field is visible and accessible on the main interface</criterion>
+    <criterion id="2">Input field accepts multi-line text for complex problems</criterion>
+    <criterion id="3">Input field has placeholder text that guides students</criterion>
+    <criterion id="4">Submit button or Enter key sends the problem text</criterion>
+    <criterion id="5">Input field clears after submission</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 1: Problem Input - Story 1.1</section>
+        <snippet>Story 1.1: Text Input Interface defines the foundation story for text input functionality. As a student, I want to type my math problem into a text input field, so that I can easily share my homework problem with the AI tutor. Includes 5 acceptance criteria covering visibility, multi-line support, placeholder text, submit functionality, and input clearing.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Epic 1: Problem Input</section>
+        <snippet>Epic 1 components include TextInput component, ImageUpload component, and ProblemPreview component located in `components/problem-input/` directory. TextInput component is the foundation for problem input functionality.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Project Structure</section>
+        <snippet>Problem input components located in `components/problem-input/` directory. TextInput.tsx is the main text input component for Epic 1. Components follow Next.js App Router patterns and use TypeScript for type safety.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture - Socratica">
+        <section>Naming Patterns</section>
+        <snippet>Components use PascalCase matching file name (e.g., `TextInput.tsx` contains `TextInput` component). Files match component name exactly. Functions use camelCase (e.g., `handleSubmit()`). Constants use UPPER_SNAKE_CASE. Types/Interfaces use PascalCase.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document">
+        <section>Goalpost 1: Problem Input</section>
+        <snippet>MVP requirement: Text entry interface for students to input math problems. This is the foundation for problem input functionality, enabling students to share homework problems with the AI tutor.</snippet>
+      </doc>
+      <doc path="docs/stories/0-2-firebase-project-setup.md" title="Story 0.2: Firebase Project Setup">
+        <section>Dev Agent Record - Completion Notes List</section>
+        <snippet>Firebase SDK v12.5.0 installed and configured. Firebase services available at `lib/firebase/` directory. Project structure established with Next.js 16.0.1. TypeScript strict mode enabled, import alias `@/*` configured. Tailwind CSS v4 configured via PostCSS. Build process verified working. Components directory exists but is empty, ready for Epic 1 components.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/app/page.tsx" kind="component" symbol="Home" reason="Main interface page. Currently displays default Next.js template. Needs to be updated to display TextInput component. Follows existing Tailwind CSS styling patterns.">
+        <note>Current page uses Tailwind CSS v4 utility classes. TextInput component should follow similar styling patterns.</note>
+      </file>
+      <file path="socratica/app/globals.css" kind="stylesheet" symbol="globals.css" reason="Global styles with Tailwind CSS v4 imports. Contains theme variables for dark mode support. Use Tailwind utility classes for component styling.">
+      </file>
+      <file path="socratica/components" kind="directory" symbol="components/" reason="React components directory. Exists but is currently empty. TextInput component will be created in `components/problem-input/` subdirectory.">
+        <note>Directory exists from Story 0.1. Problem input subdirectory needs to be created.</note>
+      </file>
+      <file path="socratica/lib/firebase" kind="directory" symbol="lib/firebase/" reason="Firebase configuration directory. Services available but not needed for this story. Firebase infrastructure ready for future stories.">
+        <note>Firebase setup complete from Story 0.2. Not needed for text input functionality yet.</note>
+      </file>
+      <file path="socratica/package.json" kind="manifest" symbol="package.json" reason="Project dependencies. Contains Next.js 16.0.1, React 19.2.0, TypeScript, Tailwind CSS v4, Firebase SDK v12.5.0. All dependencies available for component development.">
+      </file>
+      <file path="socratica/tsconfig.json" kind="config" symbol="tsconfig.json" reason="TypeScript configuration with strict mode enabled and import alias `@/*` configured. Use for component type definitions and imports.">
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework with App Router. Components use Next.js App Router patterns. Client components may need 'use client' directive.">
+        </package>
+        <package name="react" version="19.2.0" reason="React library for UI components. Use React hooks (useState) for component state management.">
+        </package>
+        <package name="react-dom" version="19.2.0" reason="React DOM renderer for client-side rendering.">
+        </package>
+        <package name="typescript" version="^5" reason="TypeScript language for type safety. Strict mode enabled. Use for component type definitions.">
+        </package>
+        <package name="tailwindcss" version="^4" reason="Tailwind CSS v4 for utility-first styling. Use Tailwind utility classes following existing patterns from `app/page.tsx`.">
+        </package>
+        <package name="firebase" version="^12.5.0" reason="Firebase SDK available but not needed for this story. Infrastructure ready for future stories.">
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      <name>Component Structure</name>
+      <description>TextInput component must be created in `components/problem-input/` directory. Component file name must match component name exactly (TextInput.tsx contains TextInput component).</description>
+      <source>docs/architecture.md#Project-Structure</source>
+    </constraint>
+    <constraint type="architecture">
+      <name>Next.js App Router</name>
+      <description>Component must follow Next.js App Router patterns. Client components may need "use client" directive if using React hooks or browser APIs.</description>
+      <source>docs/architecture.md#Project-Structure</source>
+    </constraint>
+    <constraint type="styling">
+      <name>Tailwind CSS v4</name>
+      <description>Use Tailwind CSS v4 utility classes for styling. Follow existing styling patterns from `app/page.tsx`. Use theme variables for dark mode support.</description>
+      <source>docs/stories/0-2-firebase-project-setup.md#Dev-Notes</source>
+    </constraint>
+    <constraint type="accessibility">
+      <name>Accessibility Requirements</name>
+      <description>Component must be accessible: ARIA labels for screen readers, keyboard navigation support, proper semantic HTML. Follow WCAG guidelines for educational platform accessibility.</description>
+      <source>docs/PRD.md#Accessibility-Requirements</source>
+    </constraint>
+    <constraint type="naming">
+      <name>Naming Patterns</name>
+      <description>Follow naming patterns: Components (PascalCase), Files (match component name), Functions (camelCase), Constants (UPPER_SNAKE_CASE), Types/Interfaces (PascalCase).</description>
+      <source>docs/architecture.md#Naming-Patterns</source>
+    </constraint>
+    <constraint type="typescript">
+      <name>TypeScript Strict Mode</name>
+      <description>TypeScript strict mode enabled. Use proper type definitions for component props and state. Import alias `@/*` configured for path resolution.</description>
+      <source>docs/stories/0-2-firebase-project-setup.md#Dev-Notes</source>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="TextInput Component" kind="React component" signature="TextInput component with props interface" path="components/problem-input/TextInput.tsx">
+      <description>React component for text input field. Accepts multi-line text input via textarea element. Includes submit button and Enter key submission. Handles input state and clearing after submission.</description>
+    </interface>
+    <interface name="Main Interface" kind="Next.js page" signature="Home page component that displays TextInput" path="app/page.tsx">
+      <description>Main interface page that integrates TextInput component. Currently displays default Next.js template. Needs to be updated to show TextInput component for problem input.</description>
+    </interface>
+    <interface name="React useState" kind="React hook" signature="useState&lt;string&gt;() for input value state" path="components/problem-input/TextInput.tsx">
+      <description>React useState hook for managing input value state. Use for input field value and submission state (loading, success, error).</description>
+    </interface>
+    <interface name="Submit Handler" kind="function" signature="handleSubmit(event: FormEvent) or handleSubmit()" path="components/problem-input/TextInput.tsx">
+      <description>Handler function for form submission. Handles both submit button click and Enter key press. Clears input after successful submission.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing standards for this story focus on verifying text input component functionality and accessibility. Key verification points include: component renders correctly, multi-line text input works, placeholder text displays, submit button and Enter key both trigger submission, input clears after submission, component is accessible (keyboard navigation, screen reader support). Manual verification is appropriate for this foundational component story. Component testing should follow React testing patterns (React Testing Library recommended for future stories). Accessibility testing should verify ARIA labels, keyboard navigation, and screen reader compatibility.
+    </standards>
+    <locations>
+      <location>Manual verification (no test files yet for component story)</location>
+      <location>Future tests will be co-located with components: `components/problem-input/TextInput.test.tsx`</location>
+      <location>Integration tests: `app/**/*.test.tsx` (for page integration)</location>
+    </locations>
+    <ideas>
+      <test id="ac1" criterion="AC: 1" description="Verify TextInput component is visible: Check component renders in main interface, verify component is accessible (ARIA labels present), verify keyboard navigation works.">
+      </test>
+      <test id="ac2" criterion="AC: 2" description="Verify multi-line text input: Check textarea element used (not input), verify multiple lines can be entered, verify text wraps correctly.">
+      </test>
+      <test id="ac3" criterion="AC: 3" description="Verify placeholder text displays: Check placeholder attribute is set, verify placeholder text guides students appropriately, verify placeholder is visible when input is empty.">
+      </test>
+      <test id="ac4" criterion="AC: 4" description="Verify submit functionality: Check submit button exists and works, verify Enter key triggers submission, verify both methods call same handler function.">
+      </test>
+      <test id="ac5" criterion="AC: 5" description="Verify input clearing: Check input value resets after submission, verify input field is empty after submit, verify state updates correctly.">
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+
