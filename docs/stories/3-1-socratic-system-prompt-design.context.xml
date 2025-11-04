@@ -1,0 +1,119 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.1</storyId>
+    <title>Socratic System Prompt Design</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03 22:50</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-1-socratic-system-prompt-design.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>the AI tutor to ask guiding questions instead of giving direct answers</iWant>
+    <soThat>I learn through discovery rather than just copying solutions</soThat>
+    <tasks>
+      <task id="1" ac="1,2,3,4,5,6">Create Socratic system prompt</task>
+      <task id="2" ac="1,2,3,4,5,6">Integrate Socratic prompt into chat API route</task>
+      <task id="3" ac="1,2,3,4,5,6">Test Socratic prompt behavior</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">System prompt instructs AI to NEVER give direct answers</criterion>
+    <criterion id="2">System prompt emphasizes asking guiding questions</criterion>
+    <criterion id="3">System prompt includes examples of Socratic questioning approach</criterion>
+    <criterion id="4">System prompt defines when hints are appropriate (after 2+ stuck turns)</criterion>
+    <criterion id="5">System prompt maintains encouraging, patient tone</criterion>
+    <criterion id="6">System prompt focuses on algebra problems for MVP</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <file path="docs/epics.md" title="Epic Breakdown" section="Story 3.1: Socratic System Prompt Design">
+        Story defines Socratic prompt requirements: never give direct answers, emphasize guiding questions, include examples, define hint timing (after 2+ stuck turns), maintain encouraging tone, focus on algebra for MVP.
+      </file>
+      <file path="docs/PRD.md" title="Product Requirements Document" section="FR-7: Socratic Questioning Logic">
+        PRD defines core requirement: AI tutor asks guiding questions rather than giving direct answers. System asks guiding questions to help students discover solutions. Never provides direct answers unless student is stuck for 2+ turns.
+      </file>
+      <file path="docs/architecture.md" title="Architecture" section="Epic 3: Socratic Dialogue Logic">
+        Architecture defines Epic 3 patterns: Socratic dialogue logic implementation, system prompt stored in lib/openai/prompts.ts, prompt integrated into chat API route, prompt sent with each API call to OpenAI.
+      </file>
+      <file path="docs/stories/2-3-llm-api-integration.md" title="Story 2.3" section="Dev Notes">
+        Previous story created chat API route and basic OpenAI integration. Route sends system prompt and conversation context to OpenAI API. Ready for Socratic prompt integration.
+      </file>
+      <file path="docs/stories/2-4-conversation-context-management.md" title="Story 2.4" section="Dev Notes">
+        Previous story created conversation context management. Context utilities include system prompt in conversation context via convertMessagesToOpenAIFormat function. Already uses SOCRATIC_MATH_TUTOR_PROMPT from prompts.ts.
+      </file>
+    </docs>
+    <code>
+      <file path="socratica/lib/openai/prompts.ts" kind="utility" symbol="SOCRATIC_MATH_TUTOR_PROMPT" reason="System prompt file already exists with SOCRATIC_MATH_TUTOR_PROMPT constant. Prompt covers most requirements but may need refinement: explicitly state NEVER give direct answers, specify hint timing (after 2+ stuck turns), emphasize algebra focus for MVP. Export constant for use in chat API route.">
+        <note>Prompt exists and is already being used by context.ts. Review against ACs to ensure all requirements met: explicit NEVER statement, hint timing specification, algebra focus.</note>
+      </file>
+      <file path="socratica/lib/openai/context.ts" kind="utility" symbol="convertMessagesToOpenAIFormat" reason="Conversation context management utility. Function already imports and uses SOCRATIC_MATH_TUTOR_PROMPT from prompts.ts. Includes system prompt as first message in OpenAI API format. Prompt is already integrated into conversation context.">
+        <note>Context utility already uses SOCRATIC_MATH_TUTOR_PROMPT. System prompt is included in conversation context automatically. No changes needed unless prompt is updated.</note>
+      </file>
+      <file path="socratica/app/api/chat/route.ts" kind="controller" symbol="POST" reason="Chat API route handles message processing. Route uses prepareConversationContext which includes system prompt. Prompt is already integrated via context.ts. Verify prompt is correctly sent with each API call.">
+        <note>Chat API route uses prepareConversationContext which includes system prompt. Prompt is sent with each API call automatically. May need to verify prompt content meets all ACs.</note>
+      </file>
+      <file path="socratica/lib/openai/client.ts" kind="utility" symbol="openai" reason="OpenAI client instance. Client is used by chat API route to send messages to GPT-4 Turbo model. Client already configured and working.">
+        <note>OpenAI client exists and is used by chat API route. No changes needed for prompt integration.</note>
+      </file>
+      <file path="socratica/lib/openai" kind="directory" symbol="lib/openai/" reason="OpenAI utilities directory. Contains client.ts, prompts.ts, context.ts. Prompt file exists and is already being used.">
+        <note>Directory structure established. prompts.ts file exists with SOCRATIC_MATH_TUTOR_PROMPT. May need refinement to fully meet all ACs.</note>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="openai" version="^6.7.0" reason="OpenAI SDK for API integration. Used in chat API route and OpenAI client utilities."/>
+        <package name="next" version="16.0.1" reason="Next.js framework. Used for API routes."/>
+        <package name="typescript" version="^5" reason="TypeScript compiler. Used for type safety across project."/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>System prompt must explicitly state NEVER give direct answers (not just "ask questions, don't give answers")</constraint>
+    <constraint>System prompt must define hint timing: after 2+ stuck turns (not just "when students are stuck")</constraint>
+    <constraint>System prompt must focus on algebra problems for MVP (currently says "math tutor" - should specify algebra)</constraint>
+    <constraint>System prompt must maintain encouraging, patient tone throughout</constraint>
+    <constraint>Follow existing naming patterns: UPPER_SNAKE_CASE for constants (SOCRATIC_MATH_TUTOR_PROMPT)</constraint>
+    <constraint>Prompt must be exported from lib/openai/prompts.ts for use in context.ts and route.ts</constraint>
+    <constraint>Prompt must be included in conversation context (already handled by context.ts)</constraint>
+    <constraint>Prompt must be sent with each API call to OpenAI (already handled by context.ts)</constraint>
+    <constraint>Use TypeScript strict mode. Prompt constant must have proper type (string)</constraint>
+    <constraint>Testing: Use Vitest framework following existing test patterns in components/chat/__tests__/</constraint>
+    <constraint>Test prompt behavior: verify AI does not give direct answers, asks guiding questions, maintains Socratic approach</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="POST /api/chat" kind="REST endpoint" signature="POST /api/chat - Request: { message: string, conversationHistory: Message[] }, Response: { success: boolean, data: { message: string, messageId: string, timestamp: string }, error: string | null }" path="socratica/app/api/chat/route.ts"/>
+    <interface name="prepareConversationContext" kind="function" signature="prepareConversationContext(messages: Message[], currentMessage: string, maxTokens?: number): OpenAI.Chat.Completions.ChatCompletionMessageParam[]" path="socratica/lib/openai/context.ts"/>
+    <interface name="convertMessagesToOpenAIFormat" kind="function" signature="convertMessagesToOpenAIFormat(messages: Message[], currentMessage: string): OpenAI.Chat.Completions.ChatCompletionMessageParam[]" path="socratica/lib/openai/context.ts"/>
+    <interface name="SOCRATIC_MATH_TUTOR_PROMPT" kind="constant" signature="export const SOCRATIC_MATH_TUTOR_PROMPT: string" path="socratica/lib/openai/prompts.ts"/>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing uses Vitest framework with @testing-library/react for component tests. Tests are co-located with components in __tests__ directories. Acceptance criteria tests verify specific AC requirements. Integration tests verify end-to-end workflows. Tests follow TDD approach: write tests first, then implement code.
+    </standards>
+    <locations>
+      <location>socratica/components/chat/__tests__/</location>
+      <location>socratica/lib/openai/__tests__/</location>
+      <location>socratica/app/api/chat/__tests__/</location>
+    </locations>
+    <ideas>
+      <test idea="AC1" description="Test prompt instructs AI to NEVER give direct answers - send test message asking for answer, verify response contains questions not direct answer"/>
+      <test idea="AC2" description="Test prompt emphasizes asking guiding questions - verify responses contain questions that guide thinking"/>
+      <test idea="AC3" description="Test prompt examples are effective - verify AI uses Socratic questioning approach similar to examples"/>
+      <test idea="AC4" description="Test hint timing defined (after 2+ stuck turns) - verify prompt mentions hint timing, test with simulated stuck scenarios"/>
+      <test idea="AC5" description="Test encouraging, patient tone - verify responses maintain encouraging and patient language throughout"/>
+      <test idea="AC6" description="Test algebra focus for MVP - verify prompt mentions algebra specifically, test with algebra problems"/>
+      <test idea="integration" description="Test prompt integration with chat API route - verify prompt is sent with each API call"/>
+      <test idea="behavior" description="Test Socratic behavior throughout conversation - verify AI maintains Socratic approach across multiple turns"/>
+      <test idea="edge" description="Test edge cases - student asks directly for answer, student shows confusion, student makes progress"/>
+    </ideas>
+  </tests>
+</story-context>
+

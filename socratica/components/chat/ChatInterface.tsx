@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
+import ClearChatButton from "./ClearChatButton";
+import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
 import { ChatInterfaceProps, Message } from "@/types/chat";
 
 // Stable empty array to avoid creating new references on each render
@@ -24,6 +26,7 @@ export default function ChatInterface({
   const [isAIResponding, setIsAIResponding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryMessage, setRetryMessage] = useState<string | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const prevInitialMessagesRef = useRef<Message[]>(stableInitialMessages);
   
   // Determine if this is the initial input (no messages yet)
@@ -139,6 +142,34 @@ export default function ChatInterface({
     }
   };
 
+  // Clear chat functionality
+  const clearChat = () => {
+    // Clear conversation history
+    setMessages([]);
+    // Clear error state and retry message state
+    setError(null);
+    setRetryMessage(null);
+    // Clear loading state
+    setIsAIResponding(false);
+    // Hide confirmation dialog
+    setShowConfirmDialog(false);
+  };
+
+  // Handle clear chat button click
+  const handleClearChatClick = () => {
+    setShowConfirmDialog(true);
+  };
+
+  // Handle confirmation dialog confirmation
+  const handleConfirmClear = () => {
+    clearChat();
+  };
+
+  // Handle confirmation dialog cancellation
+  const handleCancelClear = () => {
+    setShowConfirmDialog(false);
+  };
+
   return (
     <div
       className="flex flex-col rounded-lg border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900"
@@ -146,6 +177,16 @@ export default function ChatInterface({
       aria-label="Chat interface"
     >
       <div className="flex min-h-[400px] max-h-[600px] flex-1 flex-col overflow-hidden sm:min-h-[500px] sm:max-h-[700px]">
+        {/* Header with Clear Chat button */}
+        <div className="flex items-center justify-between border-b border-zinc-300 px-4 py-3 dark:border-zinc-700">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            Chat with Tutor
+          </h2>
+          <ClearChatButton
+            onClick={handleClearChatClick}
+            disabled={isAIResponding || messages.length === 0}
+          />
+        </div>
         <MessageList messages={messages} />
         {/* Loading indicator */}
         {isAIResponding && (
@@ -222,6 +263,12 @@ export default function ChatInterface({
           onOcrTextChange={onOcrTextChange}
         />
       </div>
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={showConfirmDialog}
+        onConfirm={handleConfirmClear}
+        onCancel={handleCancelClear}
+      />
     </div>
   );
 }

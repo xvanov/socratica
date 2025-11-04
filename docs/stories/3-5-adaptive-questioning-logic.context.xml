@@ -1,0 +1,133 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.5</storyId>
+    <title>Adaptive Questioning Logic</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03 23:20</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-5-adaptive-questioning-logic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>the AI tutor to ask questions appropriate to my understanding level</iWant>
+    <soThat>I'm neither overwhelmed nor bored</soThat>
+    <tasks>
+      <task id="1" ac="1,2,3">Create adaptive questioning utility functions</task>
+      <task id="2" ac="1,2,3,4,5">Enhance system prompt for adaptive questioning</task>
+      <task id="3" ac="1,2,3,4,5">Integrate adaptive questioning with response validation</task>
+      <task id="4" ac="1,2,3">Implement understanding level tracking</task>
+      <task id="5" ac="4,5">Implement progressive question building</task>
+      <task id="6" ac="1-5">Testing and verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">AI adjusts question complexity based on student responses</criterion>
+    <criterion id="2">Simplifies questions if student shows confusion</criterion>
+    <criterion id="3">Increases difficulty if student shows strong understanding</criterion>
+    <criterion id="4">Questions build progressively toward solution</criterion>
+    <criterion id="5">Maintains logical sequence in problem-solving approach</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <file path="docs/epics.md" title="Epic Breakdown" section="Story 3.5: Adaptive Questioning Logic">
+        Story defines adaptive questioning requirements: adjust question complexity based on student responses, simplify questions when confused, increase difficulty when strong understanding shown, build questions progressively toward solution, maintain logical sequence.
+      </file>
+      <file path="docs/PRD.md" title="Product Requirements Document" section="FR-17: Personalized Guidance">
+        PRD defines personalized guidance requirement: adapts question complexity based on student responses, personalizes guidance for each student's learning style, tracks student progress and confusion points, adjusts pedagogical approach based on student needs.
+      </file>
+      <file path="docs/architecture.md" title="Architecture" section="Epic 3: Socratic Dialogue Logic">
+        Architecture defines Epic 3 patterns: Socratic dialogue logic implementation, adaptive questioning integrates with response validation and stuck detection, understanding level passed to system prompt or conversation context.
+      </file>
+      <file path="docs/stories/3-4-response-validation-framework.md" title="Story 3.4" section="Dev Notes">
+        Previous story created response validation framework. Response validation evaluates student responses for correctness, recognizes partial progress. Ready for enhancement to use validation results for determining understanding level and adjusting question complexity.
+      </file>
+      <file path="docs/stories/3-3-hint-generation-logic.md" title="Story 3.3" section="Dev Notes">
+        Previous story created hint generation logic. Progressive hint escalation based on stuck duration. Ready for enhancement to integrate with adaptive questioning to adjust hint complexity based on understanding level.
+      </file>
+      <file path="docs/stories/3-2-stuck-detection-logic.md" title="Story 3.2" section="Dev Notes">
+        Previous story created stuck detection logic. Stuck detection analyzes student responses for confusion indicators. Stuck state tracked per problem session. Ready for enhancement to use stuck detection results for understanding level determination.
+      </file>
+    </docs>
+    <code>
+      <file path="socratica/lib/openai/prompts.ts" kind="utility" symbol="SOCRATIC_MATH_TUTOR_PROMPT" reason="Socratic system prompt exists. Prompt includes basic guidance but needs enhancement for adaptive questioning instructions. Need to add instructions for adjusting question complexity based on understanding level, simplifying when confused, increasing difficulty when strong, building questions progressively, maintaining logical sequence.">
+        <note>System prompt exists and includes basic Socratic guidance. Need to enhance with adaptive questioning instructions: adjust complexity based on understanding level (confused/struggling/progressing/strong), simplify when confused, increase difficulty when strong, build questions progressively toward solution, maintain logical sequence. Maintain Socratic approach in all instructions.</note>
+      </file>
+      <file path="socratica/lib/openai/context.ts" kind="utility" symbol="convertMessagesToOpenAIFormat, prepareConversationContext" reason="Conversation context management utilities. Functions include system prompt in conversation context automatically. Ready for enhancement to include understanding level context or enhanced prompt with adaptive questioning instructions based on understanding level.">
+        <note>Context utilities include system prompt automatically. May need to enhance to check understanding level and use enhanced prompt with adaptive questioning instructions based on understanding level. Understanding level determined from response validation and stuck detection.</note>
+      </file>
+      <file path="socratica/app/api/chat/route.ts" kind="controller" symbol="POST" reason="Chat API route handles message processing and OpenAI API calls. Route receives student message and conversation history, prepares context, calls OpenAI API. Ready for enhancement to determine understanding level from response validation and stuck detection, pass understanding level to adaptive questioning functions, adjust system prompt based on understanding level.">
+        <note>Chat API route processes student messages and sends to OpenAI API. Need to integrate adaptive questioning: determine understanding level from response validation (Story 3.4) and stuck detection (Story 3.2), pass understanding level to adaptive questioning functions, adjust system prompt based on understanding level. Enhanced prompt should guide AI to adjust question complexity appropriately.</note>
+      </file>
+      <file path="socratica/lib/openai/response-validation.ts" kind="utility" symbol="response-validation" reason="Response validation utilities from Story 3.4 (ready-for-dev). Utilities evaluate student responses for correctness, recognize partial progress. Ready for integration with adaptive questioning to determine understanding level from validation results.">
+        <note>Response validation utilities should exist from Story 3.4. Need to integrate with adaptive questioning to determine understanding level from validation results. Map validation results (correct/incorrect/partial) to understanding levels (confused/struggling/progressing/strong).</note>
+      </file>
+      <file path="socratica/lib/openai/stuck-detection.ts" kind="utility" symbol="stuck-detection" reason="Stuck detection utilities from Story 3.2 (ready-for-dev). Utilities detect confusion indicators, track stuck state per problem session. Ready for integration with adaptive questioning to determine understanding level from stuck detection results.">
+        <note>Stuck detection utilities should exist from Story 3.2. Need to integrate with adaptive questioning to determine understanding level from stuck detection results. Stuck state indicates confusion, which maps to lower understanding levels.</note>
+      </file>
+      <file path="socratica/lib/openai" kind="directory" symbol="lib/openai/" reason="OpenAI utilities directory. Contains client.ts, prompts.ts, context.ts. Stuck detection and response validation files should exist from previous stories. Adaptive questioning utility file should be created here as adaptive-questioning.ts following existing patterns.">
+        <note>Directory structure established. Create lib/openai/adaptive-questioning.ts following patterns from context.ts, prompts.ts, and other utilities. File should contain understanding level determination functions, question complexity adjustment functions, and progressive question building functions.</note>
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="Message, MessageRole" reason="Chat-related type definitions. Defines Message interface. May need UnderstandingLevel type or extend existing types to include understanding level tracking.">
+        <note>Message interface defined. May need to add UnderstandingLevel type (confused|struggling|progressing|strong) or QuestionComplexity type (simplified|scaffolded|standard|advanced).</note>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="openai" version="^6.7.0" reason="OpenAI SDK for API integration. Used in chat API route and OpenAI client utilities. LLM will be used for semantic understanding level determination and adaptive question generation."/>
+        <package name="next" version="16.0.1" reason="Next.js framework. Used for API routes."/>
+        <package name="typescript" version="^5" reason="TypeScript compiler. Used for type safety across project."/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Adaptive questioning must integrate with response validation from Story 3.4 (prerequisite)</constraint>
+    <constraint>Adaptive questioning must integrate with stuck detection from Story 3.2</constraint>
+    <constraint>Understanding level must be determined from response validation results and stuck detection results</constraint>
+    <constraint>Question complexity must adjust based on understanding level (confused→simplified, struggling→scaffolded, progressing→standard, strong→advanced)</constraint>
+    <constraint>Questions must build progressively toward solution, maintaining logical sequence</constraint>
+    <constraint>Adaptive questioning must maintain Socratic approach - all questions must guide, not give direct answers</constraint>
+    <constraint>Follow existing naming patterns: camelCase for functions, UPPER_SNAKE_CASE for constants, PascalCase for types</constraint>
+    <constraint>Use TypeScript strict mode. All functions must have proper type definitions</constraint>
+    <constraint>File structure: Create lib/openai/adaptive-questioning.ts following patterns from context.ts</constraint>
+    <constraint>Testing: Use Vitest framework following existing test patterns in components/chat/__tests__/</constraint>
+    <constraint>Accessibility: Ensure adaptive questioning doesn't interfere with keyboard navigation or screen readers</constraint>
+    <constraint>Error handling: Handle edge cases gracefully (no understanding level, invalid understanding level, etc.)</constraint>
+    <constraint>Understanding level must be tracked per problem session and reset when starting new problem</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="POST /api/chat" kind="REST endpoint" signature="POST /api/chat - Request: { message: string, conversationHistory: Message[] }, Response: { success: boolean, data: { message: string, messageId: string, timestamp: string }, error: string | null }" path="socratica/app/api/chat/route.ts"/>
+    <interface name="prepareConversationContext" kind="function" signature="prepareConversationContext(messages: Message[], currentMessage: string, maxTokens?: number): OpenAI.Chat.Completions.ChatCompletionMessageParam[]" path="socratica/lib/openai/context.ts"/>
+    <interface name="convertMessagesToOpenAIFormat" kind="function" signature="convertMessagesToOpenAIFormat(messages: Message[], currentMessage: string): OpenAI.Chat.Completions.ChatCompletionMessageParam[]" path="socratica/lib/openai/context.ts"/>
+    <interface name="SOCRATIC_MATH_TUTOR_PROMPT" kind="constant" signature="export const SOCRATIC_MATH_TUTOR_PROMPT: string" path="socratica/lib/openai/prompts.ts"/>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing uses Vitest framework with @testing-library/react for component tests. Tests are co-located with components in __tests__ directories. Acceptance criteria tests verify specific AC requirements. Integration tests verify end-to-end workflows. Tests follow TDD approach: write tests first, then implement code.
+    </standards>
+    <locations>
+      <location>socratica/components/chat/__tests__/</location>
+      <location>socratica/lib/openai/__tests__/</location>
+      <location>socratica/app/api/chat/__tests__/</location>
+    </locations>
+    <ideas>
+      <test idea="AC1" description="Test AI adjusts question complexity based on student responses - test with different understanding levels (confused, struggling, progressing, strong)"/>
+      <test idea="AC2" description="Test simplifies questions if student shows confusion - verify questions become simpler, more guidance provided"/>
+      <test idea="AC3" description="Test increases difficulty if student shows strong understanding - verify questions become more challenging, less scaffolding"/>
+      <test idea="AC4" description="Test questions build progressively toward solution - verify questions build logically toward solution, each question builds on previous"/>
+      <test idea="AC5" description="Test questions maintain logical sequence in problem-solving approach - verify questions follow logical sequence (e.g., understand problem → isolate variable → solve)"/>
+      <test idea="integration" description="Test adaptive questioning integrates with response validation - verify understanding level determined from validation results"/>
+      <test idea="integration2" description="Test adaptive questioning integrates with stuck detection - verify understanding level considers stuck state"/>
+      <test idea="tracking" description="Test understanding level tracking per problem session - verify understanding level tracked correctly, resets when starting new problem"/>
+      <test idea="socratic" description="Test adaptive questioning maintains Socratic approach - verify all questions guide, not give direct answers, even at different complexity levels"/>
+      <test idea="edge" description="Test edge cases - no understanding level, invalid understanding level, no validation results, no stuck detection"/>
+    </ideas>
+  </tests>
+</story-context>
+

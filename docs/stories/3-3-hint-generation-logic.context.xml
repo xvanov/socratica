@@ -1,0 +1,123 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.3</storyId>
+    <title>Hint Generation Logic</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03 23:00</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-3-hint-generation-logic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>helpful hints when I'm stuck</iWant>
+    <soThat>I can make progress without getting direct answers</soThat>
+    <tasks>
+      <task id="1" ac="1,4,5">Create hint generation prompt enhancement</task>
+      <task id="2" ac="1,2,3">Integrate hint generation with stuck detection</task>
+      <task id="3" ac="2,3">Implement progressive hint escalation</task>
+      <task id="4" ac="1,4,5">Update system prompt to support hint generation</task>
+      <task id="5" ac="1-5">Testing and verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">When stuck detected, system prompt instructs AI to provide hints (not answers)</criterion>
+    <criterion id="2">Hints are progressively more revealing (not immediate solutions)</criterion>
+    <criterion id="3">Hints guide student toward next step in solution</criterion>
+    <criterion id="4">Hints maintain Socratic approach (questions within hints)</criterion>
+    <criterion id="5">Hints are algebra-specific and problem-appropriate</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <file path="docs/epics.md" title="Epic Breakdown" section="Story 3.3: Hint Generation Logic">
+        Story defines hint generation requirements: provide hints when stuck detected, progressively more revealing hints, hints guide toward next step, hints maintain Socratic approach, hints are algebra-specific and problem-appropriate.
+      </file>
+      <file path="docs/PRD.md" title="Product Requirements Document" section="FR-9: Hint System">
+        PRD defines hint system requirement: provides hints (not direct answers) after 2+ turns stuck, hints are progressive (more specific if still stuck), hints are pedagogically sound and encourage discovery.
+      </file>
+      <file path="docs/architecture.md" title="Architecture" section="Epic 3: Socratic Dialogue Logic">
+        Architecture defines Epic 3 patterns: Socratic dialogue logic implementation, hint generation integrates with stuck detection and system prompt, hint instructions included in conversation context.
+      </file>
+      <file path="docs/stories/3-2-stuck-detection-logic.md" title="Story 3.2" section="Dev Notes">
+        Previous story created stuck detection utilities. Stuck detection flags student as stuck after 2 consecutive confused responses. Stuck state tracked per problem session. Stuck state passed to OpenAI API. Ready for hint generation integration.
+      </file>
+      <file path="docs/stories/3-1-socratic-system-prompt-design.md" title="Story 3.1" section="Dev Notes">
+        Previous story created Socratic system prompt. Prompt defines when hints are appropriate (after 2+ stuck turns). Prompt maintains encouraging, patient tone. Prompt focuses on algebra problems for MVP. Ready for hint generation enhancement.
+      </file>
+    </docs>
+    <code>
+      <file path="socratica/lib/openai/prompts.ts" kind="utility" symbol="SOCRATIC_MATH_TUTOR_PROMPT" reason="Socratic system prompt exists. Prompt defines when hints are appropriate (after 2+ stuck turns) but needs enhancement for hint generation instructions. Need to add hint generation prompt function that enhances base prompt when stuck detected. Function should specify progressive hint escalation levels.">
+        <note>System prompt exists and defines hint timing. Need to enhance with explicit hint generation instructions: hints are questions, hints are progressive, hints guide toward next step, hints are algebra-specific. May create separate hint prompt function or enhance existing prompt.</note>
+      </file>
+      <file path="socratica/lib/openai/context.ts" kind="utility" symbol="convertMessagesToOpenAIFormat, prepareConversationContext" reason="Conversation context management utilities. Function convertMessagesToOpenAIFormat includes system prompt in conversation context. Function prepareConversationContext prepares full context for API. Ready for enhancement to use enhanced prompt when stuck detected.">
+        <note>Context utilities include system prompt automatically. Need to enhance to check stuck state and use hint-enhanced prompt when stuck detected. May need to modify convertMessagesToOpenAIFormat to accept optional hint level parameter.</note>
+      </file>
+      <file path="socratica/app/api/chat/route.ts" kind="controller" symbol="POST" reason="Chat API route handles message processing. Route uses prepareConversationContext which includes system prompt. Route receives conversationHistory and message. Ready for enhancement to check stuck state and use hint-enhanced prompt.">
+        <note>Chat API route processes messages and calls OpenAI API. Need to integrate stuck detection check (from Story 3.2) and pass stuck state/hint level to prompt generation. Enhanced prompt should be used when stuck detected.</note>
+      </file>
+      <file path="socratica/lib/openai/stuck-detection.ts" kind="utility" symbol="stuck-detection" reason="Stuck detection utilities from Story 3.2 (ready-for-dev). Utilities detect confusion, track consecutive confused responses, flag student as stuck after 2 consecutive confused responses. Ready for integration with hint generation to determine hint level.">
+        <note>Stuck detection utilities should exist from Story 3.2. Need to integrate with hint generation to determine hint level based on consecutive stuck turns. Hint level escalation: 2-3 turns = level 1, 4-5 turns = level 2, 6+ turns = level 3.</note>
+      </file>
+      <file path="socratica/lib/openai" kind="directory" symbol="lib/openai/" reason="OpenAI utilities directory. Contains client.ts, prompts.ts, context.ts. Stuck detection file should exist from Story 3.2. Hint generation utilities should be created in prompts.ts or separate file following existing patterns.">
+        <note>Directory structure established. Enhance prompts.ts with hint generation functions or create separate hints.ts file. Follow patterns from existing utilities.</note>
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="Message, MessageRole" reason="Chat-related type definitions. Defines Message interface. May need HintLevel type or extend existing types to include hint level tracking.">
+        <note>Message interface defined. May need to add HintLevel type (1, 2, 3) or extend StuckState type from Story 3.2 to include hint level.</note>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="openai" version="^6.7.0" reason="OpenAI SDK for API integration. Used in chat API route and OpenAI client utilities."/>
+        <package name="next" version="16.0.1" reason="Next.js framework. Used for API routes."/>
+        <package name="typescript" version="^5" reason="TypeScript compiler. Used for type safety across project."/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Hint generation must integrate with stuck detection from Story 3.2 (prerequisite)</constraint>
+    <constraint>Hints must be progressively more revealing based on consecutive stuck turns (level 1: 2-3 turns, level 2: 4-5 turns, level 3: 6+ turns)</constraint>
+    <constraint>Hints must maintain Socratic approach - hints are questions, not direct answers</constraint>
+    <constraint>Hints must guide student toward next step in solution, not give away solution</constraint>
+    <constraint>Hints must be algebra-specific and problem-appropriate</constraint>
+    <constraint>Hint level must reset when student makes progress (provides correct step or shows understanding)</constraint>
+    <constraint>Follow existing naming patterns: camelCase for functions, UPPER_SNAKE_CASE for constants, PascalCase for types</constraint>
+    <constraint>Use TypeScript strict mode. All functions must have proper type definitions</constraint>
+    <constraint>File structure: Enhance lib/openai/prompts.ts or create lib/openai/hints.ts following patterns from context.ts</constraint>
+    <constraint>Testing: Use Vitest framework following existing test patterns in components/chat/__tests__/</constraint>
+    <constraint>Accessibility: Ensure hint generation doesn't interfere with keyboard navigation or screen readers</constraint>
+    <constraint>Error handling: Handle edge cases gracefully (no stuck state, invalid hint level, etc.)</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="POST /api/chat" kind="REST endpoint" signature="POST /api/chat - Request: { message: string, conversationHistory: Message[] }, Response: { success: boolean, data: { message: string, messageId: string, timestamp: string }, error: string | null }" path="socratica/app/api/chat/route.ts"/>
+    <interface name="prepareConversationContext" kind="function" signature="prepareConversationContext(messages: Message[], currentMessage: string, maxTokens?: number): OpenAI.Chat.Completions.ChatCompletionMessageParam[]" path="socratica/lib/openai/context.ts"/>
+    <interface name="convertMessagesToOpenAIFormat" kind="function" signature="convertMessagesToOpenAIFormat(messages: Message[], currentMessage: string): OpenAI.Chat.Completions.ChatCompletionMessageParam[]" path="socratica/lib/openai/context.ts"/>
+    <interface name="SOCRATIC_MATH_TUTOR_PROMPT" kind="constant" signature="export const SOCRATIC_MATH_TUTOR_PROMPT: string" path="socratica/lib/openai/prompts.ts"/>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing uses Vitest framework with @testing-library/react for component tests. Tests are co-located with components in __tests__ directories. Acceptance criteria tests verify specific AC requirements. Integration tests verify end-to-end workflows. Tests follow TDD approach: write tests first, then implement code.
+    </standards>
+    <locations>
+      <location>socratica/components/chat/__tests__/</location>
+      <location>socratica/lib/openai/__tests__/</location>
+      <location>socratica/app/api/chat/__tests__/</location>
+    </locations>
+    <ideas>
+      <test idea="AC1" description="Test hint generation when stuck detected - simulate stuck state and verify enhanced prompt includes hint instructions"/>
+      <test idea="AC2" description="Test progressive hint escalation - test level 1 (2-3 turns), level 2 (4-5 turns), level 3 (6+ turns) hints are progressively more revealing"/>
+      <test idea="AC3" description="Test hints guide toward next step - verify hints guide student toward next step in solution without giving away solution"/>
+      <test idea="AC4" description="Test hints maintain Socratic approach - verify hints are questions, not direct answers, even at highest hint level"/>
+      <test idea="AC5" description="Test hints are algebra-specific - verify hints are appropriate for algebra problems, not generic math hints"/>
+      <test idea="integration" description="Test hint generation integrates with stuck detection - verify hint level based on consecutive stuck turns"/>
+      <test idea="reset" description="Test hint level resets when student makes progress - verify hint level resets after correct step or showing understanding"/>
+      <test idea="edge" description="Test edge cases - no stuck state, invalid hint level, hint level exceeds maximum"/>
+    </ideas>
+  </tests>
+</story-context>
+

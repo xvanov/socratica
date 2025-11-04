@@ -199,6 +199,46 @@ describe('Chat API Route', () => {
       expect(callArgs.messages[3]).toEqual({ role: 'user', content: 'I need help' });
       expect(callArgs.messages[4]).toEqual({ role: 'user', content: 'Solve for x: 2x + 5 = 13' });
     });
+
+    it('should truncate conversation history when context window exceeded', async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: 'I can help you with that.',
+            },
+          },
+        ],
+      };
+
+      (openai.chat.completions.create as any).mockResolvedValueOnce(mockResponse);
+
+      // Create many messages that will exceed context window
+      const conversationHistory: Message[] = [];
+      for (let i = 0; i < 100; i++) {
+        conversationHistory.push(
+          createMessage('student', `Message ${i}: ${'a'.repeat(100)}`)
+        );
+        conversationHistory.push(
+          createMessage('tutor', `Response ${i}: ${'b'.repeat(100)}`)
+        );
+      }
+
+      const request = createMockRequest({
+        message: 'Current message',
+        conversationHistory,
+      });
+
+      await POST(request);
+
+      const callArgs = (openai.chat.completions.create as any).mock.calls[0][0];
+      // Should truncate to fit within context window
+      expect(callArgs.messages.length).toBeLessThan(conversationHistory.length + 2);
+      // System prompt should always be preserved
+      expect(callArgs.messages[0].role).toBe('system');
+      // Most recent messages should be preserved
+      expect(callArgs.messages[callArgs.messages.length - 1].content).toBe('Current message');
+    });
   });
 
   describe('AC3: Receives and displays AI response in chat', () => {

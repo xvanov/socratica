@@ -1,4 +1,4 @@
-# generated: 2025-11-03 15:59
+# generated: 2025-11-03 23:20
 # project: socratica
 # project_key: socratica
 # tracking_system: file-system
@@ -29,7 +29,7 @@
 # - SM typically drafts next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
 
-generated: 2025-11-03 15:59
+generated: 2025-11-03 23:20
 project: socratica
 project_key: socratica
 tracking_system: file-system
@@ -50,25 +50,25 @@ development_status:
 
   # Epic 2: Chat Interface & LLM Integration
   epic-2: backlog
-  2-1-basic-chat-ui-layout: review
-  2-2-message-sending-and-display: review
-  2-3-llm-api-integration: review
-  2-4-conversation-context-management: ready-for-dev
-  2-5-session-management: ready-for-dev
-  epic-2-retrospective: optional
+  2-1-basic-chat-ui-layout: done
+  2-2-message-sending-and-display: done
+  2-3-llm-api-integration: done
+  2-4-conversation-context-management: done
+  2-5-session-management: done
+  epic-2-retrospective: completed
 
   # Epic 3: Socratic Dialogue Logic
   epic-3: backlog
-  3-1-socratic-system-prompt-design: backlog
-  3-2-stuck-detection-logic: backlog
-  3-3-hint-generation-logic: backlog
-  3-4-response-validation-framework: backlog
-  3-5-adaptive-questioning-logic: backlog
+  3-1-socratic-system-prompt-design: done
+  3-2-stuck-detection-logic: ready-for-dev
+  3-3-hint-generation-logic: ready-for-dev
+  3-4-response-validation-framework: ready-for-dev
+  3-5-adaptive-questioning-logic: ready-for-dev
   epic-3-retrospective: optional
 
   # Epic 4: Math Rendering
   epic-4: backlog
-  4-1-latex-rendering-library-integration: backlog
+  4-1-latex-rendering-library-integration: drafted
   4-2-math-rendering-in-chat-messages: backlog
   4-3-math-rendering-in-problem-input: backlog
   4-4-advanced-math-notation-support: backlog
@@ -137,4 +137,3 @@ development_status:
   11-4-problem-set-generation: backlog
   11-5-adaptive-problem-generation: backlog
   epic-11-retrospective: optional
-

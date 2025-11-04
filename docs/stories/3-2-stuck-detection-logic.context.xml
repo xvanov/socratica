@@ -1,0 +1,121 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.2</storyId>
+    <title>Stuck Detection Logic</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03 22:45</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-2-stuck-detection-logic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>the AI tutor to recognize when I'm stuck</iWant>
+    <soThat>I can receive helpful hints when I need them most</soThat>
+    <tasks>
+      <task id="1" ac="1,2,3,4">Create stuck detection utility functions</task>
+      <task id="2" ac="1,5">Integrate stuck detection into conversation context</task>
+      <task id="3" ac="1,2,3,4">Update chat API route to use stuck detection</task>
+      <task id="4" ac="5">Update ChatInterface to track stuck state</task>
+      <task id="5" ac="1-5">Testing and verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Tracks number of consecutive responses indicating confusion</criterion>
+    <criterion id="2">Detects patterns: "I don't know", "I'm stuck", repeated questions</criterion>
+    <criterion id="3">Flags student as "stuck" after 2 consecutive confused responses</criterion>
+    <criterion id="4">Logic considers response content, not just length</criterion>
+    <criterion id="5">Stuck state is tracked per problem session</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <file path="docs/epics.md" title="Epic Breakdown" section="Story 3.2: Stuck Detection Logic">
+        Story defines stuck detection requirements: tracks consecutive confused responses, detects confusion patterns, flags stuck after 2 consecutive confused responses, considers response content, tracks per problem session.
+      </file>
+      <file path="docs/PRD.md" title="Product Requirements Document" section="FR-9: Hint System">
+        PRD defines hint system requirement: tracks number of turns student has been stuck, provides hints after 2+ turns stuck, hints are progressive and pedagogically sound.
+      </file>
+      <file path="docs/architecture.md" title="Architecture" section="Epic 3: Socratic Dialogue Logic">
+        Architecture defines Epic 3 patterns: Socratic dialogue logic implementation, stuck detection integration with conversation context, system prompt integration for hint generation.
+      </file>
+      <file path="docs/stories/3-1-socratic-system-prompt-design.md" title="Story 3.1" section="Dev Notes">
+        Previous story created Socratic system prompt in prompts.ts. Prompt defines when hints are appropriate (after 2+ stuck turns). Ready for stuck detection integration.
+      </file>
+      <file path="docs/stories/2-4-conversation-context-management.md" title="Story 2.4" section="Dev Notes">
+        Previous story created conversation context management utilities. Context utilities handle Message[] conversion and context window management. Ready for stuck state integration.
+      </file>
+    </docs>
+    <code>
+      <file path="socratica/lib/openai/prompts.ts" kind="utility" symbol="SOCRATIC_MATH_TUTOR_PROMPT" reason="Socratic system prompt defines hint timing (after 2+ stuck turns). Prompt structure ready for stuck detection integration. Exports SOCRATIC_MATH_TUTOR_PROMPT constant for use in chat API route.">
+        <note>System prompt defines when hints are appropriate (after 2+ stuck turns). Stuck detection logic will determine when student is stuck and pass this information to prompt or API context.</note>
+      </file>
+      <file path="socratica/lib/openai/context.ts" kind="utility" symbol="prepareConversationContext, convertMessagesToOpenAIFormat, truncateContextWindow" reason="Conversation context management utilities. Functions handle Message[] conversion to OpenAI format and context window management. Ready for stuck state integration into conversation context.">
+        <note>Context utilities convert Message[] to OpenAI format. Stuck state should be tracked alongside conversation history and passed to OpenAI API via system prompt or context metadata.</note>
+      </file>
+      <file path="socratica/app/api/chat/route.ts" kind="controller" symbol="POST" reason="Chat API route handles message processing and OpenAI API calls. Route receives conversationHistory and message, prepares context, calls OpenAI API. Ready for stuck detection integration before API call.">
+        <note>Chat API route processes student messages and conversation history. Stuck detection logic should analyze student responses before calling OpenAI API, and pass stuck state to API for hint generation.</note>
+      </file>
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" reason="Main chat interface component. Manages message state with useState, maintains conversation history array, sends messages to chat API route. Ready for stuck state tracking integration.">
+        <note>ChatInterface maintains conversation history and sends to API. Stuck state should be tracked in component state and reset when student makes progress or starts new problem.</note>
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="Message, MessageRole" reason="Chat-related type definitions. Defines Message interface with role (student | tutor), content (string), timestamp. Ready for StuckState type addition.">
+        <note>Message interface defined. Should add StuckState interface or extend Message interface to include stuck state tracking.</note>
+      </file>
+      <file path="socratica/lib/openai" kind="directory" symbol="lib/openai/" reason="OpenAI utilities directory. Contains client.ts, prompts.ts, context.ts. Stuck detection utility file should be created here as stuck-detection.ts following existing patterns.">
+        <note>Directory structure established. Create lib/openai/stuck-detection.ts following patterns from context.ts and prompts.ts.</note>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="openai" version="^6.7.0" reason="OpenAI SDK for API integration. Used in chat API route and OpenAI client utilities."/>
+        <package name="next" version="16.0.1" reason="Next.js framework. Used for API routes and React components."/>
+        <package name="react" version="19.2.0" reason="React library. Used for ChatInterface component and state management."/>
+        <package name="typescript" version="^5" reason="TypeScript compiler. Used for type safety across project."/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Stuck detection logic must analyze response content semantically, not just length</constraint>
+    <constraint>Stuck state must be tracked per problem session, reset when student makes progress</constraint>
+    <constraint>Stuck detection must integrate with existing conversation context management from Story 2.4</constraint>
+    <constraint>Stuck state must be passed to OpenAI API for hint generation (after 2+ stuck turns)</constraint>
+    <constraint>Follow existing naming patterns: camelCase for functions, UPPER_SNAKE_CASE for constants, PascalCase for types</constraint>
+    <constraint>Use TypeScript strict mode. All functions must have proper type definitions</constraint>
+    <constraint>File structure: Create lib/openai/stuck-detection.ts following patterns from context.ts</constraint>
+    <constraint>Testing: Use Vitest framework following existing test patterns in components/chat/__tests__/</constraint>
+    <constraint>Accessibility: Ensure stuck detection doesn't interfere with keyboard navigation or screen readers</constraint>
+    <constraint>Error handling: Handle edge cases gracefully (empty responses, invalid input, etc.)</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="POST /api/chat" kind="REST endpoint" signature="POST /api/chat - Request: { message: string, conversationHistory: Message[] }, Response: { success: boolean, data: { message: string, messageId: string, timestamp: string }, error: string | null }" path="socratica/app/api/chat/route.ts"/>
+    <interface name="prepareConversationContext" kind="function" signature="prepareConversationContext(messages: Message[], currentMessage: string, maxTokens?: number): OpenAI.Chat.Completions.ChatCompletionMessageParam[]" path="socratica/lib/openai/context.ts"/>
+    <interface name="Message" kind="TypeScript interface" signature="interface Message { role: MessageRole; content: string; timestamp: Date | string; }" path="socratica/types/chat.ts"/>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing uses Vitest framework with @testing-library/react for component tests. Tests are co-located with components in __tests__ directories. Acceptance criteria tests verify specific AC requirements. Integration tests verify end-to-end workflows. Tests follow TDD approach: write tests first, then implement code.
+    </standards>
+    <locations>
+      <location>socratica/components/chat/__tests__/</location>
+      <location>socratica/lib/openai/__tests__/</location>
+      <location>socratica/app/api/chat/__tests__/</location>
+    </locations>
+    <ideas>
+      <test idea="AC1" description="Test tracks consecutive confused responses - simulate 2 confused responses and verify count increments"/>
+      <test idea="AC2" description="Test detects confusion patterns - test with 'I don't know', 'I'm stuck', repeated questions"/>
+      <test idea="AC3" description="Test flags stuck after 2 consecutive confused responses - verify stuck flag set after 2nd confused response"/>
+      <test idea="AC4" description="Test considers response content not just length - test with long but confused response vs short but clear response"/>
+      <test idea="AC5" description="Test stuck state tracked per session - verify stuck state persists during session, resets on new problem"/>
+      <test idea="integration" description="Test stuck detection integrates with chat API route - verify stuck state passed to OpenAI API"/>
+      <test idea="reset" description="Test stuck state resets when student makes progress - verify reset after correct response"/>
+      <test idea="edge" description="Test edge cases - empty responses, very short responses, off-topic responses"/>
+    </ideas>
+  </tests>
+</story-context>
+

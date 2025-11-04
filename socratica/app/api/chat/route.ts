@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai } from "@/lib/openai/client";
-import { SOCRATIC_MATH_TUTOR_PROMPT } from "@/lib/openai/prompts";
+import { prepareConversationContext } from "@/lib/openai/context";
 import { Message } from "@/types/chat";
 import OpenAI from "openai";
 
@@ -53,37 +53,6 @@ async function retryWithBackoff<T>(
   throw lastError;
 }
 
-/**
- * Convert Message[] from chat format to OpenAI API format
- * student -> user, tutor -> assistant
- */
-function convertMessagesToOpenAIFormat(
-  messages: Message[],
-  currentMessage: string
-): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
-  const openAIMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-    {
-      role: "system",
-      content: SOCRATIC_MATH_TUTOR_PROMPT,
-    },
-  ];
-
-  // Convert conversation history
-  for (const message of messages) {
-    openAIMessages.push({
-      role: message.role === "student" ? "user" : "assistant",
-      content: message.content,
-    });
-  }
-
-  // Add current message
-  openAIMessages.push({
-    role: "user",
-    content: currentMessage,
-  });
-
-  return openAIMessages;
-}
 
 /**
  * POST /api/chat
@@ -130,8 +99,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert messages to OpenAI format
-    const openAIMessages = convertMessagesToOpenAIFormat(
+    // Convert messages to OpenAI format and manage context window
+    const openAIMessages = prepareConversationContext(
       conversationHistory,
       message
     );
