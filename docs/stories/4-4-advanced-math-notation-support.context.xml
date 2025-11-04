@@ -1,0 +1,196 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4</storyId>
+    <title>Advanced Math Notation Support</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/4-4-advanced-math-notation-support.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>to see complex mathematical expressions rendered correctly</iWant>
+    <soThat>I can work with advanced algebra problems</soThat>
+    <tasks>
+      <task id="1" ac="1-4">Extend KaTeX configuration for advanced notation support</task>
+      <task id="2" ac="1">Create matrix notation rendering support</task>
+      <task id="3" ac="2">Create summation and product notation rendering support</task>
+      <task id="4" ac="3">Create integrals and derivatives notation rendering support</task>
+      <task id="5" ac="4">Verify Greek letters and special symbols support</task>
+      <task id="6" ac="5">Implement nested expression handling</task>
+      <task id="7" ac="6">Enhance error handling for malformed LaTeX</task>
+      <task id="8" ac="1-6">Integration testing and verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Supports matrix notation</criterion>
+    <criterion id="2">Supports summation and product notation</criterion>
+    <criterion id="3">Supports integrals and derivatives notation</criterion>
+    <criterion id="4">Supports Greek letters and special symbols</criterion>
+    <criterion id="5">Handles nested expressions correctly</criterion>
+    <criterion id="6">Error handling for malformed LaTeX with fallback display</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" section="Epic 4: Math Rendering - Story 4.4" snippet="Story 4.4 acceptance criteria: Supports matrix notation, summation/product notation, integrals/derivatives, Greek letters and special symbols, nested expressions, error handling for malformed LaTeX." />
+      <doc path="docs/architecture.md" section="ADR-005: KaTeX for Math Rendering" snippet="Decision to use KaTeX instead of MathJax for faster rendering, smaller bundle size, and sufficient algebra support. KaTeX provides react-katex package for React integration and supports advanced notation by default." />
+      <doc path="docs/architecture.md" section="Epic 4: Math Rendering" snippet="Math renderer components stored in components/math-renderer/ directory. MathDisplay component for inline math, MathBlock component for block math. KaTeX CSS imported in root layout." />
+      <doc path="docs/architecture.md" section="Integration Points" snippet="Frontend ↔ Math Rendering: components/math-renderer/MathDisplay.tsx → KaTeX library. Client-side only (dynamic imports for SSR). Advanced notation works with existing MessageContent component." />
+      <doc path="docs/PRD.md" section="FR-5" snippet="Math rendering requirements for displaying mathematical equations and notation correctly. Supports complex equations including matrices, integrals, derivatives, and special symbols." />
+      <doc path="docs/stories/4-1-latex-rendering-library-integration.md" section="Dev Notes" snippet="MathDisplay and MathBlock components provide foundation for math rendering. KaTeX configuration in lib/math-renderer/katex-config.ts should be reviewed/extended for advanced notation support. KaTeX supports advanced notation by default." />
+      <doc path="docs/stories/4-2-math-rendering-in-chat-messages.md" section="Dev Notes" snippet="MessageContent component handles parsing and rendering of mixed text/math content. LaTeX parser utility extracts math expressions from text. These components should be extended to support advanced notation without breaking existing functionality." />
+      <doc path="docs/test-specifications.md" section="Test Strategy Overview" snippet="Test pyramid: Unit tests (40%), Component tests (30%), Integration tests (20%), E2E tests (10%). Tests verify acceptance criteria, are meaningful and simple. Tests are co-located with components in __tests__ directories." />
+    </docs>
+    <code>
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" lines="51" reason="Component that displays chat messages. Currently renders plain text content. Uses MessageContent component from Story 4.2 for math rendering. Advanced notation will work through MessageContent component." />
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="19-284" reason="Main chat interface component that manages message state and integrates MessageList. Used for integration testing of advanced notation rendering in chat context." />
+      <file path="socratica/types/chat.ts" kind="type" symbol="Message" lines="8-12" reason="Message interface defines structure: role (student/tutor), content (string), timestamp. Content field will contain advanced LaTeX syntax (matrices, sums, integrals) that needs to be parsed and rendered." />
+      <file path="socratica/components/math-renderer/MessageContent.tsx" kind="component" symbol="MessageContent" note="To be created in Story 4.2" reason="Component that parses message content and renders mixed text/math. Should handle advanced notation syntax (matrices, sums, integrals) correctly. May need minor updates for advanced notation support." />
+      <file path="socratica/components/math-renderer/MathDisplay.tsx" kind="component" symbol="MathDisplay" note="To be created in Story 4.1" reason="Component for rendering inline math expressions. Should handle advanced notation through KaTeX's built-in support. May need error handling enhancements for malformed LaTeX." />
+      <file path="socratica/components/math-renderer/MathBlock.tsx" kind="component" symbol="MathBlock" note="To be created in Story 4.1" reason="Component for rendering block math expressions. Should handle advanced notation through KaTeX's built-in support. May need error handling enhancements for malformed LaTeX." />
+      <file path="socratica/lib/math-renderer/katex-config.ts" kind="utility" symbol="KaTeX Configuration" note="To be created in Story 4.1" reason="KaTeX configuration file that exports configuration options. Should be reviewed/extended for advanced notation support. May need custom macros for specific algebra notation. Must set throwOnError: false for graceful fallback." />
+      <file path="socratica/lib/math-renderer/latex-parser.ts" kind="utility" symbol="parseLaTeX" note="To be created in Story 4.2" reason="LaTeX parser utility that extracts math expressions from text. Should handle advanced notation syntax (matrices, sums, integrals) correctly. May need minor updates for advanced notation parsing." />
+      <file path="socratica/components/chat/__tests__/Message.test.tsx" kind="test" symbol="Message Component Tests" reason="Existing test file for Message component. Tests message rendering, role-based styling, accessibility. Can be extended to test advanced notation rendering integration." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="next" version="16.0.1" />
+        <package name="typescript" version="^5" />
+        <package name="tailwindcss" version="^4" />
+        <package name="vitest" version="^1.1.0" />
+        <package name="@testing-library/react" version="^15.0.0" />
+        <package name="@testing-library/jest-dom" version="^6.1.5" />
+        <package name="katex" note="To be installed in Story 4.1" />
+        <package name="react-katex" note="To be installed in Story 4.1" />
+        <package name="@types/katex" note="To be installed in Story 4.1" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="pattern">Components must follow PascalCase naming matching file name (e.g., MessageContent.tsx contains MessageContent component)</constraint>
+    <constraint type="pattern">Files must match component name exactly</constraint>
+    <constraint type="pattern">Functions use camelCase (e.g., parseAdvancedNotation(), handleMatrixRendering())</constraint>
+    <constraint type="pattern">Constants use UPPER_SNAKE_CASE (e.g., MATRIX_PATTERN, SUM_PATTERN)</constraint>
+    <constraint type="pattern">Types/Interfaces use PascalCase (e.g., MatrixNotation, AdvancedNotationProps)</constraint>
+    <constraint type="location">Advanced notation tests must be created in components/math-renderer/__tests__/ directory</constraint>
+    <constraint type="location">Advanced notation utility tests must be created in lib/math-renderer/__tests__/ directory</constraint>
+    <constraint type="integration">Must reuse MessageContent component from Story 4.2 (extend without breaking changes)</constraint>
+    <constraint type="integration">Must reuse MathDisplay and MathBlock components from Story 4.1</constraint>
+    <constraint type="integration">Must reuse LaTeX parser utility from Story 4.2 (may need minor updates)</constraint>
+    <constraint type="integration">Must reuse KaTeX configuration from Story 4.1 (may need review/extension)</constraint>
+    <constraint type="styling">Must preserve existing message styling: role-based colors (blue for student, gray for tutor), alignment (student right, tutor left)</constraint>
+    <constraint type="styling">Must maintain responsive design and Tailwind CSS patterns</constraint>
+    <constraint type="styling">Advanced notation must not break message layout</constraint>
+    <constraint type="accessibility">Math content must be accessible to screen readers with ARIA labels</constraint>
+    <constraint type="accessibility">Must support keyboard navigation</constraint>
+    <constraint type="error-handling">Malformed LaTeX expressions must fallback gracefully without breaking message rendering</constraint>
+    <constraint type="error-handling">KaTeX throwOnError: false ensures graceful fallback</constraint>
+    <constraint type="error-handling">Errors should be logged to console (dev) or Firebase Analytics (prod)</constraint>
+    <constraint type="error-handling">Message rendering must continue even when math expression fails</constraint>
+    <constraint type="testing">Tests must be co-located with components in __tests__ directories</constraint>
+    <constraint type="testing">Tests must verify acceptance criteria, not just coverage</constraint>
+    <constraint type="testing">Must include unit tests for advanced notation parsing and rendering</constraint>
+    <constraint type="testing">Must include component tests for MessageContent with advanced notation</constraint>
+    <constraint type="testing">Must include integration tests with Message component and ChatInterface</constraint>
+    <constraint type="performance">Advanced notation rendering must not significantly slow down message rendering</constraint>
+    <constraint type="compatibility">Advanced notation must work in Chrome, Firefox, Safari, Edge</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Message" kind="TypeScript interface" signature="interface Message { role: MessageRole; content: string; timestamp: Date | string; }" path="socratica/types/chat.ts" />
+    <interface name="MessageContent" kind="React component" signature="Component to render mixed text and math content. Props: content (string), className (optional). Uses parseLaTeX and MathDisplay/MathBlock components. Should handle advanced notation syntax." path="socratica/components/math-renderer/MessageContent.tsx" note="To be created in Story 4.2" />
+    <interface name="MathDisplay" kind="React component" signature="Component from Story 4.1: renders inline math expressions ($...$). Should handle advanced notation through KaTeX. Props: expression (string), className (optional)." path="socratica/components/math-renderer/MathDisplay.tsx" note="To be created in Story 4.1" />
+    <interface name="MathBlock" kind="React component" signature="Component from Story 4.1: renders block math expressions ($$...$$). Should handle advanced notation through KaTeX. Props: expression (string), className (optional)." path="socratica/components/math-renderer/MathBlock.tsx" note="To be created in Story 4.1" />
+    <interface name="parseLaTeX" kind="function" signature="Expected function to parse LaTeX syntax from text content. Returns parsed segments (text + math expressions). Should handle advanced notation syntax (matrices, sums, integrals) correctly." path="socratica/lib/math-renderer/latex-parser.ts" note="To be created in Story 4.2" />
+    <interface name="KaTeX Config" kind="configuration object" signature="KaTeX configuration options. Should include throwOnError: false, errorColor, and any custom macros for advanced algebra notation." path="socratica/lib/math-renderer/katex-config.ts" note="To be created in Story 4.1" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing follows TDD principles with Vitest framework. Tests are co-located with components in __tests__ directories. Component tests use @testing-library/react for rendering and assertions. Tests verify acceptance criteria, not just coverage. Test pyramid: Unit tests (40%), Component tests (30%), Integration tests (20%), E2E tests (10%). Tests must be fast, independent, and meaningful. Accessibility testing includes screen reader compatibility and keyboard navigation. Performance testing verifies advanced notation doesn't significantly slow rendering.
+    </standards>
+    <locations>
+      <location>socratica/components/math-renderer/__tests__/</location>
+      <location>socratica/lib/math-renderer/__tests__/</location>
+      <location>socratica/components/chat/__tests__/</location>
+    </locations>
+    <ideas>
+      <idea ac="1">Test matrix notation renders correctly: 2x2 matrix $\begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}$</idea>
+      <idea ac="1">Test matrix notation renders correctly: 3x3 matrix $\begin{bmatrix} 1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \end{bmatrix}$</idea>
+      <idea ac="1">Test column vector renders correctly: $\begin{pmatrix} x \\ y \\ z \end{pmatrix}$</idea>
+      <idea ac="1">Test row vector renders correctly: $\begin{pmatrix} a &amp; b &amp; c \end{pmatrix}$</idea>
+      <idea ac="1">Test matrix rendering in inline math ($...$)</idea>
+      <idea ac="1">Test matrix rendering in block math ($$...$$)</idea>
+      <idea ac="1">Test nested matrices (matrices within matrices)</idea>
+      <idea ac="2">Test summation notation renders correctly: $\sum_{i=1}^{n} x_i$</idea>
+      <idea ac="2">Test nested summation: $\sum_{i=1}^{n} \sum_{j=1}^{m} a_{ij}$</idea>
+      <idea ac="2">Test summation with fractions: $\sum_{k=0}^{\infty} \frac{1}{k!}$</idea>
+      <idea ac="2">Test product notation renders correctly: $\prod_{i=1}^{n} x_i$</idea>
+      <idea ac="2">Test nested product: $\prod_{i=1}^{n} \prod_{j=1}^{m} a_{ij}$</idea>
+      <idea ac="2">Test summation/product rendering in inline math ($...$)</idea>
+      <idea ac="2">Test summation/product rendering in block math ($$...$$)</idea>
+      <idea ac="2">Test proper rendering of limits (subscripts and superscripts)</idea>
+      <idea ac="3">Test definite integral: $\int_{a}^{b} f(x) dx$</idea>
+      <idea ac="3">Test indefinite integral: $\int f(x) dx$</idea>
+      <idea ac="3">Test double integral: $\iint_{D} f(x,y) dx dy$</idea>
+      <idea ac="3">Test triple integral: $\iiint_{V} f(x,y,z) dx dy dz$</idea>
+      <idea ac="3">Test line integral: $\oint_{C} f(x) dx$</idea>
+      <idea ac="3">Test first derivative: $\frac{d}{dx} f(x)$ or $f'(x)$</idea>
+      <idea ac="3">Test second derivative: $\frac{d^2}{dx^2} f(x)$ or $f''(x)$</idea>
+      <idea ac="3">Test partial derivative: $\frac{\partial f}{\partial x}$</idea>
+      <idea ac="3">Test higher-order partial: $\frac{\partial^2 f}{\partial x \partial y}$</idea>
+      <idea ac="3">Test Leibniz notation: $\frac{dy}{dx}$</idea>
+      <idea ac="3">Test integral/derivative rendering in inline math ($...$)</idea>
+      <idea ac="3">Test integral/derivative rendering in block math ($$...$$)</idea>
+      <idea ac="3">Test proper rendering of limits for integrals</idea>
+      <idea ac="4">Test Greek letters (lowercase): $\alpha, \beta, \gamma, \delta, \epsilon, \theta, \lambda, \mu, \pi, \sigma, \phi, \omega$</idea>
+      <idea ac="4">Test Greek letters (uppercase): $\Alpha, \Beta, \Gamma, \Delta, \Theta, \Lambda, \Pi, \Sigma, \Phi, \Omega$</idea>
+      <idea ac="4">Test set operations: $\in, \notin, \subset, \subseteq, \cup, \cap, \emptyset$</idea>
+      <idea ac="4">Test relations: $\leq, \geq, \neq, \approx, \equiv, \sim$</idea>
+      <idea ac="4">Test arrows: $\rightarrow, \leftarrow, \leftrightarrow, \Rightarrow, \Leftrightarrow$</idea>
+      <idea ac="4">Test logic: $\forall, \exists, \land, \lor, \neg$</idea>
+      <idea ac="4">Test other symbols: $\infty, \partial, \nabla, \cdot, \times, \div$</idea>
+      <idea ac="4">Test Greek letters and symbols in inline math ($...$)</idea>
+      <idea ac="4">Test Greek letters and symbols in block math ($$...$$)</idea>
+      <idea ac="4">Test symbols render correctly in combination with other notation</idea>
+      <idea ac="5">Test nested fractions: $\frac{\frac{a}{b}}{\frac{c}{d}}$</idea>
+      <idea ac="5">Test nested exponents: $x^{y^{z}}$</idea>
+      <idea ac="5">Test nested roots: $\sqrt{\sqrt{x}}$</idea>
+      <idea ac="5">Test nested sums/products: $\sum_{i=1}^{n} \prod_{j=1}^{m} a_{ij}$</idea>
+      <idea ac="5">Test complex nested: $\frac{\sum_{i=1}^{n} x_i}{\prod_{j=1}^{m} y_j}$</idea>
+      <idea ac="5">Test matrix with nested expressions: $\begin{pmatrix} \frac{a}{b} &amp; x^2 \\ \sum_{i=1}^{n} i &amp; \sqrt{c} \end{pmatrix}$</idea>
+      <idea ac="5">Test nested expressions in inline math ($...$)</idea>
+      <idea ac="5">Test nested expressions in block math ($$...$$)</idea>
+      <idea ac="5">Test proper rendering depth and alignment for nested structures</idea>
+      <idea ac="5">Test deeply nested expressions (3+ levels)</idea>
+      <idea ac="5">Test nested expressions don't break message layout</idea>
+      <idea ac="6">Test error handling for unclosed braces: $\frac{a}{b$</idea>
+      <idea ac="6">Test error handling for unmatched brackets: $\begin{pmatrix} a &amp; b$</idea>
+      <idea ac="6">Test error handling for invalid commands: $\invalidcommand$</idea>
+      <idea ac="6">Test error handling for missing arguments: $\frac{a}$</idea>
+      <idea ac="6">Test error handling for mixed delimiters: $\begin{pmatrix} a &amp; b \end{bmatrix}$</idea>
+      <idea ac="6">Test KaTeX fallback behavior (throwOnError: false)</idea>
+      <idea ac="6">Test error handling in MessageContent component catches rendering errors</idea>
+      <idea ac="6">Test error handling displays fallback message or raw LaTeX</idea>
+      <idea ac="6">Test error handling maintains message rendering even when math expression fails</idea>
+      <idea ac="6">Test error handling in MathDisplay component</idea>
+      <idea ac="6">Test error handling in MathBlock component</idea>
+      <idea ac="6">Test error handling in chat messages (student and tutor messages)</idea>
+      <idea ac="all">Integration test: Verify advanced notation works in Message component</idea>
+      <idea ac="all">Integration test: Verify advanced notation works in ChatInterface</idea>
+      <idea ac="all">Test responsive design (mobile, tablet, desktop) with advanced notation</idea>
+      <idea ac="all">Test accessibility: screen readers, keyboard navigation, ARIA labels</idea>
+      <idea ac="all">Performance test: Verify advanced notation doesn't significantly slow rendering</idea>
+      <idea ac="all">Cross-browser test: Verify advanced notation works in Chrome, Firefox, Safari, Edge</idea>
+    </ideas>
+  </tests>
+</story-context>
+
+

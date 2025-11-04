@@ -1,0 +1,215 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>2</storyId>
+    <title>Modern Visual Design System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/5-2-modern-visual-design-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a student</asA>
+    <iWant>I want a clean, modern interface that doesn't distract from learning</iWant>
+    <soThat>So that I can focus on understanding my math problems</soThat>
+    <tasks>
+      <task id="1" ac="1,5">
+        <title>Define cohesive color palette</title>
+        <subtasks>
+          <subtask>Review PRD visual personality requirements (calming colors, educational aesthetic)</subtask>
+          <subtask>Define primary color palette (educational, not flashy)</subtask>
+          <subtask>Define accent colors for encouragement and feedback</subtask>
+          <subtask>Define neutral colors for backgrounds and text</subtask>
+          <subtask>Ensure colors meet WCAG contrast requirements (4.5:1 minimum)</subtask>
+          <subtask>Configure colors in Tailwind CSS config</subtask>
+          <subtask>Document color palette decisions and usage guidelines</subtask>
+          <subtask>Add unit tests for color contrast ratios</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="2,5">
+        <title>Establish consistent typography hierarchy</title>
+        <subtasks>
+          <subtask>Review PRD typography requirements (clear, readable fonts with math rendering support)</subtask>
+          <subtask>Define typography scale (headings, body, captions)</subtask>
+          <subtask>Configure font families in Tailwind CSS (Geist Sans/Mono already loaded)</subtask>
+          <subtask>Ensure typography supports math notation readability</subtask>
+          <subtask>Define line heights and letter spacing for readability</subtask>
+          <subtask>Apply typography hierarchy consistently across components</subtask>
+          <subtask>Document typography system and usage guidelines</subtask>
+          <subtask>Add unit tests for typography scaling</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="3,5">
+        <title>Implement consistent spacing and padding</title>
+        <subtasks>
+          <subtask>Define spacing scale (Tailwind spacing utilities)</subtask>
+          <subtask>Apply consistent spacing to all components</subtask>
+          <subtask>Ensure spacing works with responsive layout (from Story 5.1)</subtask>
+          <subtask>Review component spacing for visual consistency</subtask>
+          <subtask>Document spacing system and usage guidelines</subtask>
+          <subtask>Add unit tests for spacing consistency</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="4,5">
+        <title>Add subtle shadows and depth</title>
+        <subtasks>
+          <subtask>Define shadow system (subtle, not overwhelming)</subtask>
+          <subtask>Apply shadows to elevated elements (cards, buttons, modals)</subtask>
+          <subtask>Ensure shadows support dark mode</subtask>
+          <subtask>Test shadow visibility across different backgrounds</subtask>
+          <subtask>Document shadow system and usage guidelines</subtask>
+          <subtask>Add unit tests for shadow application</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="5">
+        <title>Ensure professional, trustworthy aesthetic</title>
+        <subtasks>
+          <subtask>Review all UI components for professional appearance</subtask>
+          <subtask>Ensure design aligns with educational context (not childish)</subtask>
+          <subtask>Verify aesthetic supports learning focus (not distracting)</subtask>
+          <subtask>Test visual consistency across all components</subtask>
+          <subtask>Document design principles and aesthetic guidelines</subtask>
+          <subtask>Add integration tests for visual consistency</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="6">
+        <title>Document design system</title>
+        <subtasks>
+          <subtask>Create design system documentation file</subtask>
+          <subtask>Document color palette with hex codes and usage</subtask>
+          <subtask>Document typography system with examples</subtask>
+          <subtask>Document spacing system with examples</subtask>
+          <subtask>Document shadow system with examples</subtask>
+          <subtask>Include design principles and guidelines</subtask>
+          <subtask>Add examples of component usage following design system</subtask>
+          <subtask>Create design system reference for developers</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Cohesive color palette (educational, not flashy)</criterion>
+    <criterion id="2">Consistent typography hierarchy</criterion>
+    <criterion id="3">Appropriate spacing and padding throughout</criterion>
+    <criterion id="4">Subtle shadows and depth where appropriate</criterion>
+    <criterion id="5">Professional, trustworthy aesthetic</criterion>
+    <criterion id="6">Design system documented for consistency</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="User Experience Principles - Visual Personality">
+        Defines visual personality: Professional yet friendly, minimalist but engaging. Calming colors that promote focus, with accent colors for encouragement and feedback. Clear, readable fonts with excellent math rendering support. Clean, modern aesthetic with subtle educational elements (not childish).
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Design Philosophy">
+        UI should reinforce Socratic method through design: Focus on dialogue, visual feedback, encouragement, clarity, accessibility. Design should support learning focus without distraction.
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Accessibility Requirements">
+        Specifies WCAG 2.1 Level AA compliance, color contrast (4.5:1 minimum), screen reader support, keyboard navigation. Design system must meet these accessibility requirements.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Epic 5: UI Polish">
+        Maps Epic 5 to UI components location (`components/ui/`, `app/globals.css`), Tailwind CSS for styling, and design system patterns.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Technology Stack Details - Tailwind CSS">
+        Tailwind CSS latest stable version. Configuration: Default with custom colors for educational theme. Rationale: Rapid UI development with utility-first approach.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Implementation Patterns">
+        Documents naming patterns, structure patterns, and Tailwind CSS utility classes. Components use Tailwind utilities for styling.
+      </doc>
+      <doc path="docs/epics.md" title="Epics Document" section="Epic 5: UI Polish - Story 5.2">
+        Story definition with acceptance criteria: cohesive color palette, consistent typography hierarchy, appropriate spacing, subtle shadows, professional aesthetic, design system documentation.
+      </doc>
+      <doc path="docs/stories/5-2-modern-visual-design-system.md" title="Story 5.2: Modern Visual Design System" section="Architecture Patterns">
+        Design system approach: Use Tailwind CSS configuration system for design tokens. Color system: Educational, calming primary colors, accent colors for feedback, neutral colors, WCAG contrast requirements, dark mode support. Typography: Geist Sans/Mono, clear hierarchy, math notation support, responsive scaling.
+      </doc>
+      <doc path="docs/stories/5-2-modern-visual-design-system.md" title="Story 5.2: Modern Visual Design System" section="Dev Notes">
+        Learnings from Story 5.1: Responsive layout foundation established. Tailwind CSS integration patterns. Component integration requirements. Design system must work seamlessly with responsive layout patterns.
+      </doc>
+      <doc path="docs/stories/5-1-responsive-layout-design.md" title="Story 5.1: Responsive Layout Design" section="Dev Notes">
+        Establishes responsive breakpoints and layout system foundation. Tailwind CSS responsive utilities (`sm:`, `md:`, `lg:`) already configured. Design system should build on this foundation.
+      </doc>
+      <doc path="docs/test-specifications.md" title="Test Specifications" section="Test Strategy Overview">
+        Test pyramid: Unit (40%), Component (30%), Integration (20%), E2E (10%). Tests verify acceptance criteria, are meaningful, simple, fast, and independent. Vitest framework used for testing.
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/app/layout.tsx" kind="layout" symbol="RootLayout" reason="Root layout that loads Geist Sans and Geist Mono fonts. Sets up font CSS variables (`--font-geist-sans`, `--font-geist-mono`) for typography system. Applies `antialiased` class for font rendering." />
+      <file path="socratica/app/globals.css" kind="styles" symbol="Global Styles" reason="Global CSS file containing Tailwind directives. Defines CSS variables for background and foreground colors. Configures dark mode color scheme. Sets up theme variables for Tailwind CSS v4. Design system colors should be configured here or in Tailwind config." />
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="184-229" reason="Chat interface component using zinc color palette (`border-zinc-300`, `bg-white`, `dark:bg-zinc-900`, `text-zinc-900`, `text-zinc-600`). Needs design system color palette applied. Uses spacing (`px-4`, `py-3`), typography (`text-lg`, `font-semibold`, `text-sm`), shadows (none currently)." />
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" reason="Message list container displaying chat messages. Needs design system colors, typography, and spacing applied for visual consistency." />
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" reason="Individual message component displaying student and AI tutor messages. Needs design system styling for consistent visual appearance across message types." />
+      <file path="socratica/components/chat/MessageInput.tsx" kind="component" symbol="MessageInput" reason="Message input component with textarea. Uses zinc colors (`border-zinc-300`, `bg-white`, `text-zinc-950`). Needs design system colors, typography, spacing, and focus states applied." />
+      <file path="socratica/components/chat/ClearChatButton.tsx" kind="component" symbol="ClearChatButton" reason="Button component for clearing chat. Needs design system button styling (colors, shadows, hover states) applied." />
+      <file path="socratica/components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" reason="Text input component with math preview. Uses zinc colors (`border-zinc-300`, `text-zinc-950`, `placeholder-zinc-500`). Needs design system colors, typography, spacing, and focus states applied." />
+      <file path="socratica/components/problem-input/ImageUpload.tsx" kind="component" symbol="ImageUpload" reason="Image upload component for mobile camera integration. Needs design system styling for buttons, upload interface, and visual feedback." />
+      <file path="socratica/components/math-renderer/MessageContent.tsx" kind="component" symbol="MessageContent" reason="Message content renderer handling mixed text/math content. Needs design system typography for math notation readability and consistent text styling." />
+      <file path="socratica/components/ui/ConfirmationDialog.tsx" kind="component" symbol="ConfirmationDialog" lines="72-109" reason="Dialog component using zinc colors (`border-zinc-300`, `bg-white`, `text-zinc-900`, `shadow-lg`). Demonstrates current shadow usage. Needs design system colors, typography, spacing, and shadow system applied. Uses `gap-3` for spacing between buttons." />
+      <file path="socratica/app/page.tsx" kind="page" symbol="Home" reason="Main page component structuring the layout. Uses spacing (`space-y-6`, `px-4`, `py-8`), typography (`text-4xl`, `font-semibold`, `text-lg`). Needs design system spacing and typography hierarchy applied." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" />
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="tailwindcss" version="^4" />
+        <package name="@tailwindcss/postcss" version="^4" />
+        <package name="typescript" version="^5" />
+        <package name="vitest" version="^1.1.0" />
+        <package name="@testing-library/react" version="^15.0.0" />
+        <package name="@testing-library/jest-dom" version="^6.1.5" />
+        <package name="@testing-library/user-event" version="^14.5.1" />
+        <package name="katex" version="^0.16.25" />
+        <package name="react-katex" version="^3.1.0" />
+        <package name="firebase" version="^12.5.0" />
+        <package name="openai" version="^6.7.0" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="pattern">Design System Approach: Use Tailwind CSS configuration system for design tokens (colors, typography, spacing, shadows). Define design tokens in Tailwind config or globals.css for consistency. Leverage Tailwind utility classes for applying design system. Create reusable component patterns following design system.</constraint>
+    <constraint type="color">Color System: Primary colors must be educational and calming (not flashy). Accent colors for encouragement and feedback. Neutral colors for backgrounds and text. WCAG contrast requirements: Minimum 4.5:1 for text. All colors must work in dark mode.</constraint>
+    <constraint type="typography">Typography System: Font families Geist Sans (already loaded) for body text, Geist Mono for code/math. Clear hierarchy: headings, body, captions. Typography must support KaTeX math notation readability. Responsive typography that scales appropriately across breakpoints.</constraint>
+    <constraint type="spacing">Spacing System: Use Tailwind spacing scale (4px base unit). Consistent spacing across components. Responsive spacing that adapts to screen size. Adequate spacing for touch targets (minimum 8px between elements).</constraint>
+    <constraint type="shadow">Shadow System: Subtle shadows for depth (not overwhelming). Elevation levels: Different shadow intensities for different element types. Dark mode shadows: Adjusted for dark backgrounds. Performance: Optimize shadow rendering.</constraint>
+    <constraint type="component">Component Structure: Design system applies to all UI components (`components/ui/`, `components/chat/`, `components/problem-input/`). Consistent visual language across all components. Design system supports existing functionality while improving aesthetics.</constraint>
+    <constraint type="integration">Integration Points: Design system integrates with Tailwind CSS configuration (v4). Design system works with responsive layout from Story 5.1. Design system supports dark mode (already configured). Design system maintains accessibility requirements.</constraint>
+    <constraint type="aesthetic">Aesthetic Requirements: Professional, trustworthy aesthetic. Design aligns with educational context (not childish). Aesthetic supports learning focus (not distracting). Visual consistency across all components.</constraint>
+    <constraint type="documentation">Documentation Requirements: Design system must be documented for consistency. Document color palette with hex codes and usage. Document typography system with examples. Document spacing system with examples. Document shadow system with examples. Include design principles and guidelines.</constraint>
+    <constraint type="dependencies">Dependencies: Story 5.1 must be completed (responsive layout provides foundation). Tailwind CSS configuration must be set up (from Story 0.1). Existing components (Epic 1, 2, 4) provide foundation for design system application.</constraint>
+    <constraint type="naming">Naming Patterns: Components use PascalCase matching file name. Files match component name exactly. Design tokens use Tailwind CSS naming conventions. Constants use UPPER_SNAKE_CASE for design tokens. Types/Interfaces use PascalCase.</constraint>
+  </constraints>
+  <interfaces>
+    <interface name="RootLayout" kind="React Component" signature="function RootLayout({ children }: { children: React.ReactNode })" path="socratica/app/layout.tsx" />
+    <interface name="Home" kind="React Component" signature="function Home()" path="socratica/app/page.tsx" />
+    <interface name="ChatInterface" kind="React Component" signature="function ChatInterface({ initialMessages?, ocrText?, onOcrTextChange? }: ChatInterfaceProps)" path="socratica/components/chat/ChatInterface.tsx" />
+    <interface name="ConfirmationDialog" kind="React Component" signature="function ConfirmationDialog({ isOpen, onConfirm, onCancel, title?, message?, confirmLabel?, cancelLabel? }: ConfirmationDialogProps)" path="socratica/components/ui/ConfirmationDialog.tsx" />
+    <interface name="Tailwind CSS Configuration" kind="CSS Framework" signature="Tailwind CSS v4 with @tailwindcss/postcss. Configuration via globals.css @theme inline or tailwind.config.js. Responsive utilities: sm: (640px+), md: (768px+), lg: (1024px+), xl: (1280px+)" path="socratica/app/globals.css" />
+    <interface name="Font Variables" kind="CSS Variables" signature="--font-geist-sans (Geist Sans), --font-geist-mono (Geist Mono)" path="socratica/app/layout.tsx" />
+    <interface name="Color Variables" kind="CSS Variables" signature="--background, --foreground (light/dark mode)" path="socratica/app/globals.css" />
+  </interfaces>
+  <tests>
+    <standards>
+      Testing framework: Vitest with React Testing Library. Test pyramid: Unit (40%), Component (30%), Integration (20%), E2E (10%). Tests verify acceptance criteria, are meaningful, simple, fast, and independent. Tests located co-located with components in `__tests__/` directories. Use `@testing-library/react` for component testing, `@testing-library/user-event` for user interactions. Test design system tokens: Verify color contrast ratios meet WCAG requirements. Test typography scaling across breakpoints. Test spacing consistency across components. Test shadow application and dark mode compatibility. Test visual consistency through snapshot testing or visual regression testing.
+    </standards>
+    <locations>
+      <location pattern="**/__tests__/*.test.tsx" description="Component tests co-located with components" />
+      <location pattern="**/__tests__/*.test.ts" description="Unit tests for utilities and libraries" />
+      <location pattern="socratica/components/ui/__tests__/" description="UI component tests" />
+      <location pattern="socratica/components/chat/__tests__/" description="Chat component tests" />
+      <location pattern="socratica/components/problem-input/__tests__/" description="Problem input component tests" />
+      <location pattern="socratica/vitest.config.ts" description="Vitest configuration file" />
+    </locations>
+    <ideas>
+      <idea criterion="1">Test color palette: Verify cohesive color palette with educational, calming colors. Test color contrast ratios meet WCAG 4.5:1 minimum for text. Test colors work in both light and dark modes. Test semantic color usage (success, warning, error, info). Create unit tests for color contrast calculations.</idea>
+      <idea criterion="2">Test typography hierarchy: Verify consistent typography scale (headings, body, captions). Test font families (Geist Sans, Geist Mono) load correctly. Test typography supports math notation readability. Test responsive typography scaling across breakpoints. Test line heights and letter spacing for readability.</idea>
+      <idea criterion="3">Test spacing consistency: Verify consistent spacing scale across all components. Test spacing works with responsive layout (adapts to screen size). Test adequate spacing for touch targets (minimum 8px between elements). Test spacing consistency in component integration tests.</idea>
+      <idea criterion="4">Test shadow system: Verify subtle shadows applied to elevated elements (cards, buttons, modals). Test shadows support dark mode (adjusted for dark backgrounds). Test shadow visibility across different backgrounds. Test shadow performance (no rendering issues).</idea>
+      <idea criterion="5">Test professional aesthetic: Verify all UI components have professional appearance. Test design aligns with educational context (not childish). Test aesthetic supports learning focus (not distracting). Test visual consistency across all components using integration tests or visual regression tests.</idea>
+      <idea criterion="6">Test design system documentation: Verify design system documentation file exists and is complete. Test documentation includes color palette with hex codes and usage. Test documentation includes typography system with examples. Test documentation includes spacing and shadow systems. Test documentation serves as reference for developers.</idea>
+    </ideas>
+  </tests>
+</story-context>
+

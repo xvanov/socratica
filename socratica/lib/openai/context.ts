@@ -5,7 +5,8 @@
 
 import { Message } from "@/types/chat";
 import OpenAI from "openai";
-import { SOCRATIC_MATH_TUTOR_PROMPT } from "./prompts";
+import { SOCRATIC_MATH_TUTOR_PROMPT, buildEnhancedPromptWithHints, buildEnhancedPromptWithAdaptiveQuestioning, type HintLevel } from "./prompts";
+import type { UnderstandingLevel } from "./adaptive-questioning";
 
 /**
  * Maximum context window size in tokens for GPT-4 Turbo
@@ -40,18 +41,66 @@ export function calculateTotalTokens(
 }
 
 /**
+ * Build system prompt with optional stuck state, hint generation, and adaptive questioning
+ * Combines hint generation (if stuck) and adaptive questioning (always) based on understanding level
+ * 
+ * @param isStuck - Whether student is currently stuck
+ * @param consecutiveConfused - Number of consecutive confused responses
+ * @param hintLevel - Hint level (0-3, optional, calculated if not provided)
+ * @param understandingLevel - Understanding level for adaptive questioning (optional, defaults to progressing)
+ * @returns System prompt string with hint generation and adaptive questioning instructions
+ */
+function buildSystemPrompt(
+  isStuck: boolean = false,
+  consecutiveConfused: number = 0,
+  hintLevel?: HintLevel,
+  understandingLevel: UnderstandingLevel = "progressing"
+): string {
+  // Start with base prompt enhanced with adaptive questioning
+  let prompt = buildEnhancedPromptWithAdaptiveQuestioning(
+    SOCRATIC_MATH_TUTOR_PROMPT,
+    understandingLevel
+  );
+
+  // If stuck, also add hint generation instructions
+  if (isStuck && consecutiveConfused >= 2) {
+    prompt = buildEnhancedPromptWithHints(
+      prompt, // Use adaptive questioning prompt as base
+      isStuck,
+      consecutiveConfused,
+      hintLevel
+    );
+  }
+
+  return prompt;
+}
+
+/**
  * Convert Message[] from chat format to OpenAI API format
  * Maps: student -> user, tutor -> assistant
  * Includes system prompt as first message
+ * 
+ * @param messages - Conversation history
+ * @param currentMessage - Current student message
+ * @param isStuck - Whether student is currently stuck (optional)
+ * @param consecutiveConfused - Number of consecutive confused responses (optional)
+ * @param hintLevel - Hint level (0-3, optional, calculated if not provided)
+ * @param understandingLevel - Understanding level for adaptive questioning (optional, defaults to progressing)
  */
 export function convertMessagesToOpenAIFormat(
   messages: Message[],
-  currentMessage: string
+  currentMessage: string,
+  isStuck: boolean = false,
+  consecutiveConfused: number = 0,
+  hintLevel?: HintLevel,
+  understandingLevel: UnderstandingLevel = "progressing"
 ): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
+  const systemPrompt = buildSystemPrompt(isStuck, consecutiveConfused, hintLevel, understandingLevel);
+  
   const openAIMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     {
       role: "system",
-      content: SOCRATIC_MATH_TUTOR_PROMPT,
+      content: systemPrompt,
     },
   ];
 
@@ -148,16 +197,34 @@ export function truncateContextWindow(
 /**
  * Prepare conversation context for OpenAI API
  * Combines conversion and truncation in one function
+ * 
+ * @param messages - Conversation history
+ * @param currentMessage - Current student message
+ * @param maxTokens - Maximum tokens for context window
+ * @param isStuck - Whether student is currently stuck (optional)
+ * @param consecutiveConfused - Number of consecutive confused responses (optional)
+ * @param hintLevel - Hint level (0-3, optional, calculated if not provided)
+ * @param understandingLevel - Understanding level for adaptive questioning (optional, defaults to progressing)
  */
 export function prepareConversationContext(
   messages: Message[],
   currentMessage: string,
-  maxTokens: number = MAX_CONTEXT_WINDOW_TOKENS
+  maxTokens: number = MAX_CONTEXT_WINDOW_TOKENS,
+  isStuck: boolean = false,
+  consecutiveConfused: number = 0,
+  hintLevel?: HintLevel,
+  understandingLevel: UnderstandingLevel = "progressing"
 ): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
   // Convert to OpenAI format
-  const openAIMessages = convertMessagesToOpenAIFormat(messages, currentMessage);
+  const openAIMessages = convertMessagesToOpenAIFormat(
+    messages,
+    currentMessage,
+    isStuck,
+    consecutiveConfused,
+    hintLevel,
+    understandingLevel
+  );
 
   // Truncate if needed
   return truncateContextWindow(openAIMessages, maxTokens);
 }
-

@@ -27,7 +27,8 @@ describe('Message Component', () => {
       const message = createMessage('student', 'Test message');
       render(<Message message={message} index={0} />);
       
-      const messageBubble = screen.getByText('Test message').closest('div');
+      const messageArticle = screen.getByRole('article');
+      const messageBubble = messageArticle.querySelector('.bg-blue-600');
       expect(messageBubble).toHaveClass('bg-blue-600');
     });
 
@@ -54,7 +55,8 @@ describe('Message Component', () => {
       const message = createMessage('tutor', 'Tutor message');
       render(<Message message={message} index={0} />);
       
-      const messageBubble = screen.getByText('Tutor message').closest('div');
+      const messageArticle = screen.getByRole('article');
+      const messageBubble = messageArticle.querySelector('.bg-zinc-100');
       expect(messageBubble).toHaveClass('bg-zinc-100');
     });
 
@@ -121,10 +123,17 @@ describe('Message Component', () => {
       const messageArticle = screen.getByRole('article');
       expect(messageArticle).toHaveTextContent('This is a very long message');
       
-      // Check for wrapping classes on the paragraph element
-      const messageText = messageArticle.querySelector('p');
-      expect(messageText).toHaveClass('break-words');
-      expect(messageText).toHaveClass('whitespace-pre-wrap');
+      // Check for wrapping classes on the MessageContent div inside the bubble
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      if (messageBubble) {
+        const messageContent = messageBubble.querySelector('.break-words');
+        expect(messageContent).toBeTruthy();
+        if (messageContent) {
+          expect(messageContent).toHaveClass('break-words');
+          expect(messageContent).toHaveClass('whitespace-pre-wrap');
+        }
+      }
     });
 
     it('should handle multi-line messages', () => {

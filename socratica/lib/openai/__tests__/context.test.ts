@@ -11,9 +11,27 @@ import { Message } from '@/types/chat';
 import OpenAI from 'openai';
 
 // Mock prompts
-vi.mock('@/lib/openai/prompts', () => ({
-  SOCRATIC_MATH_TUTOR_PROMPT: 'Test Socratic prompt for math tutoring',
-}));
+vi.mock('@/lib/openai/prompts', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/openai/prompts')>();
+  return {
+    ...actual,
+    SOCRATIC_MATH_TUTOR_PROMPT: 'Test Socratic prompt for math tutoring',
+    buildEnhancedPromptWithHints: vi.fn(
+      (basePrompt: string, isStuck: boolean, consecutiveConfused: number, hintLevel?: number) => {
+        if (!isStuck || consecutiveConfused < 2) {
+          return basePrompt;
+        }
+        const hintText = hintLevel === 1 ? 'Hint Level 1' : hintLevel === 2 ? 'Hint Level 2' : hintLevel === 3 ? 'Hint Level 3' : '';
+        return `${basePrompt}\n\nHINT GENERATION INSTRUCTIONS (Student is stuck - ${consecutiveConfused} consecutive confused responses):\n${hintText}`;
+      }
+    ),
+    buildEnhancedPromptWithAdaptiveQuestioning: vi.fn(
+      (basePrompt: string, understandingLevel: string = 'progressing') => {
+        return `${basePrompt}\n\nADAPTIVE QUESTIONING INSTRUCTIONS (Understanding level: ${understandingLevel})`;
+      }
+    ),
+  };
+});
 
 describe('Conversation Context Management', () => {
   const createMessage = (
@@ -75,10 +93,9 @@ describe('Conversation Context Management', () => {
       const result = convertMessagesToOpenAIFormat(messages, 'Current message');
 
       expect(result).toHaveLength(5); // system + 3 history + 1 current
-      expect(result[0]).toEqual({
-        role: 'system',
-        content: 'Test Socratic prompt for math tutoring',
-      });
+      expect(result[0].role).toBe('system');
+      expect(result[0].content).toContain('Test Socratic prompt for math tutoring');
+      expect(result[0].content).toContain('ADAPTIVE QUESTIONING INSTRUCTIONS');
       expect(result[1]).toEqual({ role: 'user', content: 'Hello' });
       expect(result[2]).toEqual({ role: 'assistant', content: 'Hi there!' });
       expect(result[3]).toEqual({ role: 'user', content: 'I need help' });
@@ -103,10 +120,57 @@ describe('Conversation Context Management', () => {
       const messages: Message[] = [];
       const result = convertMessagesToOpenAIFormat(messages, 'Current');
 
-      expect(result[0]).toEqual({
-        role: 'system',
-        content: 'Test Socratic prompt for math tutoring',
-      });
+      expect(result[0].role).toBe('system');
+      expect(result[0].content).toContain('Test Socratic prompt for math tutoring');
+      expect(result[0].content).toContain('ADAPTIVE QUESTIONING INSTRUCTIONS');
+    });
+
+    it('should include hint generation instructions in system prompt when student is stuck', () => {
+      const messages: Message[] = [];
+      const result = convertMessagesToOpenAIFormat(messages, 'Current', true, 2);
+
+      expect(result[0].role).toBe('system');
+      expect(result[0].content).toContain('HINT GENERATION INSTRUCTIONS');
+      expect(result[0].content).toContain('Student is stuck');
+      expect(result[0].content).toContain('2 consecutive confused responses');
+    });
+
+    it('should not include hint instructions when student is not stuck', () => {
+      const messages: Message[] = [];
+      const result = convertMessagesToOpenAIFormat(messages, 'Current', false, 0);
+
+      expect(result[0].role).toBe('system');
+      expect(result[0].content).toContain('Test Socratic prompt for math tutoring');
+      expect(result[0].content).toContain('ADAPTIVE QUESTIONING INSTRUCTIONS');
+      expect(result[0].content).not.toContain('HINT GENERATION INSTRUCTIONS');
+    });
+
+    it('should not include hint instructions when consecutiveConfused < 2', () => {
+      const messages: Message[] = [];
+      const result = convertMessagesToOpenAIFormat(messages, 'Current', false, 1);
+
+      expect(result[0].content).not.toContain('HINT GENERATION INSTRUCTIONS');
+    });
+
+    it('should use hint level 1 for 2-3 consecutive confused responses', () => {
+      const messages: Message[] = [];
+      const result = convertMessagesToOpenAIFormat(messages, 'Current', true, 2, 1);
+
+      expect(result[0].content).toContain('Hint Level 1');
+    });
+
+    it('should use hint level 2 for 4-5 consecutive confused responses', () => {
+      const messages: Message[] = [];
+      const result = convertMessagesToOpenAIFormat(messages, 'Current', true, 4, 2);
+
+      expect(result[0].content).toContain('Hint Level 2');
+    });
+
+    it('should use hint level 3 for 6+ consecutive confused responses', () => {
+      const messages: Message[] = [];
+      const result = convertMessagesToOpenAIFormat(messages, 'Current', true, 6, 3);
+
+      expect(result[0].content).toContain('Hint Level 3');
     });
 
     it('should maintain chronological order', () => {
@@ -282,6 +346,15 @@ describe('Conversation Context Management', () => {
       expect(result[2].content).toBe('Hi there!');
       expect(result[3].role).toBe('user');
       expect(result[3].content).toBe('Current message');
+    });
+
+    it('should pass stuck state and hint level to conversion', () => {
+      const messages: Message[] = [];
+      const result = prepareConversationContext(messages, 'Current', undefined, true, 2, 1);
+
+      expect(result[0].role).toBe('system');
+      expect(result[0].content).toContain('HINT GENERATION INSTRUCTIONS');
+      expect(result[0].content).toContain('Hint Level 1');
     });
 
     it('should truncate if context window exceeded', () => {

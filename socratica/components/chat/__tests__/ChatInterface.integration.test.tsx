@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ChatInterface from '../ChatInterface';
 import { Message } from '@/types/chat';
@@ -221,8 +221,9 @@ describe('ChatInterface Integration Tests', () => {
       });
       await user.click(clearButton);
 
-      // Confirm clearing
-      const confirmButton = screen.getByRole('button', { name: /clear chat/i });
+      // Confirm clearing - scope query to dialog to avoid matching header button
+      const dialog = screen.getByRole('dialog');
+      const confirmButton = within(dialog).getByRole('button', { name: /clear chat/i });
       await user.click(confirmButton);
 
       // Verify messages are cleared
@@ -303,8 +304,9 @@ describe('ChatInterface Integration Tests', () => {
       });
       await user.click(clearButton);
 
-      // Confirm clearing
-      const confirmButton = screen.getByRole('button', { name: /clear chat/i });
+      // Confirm clearing - the confirm button is inside the dialog
+      const dialog = screen.getByRole('dialog');
+      const confirmButton = within(dialog).getByRole('button', { name: /clear chat/i });
       await user.click(confirmButton);
 
       // Verify error is cleared

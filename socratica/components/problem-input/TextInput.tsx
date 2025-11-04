@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { validateProblemText } from "@/lib/utils/validation";
+import MathPreview from "@/components/math-renderer/MathPreview";
 
 interface TextInputProps {
   onSubmit?: (value: string) => void;
@@ -96,29 +97,39 @@ export default function TextInput({
         <label htmlFor="problem-input" className="sr-only">
           Math problem input
         </label>
-        <textarea
-          id="problem-input"
-          name="problem-input"
-          value={inputValue}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          rows={4}
-          disabled={isSubmitting}
-          className={`w-full resize-y rounded-lg border px-4 py-3 text-base text-zinc-950 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-500 dark:text-zinc-50 dark:placeholder-zinc-400 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 ${
-            validationError
-              ? "border-red-300 bg-white focus:border-red-500 focus:ring-red-500 dark:border-red-700 dark:bg-zinc-900 dark:focus:border-red-400 dark:focus:ring-red-400"
-              : "border-zinc-300 bg-white focus:border-zinc-950 focus:ring-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-zinc-50 dark:focus:ring-zinc-50"
-          }`}
-          aria-label="Math problem input field"
-          aria-describedby="problem-input-description"
-          aria-required="true"
-          aria-invalid={validationError ? "true" : "false"}
-          aria-errormessage={validationError ? "problem-input-error" : undefined}
-        />
-        <p id="problem-input-description" className="sr-only">
-          Enter your math problem. Press Enter to submit or Shift+Enter for a new line.
-        </p>
+        {/* Input and preview container - responsive layout */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+          {/* Textarea container */}
+          <div className="flex-1">
+            <textarea
+              id="problem-input"
+              name="problem-input"
+              value={inputValue}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              rows={4}
+              disabled={isSubmitting}
+              className={`w-full resize-y rounded-lg border px-4 py-3 text-base text-zinc-950 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-500 dark:text-zinc-50 dark:placeholder-zinc-400 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 ${
+                validationError
+                  ? "border-red-300 bg-white focus:border-red-500 focus:ring-red-500 dark:border-red-700 dark:bg-zinc-900 dark:focus:border-red-400 dark:focus:ring-red-400"
+                  : "border-zinc-300 bg-white focus:border-zinc-950 focus:ring-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-zinc-50 dark:focus:ring-zinc-50"
+              }`}
+              aria-label="Math problem input field"
+              aria-describedby="problem-input-description"
+              aria-required="true"
+              aria-invalid={validationError ? "true" : "false"}
+              aria-errormessage={validationError ? "problem-input-error" : undefined}
+            />
+            <p id="problem-input-description" className="sr-only">
+              Enter your math problem. Press Enter to submit or Shift+Enter for a new line.
+            </p>
+          </div>
+          {/* Math preview - below on mobile, beside on desktop */}
+          <div className="sm:w-80 sm:flex-shrink-0">
+            <MathPreview value={inputValue} />
+          </div>
+        </div>
         
         {/* Validation error display */}
         {validationError && (

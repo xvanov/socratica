@@ -10,6 +10,11 @@ if (!apiKey) {
   );
 }
 
+// Debug logging (dev only) - remove after debugging
+if (process.env.NODE_ENV === "development") {
+  console.log("OpenAI API Key loaded:", apiKey.substring(0, 10) + "..." + apiKey.substring(apiKey.length - 4));
+}
+
 export const openai = new OpenAI({
   apiKey: apiKey,
 });
@@ -92,35 +97,50 @@ export async function extractTextFromImage(
   } catch (error: unknown) {
     // Handle OpenAI API errors
     if (error instanceof OpenAI.APIError) {
-      // Rate limit error
-      if (error.status === 429) {
+      // Quota exceeded errors - don't retry, return immediately
+      // This is different from rate limits - quota means no credits/money left
+      if (error.status === 429 && error.code === 'insufficient_quota') {
         return {
           text: "",
-          error: "Rate limit exceeded. Please try again in a moment.",
+          error: "OpenAI API quota exceeded. Please check your OpenAI account billing and add credits.",
         };
       }
+      
+      // Rate limit errors should be thrown so retry logic can handle them
+      if (error.status === 429) {
+        // Log rate limit details for debugging
+        if (process.env.NODE_ENV === "development") {
+          console.error("OpenAI rate limit error:", {
+            status: error.status,
+            message: error.message,
+            code: error.code,
+            type: error.type,
+          });
+        }
+        throw error; // Let retry logic handle rate limit errors
+      }
 
-      // Invalid image or other API errors
+      // Invalid image or other API errors - return as error response
       return {
         text: "",
         error: error.message || "Failed to extract text from image.",
       };
     }
 
-    // Network or other errors
+    // Network errors - throw so retry logic can handle them
     if (error instanceof Error) {
-      return {
-        text: "",
-        error: error.message || "Network error. Please try again.",
-      };
+      // Re-throw network errors for retry logic
+      throw error;
     }
 
+    // Unknown errors - return as error response
     return {
       text: "",
       error: "An unexpected error occurred. Please try again.",
     };
   }
 }
+
 
 
 

@@ -1,0 +1,142 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>2</storyId>
+    <title>Math Rendering in Chat Messages</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/4-2-math-rendering-in-chat-messages.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>math equations in chat messages to render as proper mathematical notation</iWant>
+    <soThat>I can read problems and solutions clearly</soThat>
+    <tasks>
+      <task id="1" ac="1">Create LaTeX detection utility</task>
+      <task id="2" ac="2,3">Create MessageContent component with math rendering</task>
+      <task id="3" ac="2,5">Integrate MessageContent into Message component</task>
+      <task id="4" ac="1,2">Verify math rendering in both student and tutor messages</task>
+      <task id="5" ac="4">Test common math expressions render correctly</task>
+      <task id="6" ac="1-5">Testing and verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Detects LaTeX syntax in chat messages (both student and AI messages)</criterion>
+    <criterion id="2">Renders detected LaTeX expressions as formatted math</criterion>
+    <criterion id="3">Handles both inline ($...$) and block ($$...$$) math</criterion>
+    <criterion id="4">Renders fractions, exponents, roots, and basic operations correctly</criterion>
+    <criterion id="5">Maintains message styling while rendering math</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" section="Epic 4: Math Rendering - Story 4.2" snippet="Story 4.2 acceptance criteria: Detects LaTeX syntax, renders inline ($...$) and block ($$...$$) math, renders fractions/exponents/roots correctly, maintains message styling." />
+      <doc path="docs/architecture.md" section="ADR-005: KaTeX for Math Rendering" snippet="Decision to use KaTeX instead of MathJax for faster rendering, smaller bundle size, and sufficient algebra support. KaTeX provides react-katex package for React integration." />
+      <doc path="docs/architecture.md" section="Epic 4: Math Rendering" snippet="Math renderer components stored in components/math-renderer/ directory. MathDisplay component for inline math, MathBlock component for block math. KaTeX CSS imported in root layout." />
+      <doc path="docs/architecture.md" section="Integration Points" snippet="Frontend ↔ Math Rendering: components/math-renderer/MathDisplay.tsx → KaTeX library. Client-side only (dynamic imports for SSR)." />
+      <doc path="docs/PRD.md" section="FR-5" snippet="Math rendering requirements for displaying mathematical equations and notation correctly." />
+      <doc path="docs/stories/4-1-latex-rendering-library-integration.md" section="Dev Notes" snippet="MathDisplay and MathBlock components to be created in Story 4.1 provide foundation for math rendering. KaTeX configuration in lib/math-renderer/katex-config.ts should be reused." />
+      <doc path="docs/test-specifications.md" section="Test Strategy Overview" snippet="Test pyramid: Unit tests (40%), Component tests (30%), Integration tests (20%), E2E tests (10%). Tests verify acceptance criteria, are meaningful and simple." />
+    </docs>
+    <code>
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" lines="1-64" reason="Component that displays chat messages. Currently renders plain text content. Needs to be updated to use MessageContent component for math rendering. Line 51 shows current text rendering: &lt;p className='whitespace-pre-wrap break-words'&gt;{message.content}&lt;/p&gt;" />
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" lines="1-56" reason="Component that displays list of messages. Uses Message component for individual message rendering. No changes needed for this story." />
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="19-284" reason="Main chat interface component that manages message state and integrates MessageList. Used for integration testing of math rendering in chat context." />
+      <file path="socratica/types/chat.ts" kind="type" symbol="Message" lines="8-12" reason="Message interface defines structure: role (student/tutor), content (string), timestamp. Content field will contain LaTeX syntax that needs to be parsed and rendered." />
+      <file path="socratica/components/chat/__tests__/Message.test.tsx" kind="test" symbol="Message Component Tests" lines="1-167" reason="Existing test file for Message component. Tests message rendering, role-based styling, accessibility. Can be extended to test math rendering integration." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="next" version="16.0.1" />
+        <package name="typescript" version="^5" />
+        <package name="tailwindcss" version="^4" />
+        <package name="vitest" version="^1.1.0" />
+        <package name="@testing-library/react" version="^15.0.0" />
+        <package name="@testing-library/jest-dom" version="^6.1.5" />
+        <package name="katex" note="To be installed in Story 4.1" />
+        <package name="react-katex" note="To be installed in Story 4.1" />
+        <package name="@types/katex" note="To be installed in Story 4.1" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="pattern">Components must follow PascalCase naming matching file name (e.g., MessageContent.tsx contains MessageContent component)</constraint>
+    <constraint type="pattern">Files must match component name exactly</constraint>
+    <constraint type="pattern">Functions use camelCase (e.g., parseLaTeX(), detectMathExpressions())</constraint>
+    <constraint type="pattern">Constants use UPPER_SNAKE_CASE (e.g., INLINE_MATH_PATTERN, BLOCK_MATH_PATTERN)</constraint>
+    <constraint type="pattern">Types/Interfaces use PascalCase (e.g., MessageContentProps, ParsedSegment)</constraint>
+    <constraint type="location">MessageContent component must be created in components/math-renderer/ directory</constraint>
+    <constraint type="location">LaTeX parser utility must be created in lib/math-renderer/ directory</constraint>
+    <constraint type="integration">Must reuse MathDisplay and MathBlock components from Story 4.1 (when available)</constraint>
+    <constraint type="integration">Must reuse KaTeX configuration from lib/math-renderer/katex-config.ts (Story 4.1)</constraint>
+    <constraint type="styling">Must preserve existing message styling: role-based colors (blue for student, gray for tutor), alignment (student right, tutor left)</constraint>
+    <constraint type="styling">Must maintain responsive design and Tailwind CSS patterns</constraint>
+    <constraint type="accessibility">Math content must be accessible to screen readers with ARIA labels</constraint>
+    <constraint type="accessibility">Must support keyboard navigation</constraint>
+    <constraint type="error-handling">Malformed LaTeX expressions must fallback gracefully without breaking message rendering</constraint>
+    <constraint type="error-handling">Errors should be logged for debugging</constraint>
+    <constraint type="testing">Tests must be co-located with components in __tests__ directories</constraint>
+    <constraint type="testing">Tests must verify acceptance criteria, not just coverage</constraint>
+    <constraint type="testing">Must include unit tests for LaTeX parser utility</constraint>
+    <constraint type="testing">Must include component tests for MessageContent</constraint>
+    <constraint type="testing">Must include integration tests with Message component and ChatInterface</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Message" kind="TypeScript interface" signature="interface Message { role: MessageRole; content: string; timestamp: Date | string; }" path="socratica/types/chat.ts" />
+    <interface name="MessageProps" kind="TypeScript interface" signature="interface MessageProps { message: Message; index?: number; }" path="socratica/types/chat.ts" />
+    <interface name="MathDisplay" kind="React component" signature="Component from Story 4.1: renders inline math expressions ($...$)" path="socratica/components/math-renderer/MathDisplay.tsx" note="To be created in Story 4.1" />
+    <interface name="MathBlock" kind="React component" signature="Component from Story 4.1: renders block math expressions ($$...$$)" path="socratica/components/math-renderer/MathBlock.tsx" note="To be created in Story 4.1" />
+    <interface name="parseLaTeX" kind="function" signature="Expected function to parse LaTeX syntax from text content. Returns parsed segments (text + math expressions)." path="socratica/lib/math-renderer/latex-parser.ts" note="To be created" />
+    <interface name="MessageContent" kind="React component" signature="Component to render mixed text and math content. Props: content (string), className (optional). Uses parseLaTeX and MathDisplay/MathBlock components." path="socratica/components/math-renderer/MessageContent.tsx" note="To be created" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing follows TDD principles with Vitest framework. Tests are co-located with components in __tests__ directories. Component tests use @testing-library/react for rendering and assertions. Tests verify acceptance criteria, not just coverage. Test pyramid: Unit tests (40%), Component tests (30%), Integration tests (20%), E2E tests (10%). Tests must be fast, independent, and meaningful. Accessibility testing includes screen reader compatibility and keyboard navigation.
+    </standards>
+    <locations>
+      <location>socratica/components/math-renderer/__tests__/</location>
+      <location>socratica/lib/math-renderer/__tests__/</location>
+      <location>socratica/components/chat/__tests__/</location>
+    </locations>
+    <ideas>
+      <idea ac="1">Test LaTeX parser detects inline math ($...$) correctly</idea>
+      <idea ac="1">Test LaTeX parser detects block math ($$...$$) correctly</idea>
+      <idea ac="1">Test LaTeX parser handles escaped dollar signs (\$)</idea>
+      <idea ac="1">Test LaTeX parser handles multiple math expressions in single message</idea>
+      <idea ac="1">Test LaTeX parser handles mixed text and math content</idea>
+      <idea ac="2">Test MessageContent renders plain text correctly</idea>
+      <idea ac="2">Test MessageContent detects and renders inline math</idea>
+      <idea ac="2">Test MessageContent detects and renders block math</idea>
+      <idea ac="2">Test MessageContent handles mixed text and math</idea>
+      <idea ac="2">Test MessageContent handles multiple math expressions</idea>
+      <idea ac="2">Test MessageContent error handling for malformed LaTeX</idea>
+      <idea ac="3">Test inline math ($...$) renders correctly</idea>
+      <idea ac="3">Test block math ($$...$$) renders correctly</idea>
+      <idea ac="3">Test both inline and block math in same message</idea>
+      <idea ac="4">Test fractions render correctly: $\frac{a}{b}$, $\frac{x+1}{y-2}$</idea>
+      <idea ac="4">Test exponents render correctly: $x^2$, $x^{n+1}$, $2^{x+y}$</idea>
+      <idea ac="4">Test roots render correctly: $\sqrt{x}$, $\sqrt[n]{x}$, $\sqrt{x^2 + y^2}$</idea>
+      <idea ac="4">Test basic operations render correctly: $x + y$, $x - y$, $x \cdot y$, $\frac{x}{y}$</idea>
+      <idea ac="4">Test subscripts and superscripts: $x_1$, $x_{i+1}$, $x^2$, $x^{n+1}$</idea>
+      <idea ac="4">Test Greek letters: $\alpha$, $\beta$, $\pi$, $\theta$</idea>
+      <idea ac="4">Test parentheses: $(x + y)$, $[x + y]$, $\{x + y\}$</idea>
+      <idea ac="5">Test student message styling maintained (blue background, right alignment)</idea>
+      <idea ac="5">Test tutor message styling maintained (gray background, left alignment)</idea>
+      <idea ac="5">Test message layout not broken by math rendering</idea>
+      <idea ac="5">Test responsive design maintained (mobile, tablet, desktop)</idea>
+      <idea ac="1,2">Integration test: Verify math rendering works in Message component</idea>
+      <idea ac="1,2">Integration test: Verify math rendering works in ChatInterface</idea>
+      <idea ac="all">Test accessibility: screen readers, keyboard navigation, ARIA labels</idea>
+    </ideas>
+  </tests>
+</story-context>
+
+

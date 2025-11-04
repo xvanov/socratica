@@ -86,7 +86,8 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
 
       render(<ChatInterface initialMessages={messages} />);
 
-      const messageBubble = screen.getByText('Student message').closest('div');
+      const messageArticle = screen.getByRole('article', { name: /student message/i });
+      const messageBubble = messageArticle.querySelector('.bg-blue-600');
       expect(messageBubble).toHaveClass('bg-blue-600');
     });
 
@@ -110,8 +111,10 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
 
       render(<ChatInterface initialMessages={messages} />);
 
-      const studentBubble = screen.getByText('Student message').closest('div');
-      const tutorBubble = screen.getByText('Tutor message').closest('div');
+      const studentArticle = screen.getByRole('article', { name: /student message/i });
+      const tutorArticle = screen.getByRole('article', { name: /tutor message/i });
+      const studentBubble = studentArticle.querySelector('.bg-blue-600');
+      const tutorBubble = tutorArticle.querySelector('.bg-zinc-100');
 
       expect(studentBubble).toHaveClass('bg-blue-600');
       expect(tutorBubble).toHaveClass('bg-zinc-100');
@@ -139,7 +142,8 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
 
       render(<ChatInterface initialMessages={messages} />);
 
-      const messageBubble = screen.getByText('Tutor message').closest('div');
+      const messageArticle = screen.getByRole('article', { name: /tutor message/i });
+      const messageBubble = messageArticle.querySelector('.bg-zinc-100');
       expect(messageBubble).toHaveClass('bg-zinc-100');
     });
 
@@ -163,8 +167,10 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
 
       render(<ChatInterface initialMessages={messages} />);
 
-      const tutorBubble = screen.getByText('Tutor message').closest('div');
-      const studentBubble = screen.getByText('Student message').closest('div');
+      const tutorArticle = screen.getByRole('article', { name: /tutor message/i });
+      const studentArticle = screen.getByRole('article', { name: /student message/i });
+      const tutorBubble = tutorArticle.querySelector('.bg-zinc-100');
+      const studentBubble = studentArticle.querySelector('.bg-blue-600');
 
       expect(tutorBubble).toHaveClass('bg-zinc-100');
       expect(studentBubble).toHaveClass('bg-blue-600');
@@ -325,7 +331,9 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
 
       render(<ChatInterface initialMessages={messages} />);
 
-      const messageBubble = screen.getByText('Test message').closest('div');
+      // Find article by aria-label (accessible name) not by text content
+      const messageArticle = screen.getByRole('article', { name: /student message/i });
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
       expect(messageBubble).toHaveClass('px-4', 'py-3');
     });
 
@@ -353,10 +361,17 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
       const messageArticle = screen.getByRole('article');
       expect(messageArticle).toHaveTextContent('This is a very long message');
       
-      // Check for wrapping classes on paragraph
-      const messageText = messageArticle.querySelector('p');
-      expect(messageText).toHaveClass('break-words');
-      expect(messageText).toHaveClass('whitespace-pre-wrap');
+      // Check for wrapping classes on MessageContent div
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      if (messageBubble) {
+        const messageContent = messageBubble.querySelector('.break-words');
+        expect(messageContent).toBeTruthy();
+        if (messageContent) {
+          expect(messageContent).toHaveClass('break-words');
+          expect(messageContent).toHaveClass('whitespace-pre-wrap');
+        }
+      }
     });
   });
 

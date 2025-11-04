@@ -1,0 +1,128 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>1</storyId>
+    <title>LaTeX Rendering Library Integration</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-03T23:30:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/4-1-latex-rendering-library-integration.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a student</asA>
+    <iWant>I want mathematical equations to display properly with correct notation</iWant>
+    <soThat>So that I can read problems and solutions accurately</soThat>
+    <tasks>
+      <task id="1">Install and configure KaTeX library (AC: 1, 2)</task>
+      <task id="2">Create KaTeX initialization utility (AC: 2)</task>
+      <task id="3">Create MathDisplay component for inline math (AC: 3)</task>
+      <task id="4">Create MathBlock component for block math (AC: 4)</task>
+      <task id="5">Ensure library loads on page load (AC: 2)</task>
+      <task id="6">Verify common math symbols support (AC: 5)</task>
+      <task id="7">Testing and verification (AC: 1-5)</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Integrates LaTeX rendering library (KaTeX or MathJax)</criterion>
+    <criterion id="2">Library is loaded and initialized on page load</criterion>
+    <criterion id="3">Basic inline math expressions render correctly (e.g., $x^2 + 5$)</criterion>
+    <criterion id="4">Basic block math expressions render correctly (e.g., $$\frac{a}{b}$$)</criterion>
+    <criterion id="5">Library configuration supports common math symbols</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Goalpost 4: Math Rendering">
+        Display equations properly using LaTeX rendering. Clean mathematical notation display in chat interface. Support for mathematical expressions in both input and output.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Epic 4: Math Rendering">
+        Math renderer components stored in components/math-renderer/ directory. KaTeX library chosen for math rendering (fast, lightweight, sufficient for algebra). KaTeX CSS must be imported in root layout for styling.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="ADR-005 LaTeX Rendering">
+        KaTeX selected over MathJax for fast rendering, lightweight footprint, and sufficient algebra support. Uses react-katex package for React integration.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 4: Math Rendering">
+        Goal: Display mathematical equations and notation correctly using LaTeX rendering. Value: Professional presentation of math problems and solutions. Story 4.1 is foundation for subsequent stories 4.2, 4.3, and 4.4.
+      </doc>
+      <doc path="docs/stories/4-1-latex-rendering-library-integration.md" title="Story 4.1 Draft" section="Architecture Patterns">
+        KaTeX supports both inline ($...$) and block ($$...$$) math expressions. Components follow Tailwind CSS styling patterns and accessibility best practices. Error handling for malformed LaTeX with graceful fallback display.
+      </doc>
+      <doc path="docs/stories/4-1-latex-rendering-library-integration.md" title="Story 4.1 Draft" section="Project Structure Notes">
+        Expected structure: components/math-renderer/ directory with MathDisplay.tsx and MathBlock.tsx. KaTeX configuration in lib/math-renderer/katex-config.ts. KaTeX CSS imported in app/layout.tsx root layout.
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/app/layout.tsx" kind="component" symbol="RootLayout" lines="1-34" reason="Root layout where KaTeX CSS must be imported for global styling. Currently imports globals.css and sets up font configuration." />
+      <file path="socratica/components/ui/ConfirmationDialog.tsx" kind="component" symbol="ConfirmationDialog" lines="1-115" reason="Reference component demonstrating Tailwind CSS styling patterns, accessibility (ARIA labels, keyboard navigation), and component structure that MathDisplay/MathBlock should follow." />
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="1-285" reason="Reference for component integration patterns. Math renderer components will integrate with chat messages in Story 4.2, so understanding ChatInterface structure is helpful." />
+      <file path="socratica/components/chat/ClearChatButton.tsx" kind="component" symbol="ClearChatButton" reason="Reference component showing feature component structure in components/ directory. Math renderer components should follow same organizational pattern." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" />
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="typescript" version="^5" />
+        <package name="tailwindcss" version="^4" />
+        <package name="vitest" version="^1.1.0" />
+        <package name="@testing-library/react" version="^15.0.0" />
+        <package name="@testing-library/jest-dom" version="^6.1.5" />
+        <package name="@testing-library/user-event" version="^14.5.1" />
+        <package name="katex" version="to be installed" />
+        <package name="react-katex" version="to be installed" />
+        <package name="@types/katex" version="to be installed if available" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Components must follow Tailwind CSS styling patterns consistent with existing UI components (ConfirmationDialog, ClearChatButton)</constraint>
+    <constraint>Components must be accessible: ARIA labels, keyboard navigation, screen reader support for mathematical content</constraint>
+    <constraint>Error handling must be graceful: KaTeX throwsOnError should be false to prevent app crashes from malformed LaTeX</constraint>
+    <constraint>KaTeX CSS must be imported in root layout (app/layout.tsx) for global availability</constraint>
+    <constraint>Components organized in components/math-renderer/ directory following feature/epic organization pattern</constraint>
+    <constraint>KaTeX configuration exported from lib/math-renderer/katex-config.ts utility file</constraint>
+    <constraint>Naming patterns: PascalCase for components (MathDisplay, MathBlock), camelCase for functions, UPPER_SNAKE_CASE for constants</constraint>
+    <constraint>TypeScript types required for all component props and KaTeX configuration</constraint>
+    <constraint>No CSS conflicts with Tailwind CSS - verify KaTeX CSS loads correctly in development and production</constraint>
+    <constraint>Library initialization on page load (no lazy loading needed for MVP)</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="MathDisplay Component Props" kind="TypeScript Interface" signature="interface MathDisplayProps { expression: string; className?: string; }" path="components/math-renderer/MathDisplay.tsx" />
+    <interface name="MathBlock Component Props" kind="TypeScript Interface" signature="interface MathBlockProps { expression: string; className?: string; }" path="components/math-renderer/MathBlock.tsx" />
+    <interface name="KaTeX Configuration" kind="TypeScript Type" signature="type KaTeXConfig = { throwOnError: boolean; errorColor: string; macros?: Record&lt;string, string&gt;; }" path="lib/math-renderer/katex-config.ts" />
+    <interface name="react-katex InlineMath" kind="React Component" signature="import { InlineMath } from 'react-katex'" path="components/math-renderer/MathDisplay.tsx" />
+    <interface name="react-katex BlockMath" kind="React Component" signature="import { BlockMath } from 'react-katex'" path="components/math-renderer/MathBlock.tsx" />
+    <interface name="KaTeX CSS Import" kind="CSS Import" signature="import 'katex/dist/katex.min.css'" path="app/layout.tsx" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Tests use Vitest framework with @testing-library/react for component testing. Tests are co-located with components in __tests__ directories. Test files follow naming pattern ComponentName.test.tsx. Tests verify acceptance criteria, not just coverage. Tests include accessibility checks (ARIA labels, keyboard navigation). Error handling tests verify graceful fallback for malformed LaTeX.
+    </standards>
+    <locations>
+      <location>components/math-renderer/__tests__/MathDisplay.test.tsx</location>
+      <location>components/math-renderer/__tests__/MathBlock.test.tsx</location>
+      <location>lib/math-renderer/__tests__/katex-config.test.ts</location>
+    </locations>
+    <ideas>
+      <idea criterion="1">Test KaTeX library installation and basic import functionality</idea>
+      <idea criterion="2">Test KaTeX CSS loads in root layout on page load</idea>
+      <idea criterion="2">Test KaTeX configuration utility exports correct configuration</idea>
+      <idea criterion="3">Test MathDisplay component renders inline math expressions correctly (e.g., $x^2 + 5$)</idea>
+      <idea criterion="3">Test MathDisplay handles malformed LaTeX gracefully with fallback display</idea>
+      <idea criterion="4">Test MathBlock component renders block math expressions correctly (e.g., $$\frac{a}{b}$$)</idea>
+      <idea criterion="4">Test MathBlock handles malformed LaTeX gracefully with fallback display</idea>
+      <idea criterion="5">Test common math symbols render correctly: basic operators (+, -, *, /, =, &lt;, &gt;), exponents (x^2), fractions (\frac{a}{b}), roots (\sqrt{x}), Greek letters (\alpha, \beta, \pi), subscripts (x_1), superscripts (x^2)</idea>
+      <idea criterion="all">Test components are accessible: ARIA labels, keyboard navigation, screen reader support</idea>
+      <idea criterion="all">Test components follow Tailwind CSS styling patterns and integrate with existing design system</idea>
+      <idea criterion="all">Integration test: Verify KaTeX CSS loads without conflicts with Tailwind CSS</idea>
+      <idea criterion="all">Integration test: Verify math rendering works in development and production builds</idea>
+    </ideas>
+  </tests>
+</story-context>
+
+

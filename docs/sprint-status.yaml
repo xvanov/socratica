@@ -60,24 +60,24 @@ development_status:
   # Epic 3: Socratic Dialogue Logic
   epic-3: backlog
   3-1-socratic-system-prompt-design: done
-  3-2-stuck-detection-logic: ready-for-dev
-  3-3-hint-generation-logic: ready-for-dev
-  3-4-response-validation-framework: ready-for-dev
-  3-5-adaptive-questioning-logic: ready-for-dev
-  epic-3-retrospective: optional
+  3-2-stuck-detection-logic: done
+  3-3-hint-generation-logic: done
+  3-4-response-validation-framework: done
+  3-5-adaptive-questioning-logic: done
+  epic-3-retrospective: completed
 
   # Epic 4: Math Rendering
   epic-4: backlog
-  4-1-latex-rendering-library-integration: drafted
-  4-2-math-rendering-in-chat-messages: backlog
-  4-3-math-rendering-in-problem-input: backlog
-  4-4-advanced-math-notation-support: backlog
+  4-1-latex-rendering-library-integration: done
+  4-2-math-rendering-in-chat-messages: done
+  4-3-math-rendering-in-problem-input: done
+  4-4-advanced-math-notation-support: done
   epic-4-retrospective: optional
 
   # Epic 5: UI Polish
   epic-5: backlog
-  5-1-responsive-layout-design: backlog
-  5-2-modern-visual-design-system: backlog
+  5-1-responsive-layout-design: ready-for-dev
+  5-2-modern-visual-design-system: ready-for-dev
   5-3-loading-states-and-feedback: backlog
   5-4-accessibility-features: backlog
   5-5-error-handling-and-user-guidance: backlog

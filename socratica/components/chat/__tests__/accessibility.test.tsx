@@ -179,7 +179,8 @@ describe('Accessibility Tests', () => {
       const message = createMessage('student', 'Test message');
       render(<Message message={message} index={0} />);
 
-      const messageBubble = screen.getByText('Test message').closest('div');
+      const messageArticle = screen.getByRole('article');
+      const messageBubble = messageArticle.querySelector('.bg-blue-600');
       expect(messageBubble).toHaveClass('bg-blue-600');
     });
 
@@ -187,7 +188,8 @@ describe('Accessibility Tests', () => {
       const message = createMessage('tutor', 'Test message');
       render(<Message message={message} index={0} />);
 
-      const messageBubble = screen.getByText('Test message').closest('div');
+      const messageArticle = screen.getByRole('article');
+      const messageBubble = messageArticle.querySelector('.bg-zinc-100');
       expect(messageBubble).toHaveClass('bg-zinc-100');
     });
 
@@ -197,12 +199,14 @@ describe('Accessibility Tests', () => {
 
       const { rerender } = render(<Message message={studentMessage} index={0} />);
       
-      const studentBubble = screen.getByText('Student message').closest('div');
+      const studentArticle = screen.getByRole('article');
+      const studentBubble = studentArticle.querySelector('.bg-blue-600');
       expect(studentBubble).toHaveClass('text-white');
 
       rerender(<Message message={tutorMessage} index={0} />);
       
-      const tutorBubble = screen.getByText('Tutor message').closest('div');
+      const tutorArticle = screen.getByRole('article');
+      const tutorBubble = tutorArticle.querySelector('.bg-zinc-100');
       expect(tutorBubble).toHaveClass('text-zinc-950');
     });
   });
@@ -264,6 +268,7 @@ describe('Accessibility Tests', () => {
     });
   });
 });
+
 
 
 

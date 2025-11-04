@@ -159,13 +159,12 @@ describe('ConfirmationDialog Component', () => {
         />
       );
 
-      const dialog = screen.getByRole('dialog');
-      const overlay = dialog.parentElement;
+      // The dialog element IS the overlay - click it directly
+      // The updated handleOverlayClick checks if click is outside the inner dialog
+      const overlay = screen.getByRole('dialog');
+      await user.click(overlay);
 
-      if (overlay) {
-        await user.click(overlay);
-        expect(onCancel).toHaveBeenCalledTimes(1);
-      }
+      expect(onCancel).toHaveBeenCalledTimes(1);
     });
 
     it('should not dismiss dialog when clicking inside dialog', async () => {
@@ -181,10 +180,14 @@ describe('ConfirmationDialog Component', () => {
         />
       );
 
+      // Click the inner dialog content div (not the overlay)
       const dialog = screen.getByRole('dialog');
-      await user.click(dialog);
-
-      expect(onCancel).not.toHaveBeenCalled();
+      const innerDialog = dialog.querySelector('.rounded-lg');
+      expect(innerDialog).toBeTruthy();
+      if (innerDialog) {
+        await user.click(innerDialog as HTMLElement);
+        expect(onCancel).not.toHaveBeenCalled();
+      }
     });
 
     it('should have accessible ARIA attributes', () => {
@@ -245,4 +248,5 @@ describe('ConfirmationDialog Component', () => {
     });
   });
 });
+
 

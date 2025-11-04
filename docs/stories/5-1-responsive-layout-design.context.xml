@@ -1,0 +1,212 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>1</storyId>
+    <title>Responsive Layout Design</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/5-1-responsive-layout-design.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a student</asA>
+    <iWant>I want the interface to work well on my phone, tablet, or computer</iWant>
+    <soThat>So that I can access help from any device I have</soThat>
+    <tasks>
+      <task id="1" ac="1,4">
+        <title>Implement responsive breakpoints and layout system</title>
+        <subtasks>
+          <subtask>Review Tailwind CSS responsive breakpoints configuration</subtask>
+          <subtask>Define breakpoint strategy: mobile (&lt; 640px), tablet (640px - 1024px), desktop (&gt; 1024px)</subtask>
+          <subtask>Create responsive layout wrapper component</subtask>
+          <subtask>Ensure navigation adapts at all breakpoints (mobile menu, desktop menu)</subtask>
+          <subtask>Verify layout system works across all screen sizes</subtask>
+          <subtask>Add unit tests for responsive breakpoints</subtask>
+          <subtask>Document responsive breakpoint strategy</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="2">
+        <title>Ensure touch-friendly controls for mobile devices</title>
+        <subtasks>
+          <subtask>Review touch target sizes (minimum 44x44px per WCAG guidelines)</subtask>
+          <subtask>Verify all interactive elements meet touch target requirements</subtask>
+          <subtask>Test buttons, input fields, and links are easily tappable on mobile</subtask>
+          <subtask>Ensure adequate spacing between touch targets</subtask>
+          <subtask>Test touch interactions on iOS and Android devices</subtask>
+          <subtask>Add unit tests for touch target sizes</subtask>
+          <subtask>Document touch-friendly design patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="3">
+        <title>Ensure text readability across all screen sizes</title>
+        <subtasks>
+          <subtask>Review typography scales for mobile, tablet, and desktop</subtask>
+          <subtask>Verify font sizes are readable on small screens (minimum 16px base)</subtask>
+          <subtask>Ensure line height and spacing are appropriate for all screen sizes</subtask>
+          <subtask>Test text readability with various font sizes and zoom levels</subtask>
+          <subtask>Verify math notation readability on mobile devices</subtask>
+          <subtask>Add unit tests for typography scaling</subtask>
+          <subtask>Document typography system</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="5">
+        <title>Prevent horizontal scrolling on any device</title>
+        <subtasks>
+          <subtask>Review all components for fixed widths that could cause overflow</subtask>
+          <subtask>Ensure containers use max-width and responsive widths</subtask>
+          <subtask>Test layout on various screen sizes (320px to 2560px)</subtask>
+          <subtask>Verify no horizontal scrollbars appear</subtask>
+          <subtask>Test with various content lengths (short and long messages)</subtask>
+          <subtask>Add unit tests for overflow prevention</subtask>
+          <subtask>Document overflow prevention patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="6">
+        <title>Cross-browser and device testing</title>
+        <subtasks>
+          <subtask>Test on iOS Safari (iPhone and iPad)</subtask>
+          <subtask>Test on Android Chrome</subtask>
+          <subtask>Test on desktop browsers (Chrome, Firefox, Safari, Edge)</subtask>
+          <subtask>Verify layout consistency across all tested browsers</subtask>
+          <subtask>Test on various screen resolutions and orientations</subtask>
+          <subtask>Document browser compatibility and known issues</subtask>
+          <subtask>Create integration tests for responsive layout</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="1-6">
+        <title>Integration testing and verification</title>
+        <subtasks>
+          <subtask>Integration test: Verify chat interface is responsive</subtask>
+          <subtask>Integration test: Verify problem input interface is responsive</subtask>
+          <subtask>Integration test: Verify math rendering works correctly on mobile</subtask>
+          <subtask>Integration test: Verify image upload works on mobile devices</subtask>
+          <subtask>Test complete user flows on mobile, tablet, and desktop</subtask>
+          <subtask>Verify accessibility features work across all screen sizes</subtask>
+          <subtask>Performance test: Verify layout doesn't cause performance issues</subtask>
+          <subtask>Document responsive design patterns and best practices</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Layout adapts to mobile, tablet, and desktop screen sizes</criterion>
+    <criterion id="2">Touch-friendly controls on mobile devices</criterion>
+    <criterion id="3">Text is readable at all screen sizes</criterion>
+    <criterion id="4">Navigation is accessible at all breakpoints</criterion>
+    <criterion id="5">No horizontal scrolling on any device</criterion>
+    <criterion id="6">Tested on iOS, Android, and desktop browsers</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Web Application Specific Requirements">
+        Defines responsive design requirements: mobile-first approach, breakpoints (mobile 320px+, tablet 768px+, desktop 1024px+), touch interactions, accessibility WCAG 2.1 Level AA compliance, and performance targets.
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Accessibility Requirements">
+        Specifies WCAG 2.1 Level AA compliance, screen reader support, keyboard navigation, alternative text for math content, color contrast (4.5:1 minimum), and touch targets (minimum 44x44px).
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Epic 5: UI Polish">
+        Maps Epic 5 to UI components location (`components/ui/`, `app/globals.css`), Tailwind CSS for styling, and responsive design patterns.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Performance Considerations">
+        Defines performance targets: Initial load < 3s (3G), Time to Interactive < 5s, Math rendering < 1s. Responsive layout should not cause performance issues.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Implementation Patterns">
+        Documents naming patterns, structure patterns, and Tailwind CSS responsive utilities. Mobile-first approach: base styles for mobile, then enhance for larger screens using `sm:`, `md:`, `lg:` prefixes.
+      </doc>
+      <doc path="docs/epics.md" title="Epics Document" section="Epic 5: UI Polish - Story 5.1">
+        Story definition with acceptance criteria: layout adapts to screen sizes, touch-friendly controls, readable text, accessible navigation, no horizontal scrolling, tested on iOS/Android/desktop browsers.
+      </doc>
+      <doc path="docs/stories/5-1-responsive-layout-design.md" title="Story 5.1: Responsive Layout Design" section="Architecture Patterns">
+        Breakpoint strategy: Mobile < 640px (default), Tablet 640px-1024px (`sm:` and `md:`), Desktop > 1024px (`lg:` and `xl:`). Touch targets minimum 44x44px. Typography: base 16px, line height 1.5-1.6. Layout containers use `max-w-*` and `overflow-x-hidden`.
+      </doc>
+      <doc path="docs/stories/5-1-responsive-layout-design.md" title="Story 5.1: Responsive Layout Design" section="Dev Notes">
+        Learnings from Story 4.4: MessageContent component needs responsive updates for mobile. MathDisplay and MathBlock need responsive testing. Component integration points identified for responsive layout work.
+      </doc>
+      <doc path="docs/test-specifications.md" title="Test Specifications" section="Test Strategy Overview">
+        Test pyramid: Unit (40%), Component (30%), Integration (20%), E2E (10%). Tests verify acceptance criteria, are meaningful, simple, fast, and independent. Vitest framework used for testing.
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/app/layout.tsx" kind="layout" symbol="RootLayout" reason="Root layout that may need responsive updates. Contains KaTeX CSS import for math rendering. Sets base font and body styles." />
+      <file path="socratica/app/page.tsx" kind="page" symbol="Home" reason="Main page component that structures the layout. Uses responsive classes (`sm:px-8`, `sm:py-16`, `sm:text-5xl`). Contains ChatInterface and ImageUpload components that need responsive layout verification." />
+      <file path="socratica/app/globals.css" kind="styles" symbol="Global Styles" reason="Global CSS file containing Tailwind directives and responsive utilities. May need responsive utility classes for layout system." />
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="184-200" reason="Chat interface component with responsive breakpoints (`sm:min-h-[500px]`, `sm:max-h-[700px]`). Needs verification for mobile stacking and desktop layout. Container uses responsive classes." />
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" reason="Message list container that displays chat messages. Needs responsive layout verification for mobile scrolling and message display." />
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" reason="Individual message component displaying student and AI tutor messages. Integration point for responsive layout. Needs verification for mobile text wrapping and spacing." />
+      <file path="socratica/components/chat/MessageInput.tsx" kind="component" symbol="MessageInput" lines="112-142" reason="Message input component with responsive classes (`flex-col`, `flex-1`). Textarea uses responsive sizing. Needs touch target verification (minimum 44x44px) and mobile keyboard optimization." />
+      <file path="socratica/components/chat/ClearChatButton.tsx" kind="component" symbol="ClearChatButton" reason="Button component for clearing chat. Needs touch target size verification (minimum 44x44px) for mobile accessibility." />
+      <file path="socratica/components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" lines="101-128" reason="Text input component with responsive layout (`flex-col gap-3 sm:flex-row sm:items-start`). Math preview positioned below on mobile, beside on desktop. Needs verification for mobile touch targets and textarea sizing." />
+      <file path="socratica/components/problem-input/ImageUpload.tsx" kind="component" symbol="ImageUpload" reason="Image upload component for mobile camera integration. Needs responsive layout verification for mobile upload interface and touch-friendly controls." />
+      <file path="socratica/components/math-renderer/MessageContent.tsx" kind="component" symbol="MessageContent" lines="65-117" reason="Message content renderer that handles mixed text/math content. Uses `whitespace-pre-wrap break-words` for text wrapping. Needs responsive verification for math notation wrapping on small screens." />
+      <file path="socratica/components/math-renderer/MathDisplay.tsx" kind="component" symbol="MathDisplay" reason="Inline math component rendering math expressions. Needs responsive testing to ensure math notation scales appropriately with text and doesn't overflow on mobile." />
+      <file path="socratica/components/math-renderer/MathBlock.tsx" kind="component" symbol="MathBlock" reason="Block math component rendering block math expressions. Needs responsive testing to ensure block math doesn't overflow horizontally on small screens." />
+      <file path="socratica/components/math-renderer/MathPreview.tsx" kind="component" symbol="MathPreview" reason="Math preview component showing LaTeX rendering preview. Needs responsive layout verification for mobile display." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" />
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="tailwindcss" version="^4" />
+        <package name="typescript" version="^5" />
+        <package name="vitest" version="^1.1.0" />
+        <package name="@testing-library/react" version="^15.0.0" />
+        <package name="@testing-library/jest-dom" version="^6.1.5" />
+        <package name="@testing-library/user-event" version="^14.5.1" />
+        <package name="katex" version="^0.16.25" />
+        <package name="react-katex" version="^3.1.0" />
+        <package name="firebase" version="^12.5.0" />
+        <package name="openai" version="^6.7.0" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="pattern">Responsive Design: Mobile-first CSS approach. Base styles for mobile, then enhance for larger screens using Tailwind responsive utilities (`sm:`, `md:`, `lg:`, `xl:`).</constraint>
+    <constraint type="pattern">Breakpoint Strategy: Mobile < 640px (default, no prefix), Tablet 640px-1024px (`sm:` and `md:` prefixes), Desktop > 1024px (`lg:` and `xl:` prefixes).</constraint>
+    <constraint type="accessibility">Touch-Friendly Design: Minimum touch target size 44x44px (WCAG 2.1 Level AA). Adequate spacing between interactive elements (minimum 8px). Avoid hover-only interactions on touch devices.</constraint>
+    <constraint type="typography">Typography Scaling: Base font size 16px (ensures readability on mobile). Responsive typography using Tailwind text size utilities. Line height 1.5-1.6 for readability. Math notation should scale appropriately with text.</constraint>
+    <constraint type="layout">Layout Containers: Use `max-w-*` utilities to prevent horizontal overflow. Use `container` class or custom container components. Ensure all containers use responsive widths (no fixed widths). Use `overflow-x-hidden` on root containers to prevent horizontal scrolling.</constraint>
+    <constraint type="component">Component Structure: Chat interface should stack vertically on mobile, side-by-side on desktop. Problem input should be full-width on mobile, constrained on desktop. Navigation should use mobile menu pattern on small screens. Math rendering should wrap appropriately on small screens.</constraint>
+    <constraint type="integration">Integration Points: Responsive layout affects all UI components (chat, problem input, math rendering). Layout system integrates with existing Tailwind CSS setup. Responsive design maintains existing functionality while improving mobile experience.</constraint>
+    <constraint type="dependencies">Dependencies: Epic 1 must be completed (provides problem input components). Epic 2 must be completed (provides chat interface components). Epic 4 must be completed (provides math rendering components). Tailwind CSS configuration must be set up (from Story 0.1).</constraint>
+    <constraint type="testing">Browser Testing: Primary browsers Chrome, Firefox, Safari, Edge (latest 2 versions). Mobile browsers iOS Safari, Chrome Mobile, Samsung Internet. Test on actual devices (not just browser dev tools). Verify touch interactions work correctly.</constraint>
+    <constraint type="naming">Naming Patterns: Components use PascalCase matching file name. Files match component name exactly. Functions use camelCase. Constants use UPPER_SNAKE_CASE. Types/Interfaces use PascalCase.</constraint>
+  </constraints>
+  <interfaces>
+    <interface name="RootLayout" kind="React Component" signature="function RootLayout({ children }: { children: React.ReactNode })" path="socratica/app/layout.tsx" />
+    <interface name="Home" kind="React Component" signature="function Home()" path="socratica/app/page.tsx" />
+    <interface name="ChatInterface" kind="React Component" signature="function ChatInterface({ initialMessages?, ocrText?, onOcrTextChange? }: ChatInterfaceProps)" path="socratica/components/chat/ChatInterface.tsx" />
+    <interface name="MessageInput" kind="React Component" signature="function MessageInput({ onMessageSubmit, placeholder?, disabled?, isInitialInput?, ocrText?, onOcrTextChange? }: MessageInputProps)" path="socratica/components/chat/MessageInput.tsx" />
+    <interface name="TextInput" kind="React Component" signature="function TextInput({ onSubmit?, placeholder?, value?, onValueChange? }: TextInputProps)" path="socratica/components/problem-input/TextInput.tsx" />
+    <interface name="MessageContent" kind="React Component" signature="function MessageContent({ content, className? }: MessageContentProps)" path="socratica/components/math-renderer/MessageContent.tsx" />
+    <interface name="MathDisplay" kind="React Component" signature="function MathDisplay({ expression, className? }: MathDisplayProps)" path="socratica/components/math-renderer/MathDisplay.tsx" />
+    <interface name="MathBlock" kind="React Component" signature="function MathBlock({ expression, className? }: MathBlockProps)" path="socratica/components/math-renderer/MathBlock.tsx" />
+    <interface name="Tailwind CSS Responsive Utilities" kind="CSS Framework" signature="sm: (640px+), md: (768px+), lg: (1024px+), xl: (1280px+)" path="socratica/tailwind.config.js" />
+  </interfaces>
+  <tests>
+    <standards>
+      Testing framework: Vitest with React Testing Library. Test pyramid: Unit (40%), Component (30%), Integration (20%), E2E (10%). Tests verify acceptance criteria, are meaningful, simple, fast, and independent. Tests located co-located with components in `__tests__/` directories. Use `@testing-library/react` for component testing, `@testing-library/user-event` for user interactions. Test responsive breakpoints using viewport utilities or CSS media query testing. Verify touch targets using accessibility testing utilities. Test layout responsiveness across breakpoints (mobile 320px, tablet 768px, desktop 1024px+).
+    </standards>
+    <locations>
+      <location pattern="**/__tests__/*.test.tsx" description="Component tests co-located with components" />
+      <location pattern="**/__tests__/*.test.ts" description="Unit tests for utilities and libraries" />
+      <location pattern="socratica/components/chat/__tests__/" description="Chat component tests" />
+      <location pattern="socratica/components/problem-input/__tests__/" description="Problem input component tests" />
+      <location pattern="socratica/components/math-renderer/__tests__/" description="Math renderer component tests" />
+      <location pattern="socratica/vitest.config.ts" description="Vitest configuration file" />
+    </locations>
+    <ideas>
+      <idea criterion="1">Test responsive breakpoints: Verify layout adapts at 640px (sm), 768px (md), 1024px (lg) breakpoints. Test ChatInterface stacking behavior (vertical on mobile, horizontal on desktop). Test TextInput math preview positioning (below on mobile, beside on desktop).</idea>
+      <idea criterion="2">Test touch targets: Verify all buttons, inputs, and interactive elements meet 44x44px minimum. Test spacing between touch targets (minimum 8px). Use `@testing-library/user-event` to simulate touch interactions.</idea>
+      <idea criterion="3">Test typography scaling: Verify base font size is 16px on mobile. Test text readability with various font sizes and zoom levels. Test math notation readability on mobile devices (ensure KaTeX scales appropriately).</idea>
+      <idea criterion="4">Test navigation accessibility: Verify navigation adapts at all breakpoints (mobile menu vs desktop menu). Test keyboard navigation across breakpoints. Test screen reader compatibility at different screen sizes.</idea>
+      <idea criterion="5">Test overflow prevention: Test layout on various screen sizes (320px to 2560px). Verify no horizontal scrollbars appear. Test with various content lengths (short and long messages). Test math block expressions don't overflow horizontally.</idea>
+      <idea criterion="6">Integration tests: Test complete user flows on mobile, tablet, and desktop viewports. Test chat interface responsiveness. Test problem input interface responsiveness. Test math rendering correctness on mobile. Test image upload on mobile devices.</idea>
+    </ideas>
+  </tests>
+</story-context>
+

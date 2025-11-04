@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageProps } from "@/types/chat";
+import MessageContent from "@/components/math-renderer/MessageContent";
 
 /**
  * Message component that displays a single chat message
@@ -48,7 +49,7 @@ export default function Message({ message, index }: MessageProps) {
               : "bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-zinc-50"
           }`}
         >
-          <p className="whitespace-pre-wrap break-words">{message.content}</p>
+          <MessageContent content={message.content} />
         </div>
         <div
           className={`text-xs text-zinc-500 dark:text-zinc-400 ${

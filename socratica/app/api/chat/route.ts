@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai } from "@/lib/openai/client";
 import { prepareConversationContext } from "@/lib/openai/context";
+import { validateMathematicalExpression, evaluateResponseCorrectness } from "@/lib/openai/response-validation";
+import {
+  trackStuckState,
+  analyzeConversationForStuckState,
+  resetStuckState,
+  calculateHintLevel,
+  type StuckState,
+} from "@/lib/openai/stuck-detection";
+import {
+  determineUnderstandingLevel,
+  resetUnderstandingState,
+  type UnderstandingState,
+} from "@/lib/openai/adaptive-questioning";
 import { Message } from "@/types/chat";
 import OpenAI from "openai";
 
@@ -62,7 +75,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    const { message, conversationHistory = [], userId } = body;
+    const { message, conversationHistory = [], userId, stuckState, understandingState } = body;
 
     // Validate request
     if (!message || typeof message !== "string") {
@@ -99,10 +112,89 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Initialize or validate stuck state
+    let currentStuckState: StuckState;
+    if (stuckState && typeof stuckState === "object") {
+      // Use provided stuck state if valid
+      currentStuckState = {
+        consecutiveConfused: stuckState.consecutiveConfused || 0,
+        isStuck: stuckState.isStuck || false,
+        lastConfusedIndex: stuckState.lastConfusedIndex || null,
+      };
+    } else if (conversationHistory.length > 0) {
+      // Analyze existing conversation to determine stuck state
+      currentStuckState = analyzeConversationForStuckState(conversationHistory);
+    } else {
+      // No conversation history, start fresh
+      currentStuckState = resetStuckState();
+    }
+
+    // Analyze current message for confusion and update stuck state
+    const updatedStuckState = trackStuckState(
+      message,
+      conversationHistory,
+      currentStuckState
+    );
+
+    // Calculate hint level based on consecutive confused responses
+    const hintLevel = calculateHintLevel(updatedStuckState.consecutiveConfused);
+
+    // Validate mathematical expressions and evaluate correctness if message contains math content
+    const mathExpressionPattern = /[a-zA-Z0-9+\-*/^=()]/;
+    const hasMathContent = mathExpressionPattern.test(message);
+    
+    let correctnessLevel: "correct" | "incorrect" | "partial" = "partial"; // Default
+    
+    if (hasMathContent) {
+      const expressionValidation = validateMathematicalExpression(message);
+      
+      // If expression is invalid, still send to OpenAI but let it handle the response
+      // The enhanced prompt will guide the student to correct format using Socratic questions
+      if (!expressionValidation.isValid && process.env.NODE_ENV === "development") {
+        console.log(`Expression validation warning: ${expressionValidation.error}`);
+        correctnessLevel = "incorrect";
+      } else {
+        // Evaluate response correctness (semantic evaluation done by LLM via prompt)
+        // For now, we use a simple heuristic - actual correctness determined by LLM
+        const validationResult = evaluateResponseCorrectness(message);
+        correctnessLevel = validationResult.correctnessLevel;
+      }
+    }
+
+    // Initialize or validate understanding state
+    let currentUnderstandingState: UnderstandingState;
+    if (understandingState && typeof understandingState === "object") {
+      // Use provided understanding state if valid
+      currentUnderstandingState = {
+        level: understandingState.level || "progressing",
+        consecutiveCorrect: understandingState.consecutiveCorrect || 0,
+        consecutiveIncorrect: understandingState.consecutiveIncorrect || 0,
+        consecutivePartial: understandingState.consecutivePartial || 0,
+        totalResponses: understandingState.totalResponses || 0,
+        lastUpdated: understandingState.lastUpdated || Date.now(),
+      };
+    } else {
+      // Start fresh understanding state
+      currentUnderstandingState = resetUnderstandingState();
+    }
+
+    // Determine understanding level from validation results and stuck state
+    const updatedUnderstandingState = determineUnderstandingLevel(
+      correctnessLevel,
+      updatedStuckState,
+      currentUnderstandingState
+    );
+
     // Convert messages to OpenAI format and manage context window
+    // Pass stuck state, hint level, and understanding level to context preparation
     const openAIMessages = prepareConversationContext(
       conversationHistory,
-      message
+      message,
+      undefined, // Use default maxTokens
+      updatedStuckState.isStuck,
+      updatedStuckState.consecutiveConfused,
+      hintLevel,
+      updatedUnderstandingState.level
     );
 
     // Call OpenAI API with retry logic
@@ -216,13 +308,15 @@ export async function POST(request: NextRequest) {
     const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const timestamp = new Date().toISOString();
 
-    // Return success response
+    // Return success response with updated stuck state and understanding state
     return NextResponse.json({
       success: true,
       data: {
         message: aiMessage,
         messageId,
         timestamp,
+        stuckState: updatedStuckState, // Include updated stuck state in response
+        understandingState: updatedUnderstandingState, // Include updated understanding state in response
       },
       error: null,
     });

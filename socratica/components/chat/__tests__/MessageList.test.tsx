@@ -136,9 +136,16 @@ describe('MessageList Component', () => {
       const messageArticle = screen.getByRole('article');
       expect(messageArticle).toHaveTextContent('This is a very long message');
       
-      // Check for wrapping classes on the paragraph element
-      const messageText = messageArticle.querySelector('p');
-      expect(messageText).toHaveClass('break-words');
+      // Check for wrapping classes on MessageContent div
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      if (messageBubble) {
+        const messageContent = messageBubble.querySelector('.break-words');
+        expect(messageContent).toBeTruthy();
+        if (messageContent) {
+          expect(messageContent).toHaveClass('break-words');
+        }
+      }
     });
 
     it('should handle messages with special characters', () => {

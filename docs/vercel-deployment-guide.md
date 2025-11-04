@@ -169,3 +169,4 @@ After deploying:
 That's it! Push to GitHub → Connect to Vercel → Configure env vars → Deploy → Update Firebase domains
 
 
+

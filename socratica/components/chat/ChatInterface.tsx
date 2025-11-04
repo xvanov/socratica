@@ -5,7 +5,8 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ClearChatButton from "./ClearChatButton";
 import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
-import { ChatInterfaceProps, Message } from "@/types/chat";
+import { ChatInterfaceProps, Message, StuckState } from "@/types/chat";
+import { resetStuckState } from "@/lib/openai/stuck-detection";
 
 // Stable empty array to avoid creating new references on each render
 const EMPTY_MESSAGES: Message[] = [];
@@ -27,6 +28,7 @@ export default function ChatInterface({
   const [error, setError] = useState<string | null>(null);
   const [retryMessage, setRetryMessage] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [stuckState, setStuckState] = useState<StuckState>(resetStuckState());
   const prevInitialMessagesRef = useRef<Message[]>(stableInitialMessages);
   
   // Determine if this is the initial input (no messages yet)
@@ -78,6 +80,7 @@ export default function ChatInterface({
         body: JSON.stringify({
           message: messageText,
           conversationHistory,
+          stuckState, // Send current stuck state
         }),
       });
 
@@ -90,6 +93,11 @@ export default function ChatInterface({
         setError(errorMessage);
         setRetryMessage(messageText); // Store message for retry
         return;
+      }
+
+      // Update stuck state from API response
+      if (data.data && data.data.stuckState) {
+        setStuckState(data.data.stuckState);
       }
 
       // Add AI response as tutor message
@@ -151,6 +159,8 @@ export default function ChatInterface({
     setRetryMessage(null);
     // Clear loading state
     setIsAIResponding(false);
+    // Reset stuck state (starting new problem session)
+    setStuckState(resetStuckState());
     // Hide confirmation dialog
     setShowConfirmDialog(false);
   };

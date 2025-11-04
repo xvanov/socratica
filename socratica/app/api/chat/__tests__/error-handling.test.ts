@@ -18,6 +18,19 @@ vi.mock('@/lib/openai/client', () => ({
 // Mock prompts
 vi.mock('@/lib/openai/prompts', () => ({
   SOCRATIC_MATH_TUTOR_PROMPT: 'Test Socratic prompt',
+  buildEnhancedPromptWithAdaptiveQuestioning: vi.fn(
+    (basePrompt: string, understandingLevel: string = 'progressing') => {
+      return `${basePrompt}\n\nADAPTIVE QUESTIONING INSTRUCTIONS (Understanding level: ${understandingLevel})`;
+    }
+  ),
+  buildEnhancedPromptWithHints: vi.fn(
+    (basePrompt: string, isStuck: boolean, consecutiveConfused: number, hintLevel?: number) => {
+      if (!isStuck || consecutiveConfused < 2) {
+        return basePrompt;
+      }
+      return `${basePrompt}\n\nHINT GENERATION INSTRUCTIONS`;
+    }
+  ),
 }));
 
 describe('Chat API Route - Error Handling', () => {

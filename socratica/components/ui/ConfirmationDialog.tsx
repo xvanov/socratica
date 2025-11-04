@@ -53,7 +53,12 @@ export default function ConfirmationDialog({
 
   // Handle click outside to dismiss (optional)
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
+    // Check if click is on the overlay itself (not on the inner dialog)
+    // This is more reliable than e.target === e.currentTarget
+    if (dialogRef.current && !dialogRef.current.contains(e.target as Node)) {
+      onCancel();
+    } else if (e.target === e.currentTarget) {
+      // Fallback: if dialogRef is not available, use the original check
       onCancel();
     }
   };
@@ -112,4 +117,5 @@ export default function ConfirmationDialog({
     </div>
   );
 }
+
 
