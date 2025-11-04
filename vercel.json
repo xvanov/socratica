@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd socratica && npm run build",
-  "devCommand": "cd socratica && npm run dev",
-  "installCommand": "cd socratica && npm install",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "framework": "nextjs"
 }
 
