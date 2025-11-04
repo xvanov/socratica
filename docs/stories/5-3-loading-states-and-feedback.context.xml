@@ -1,0 +1,335 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>3</storyId>
+    <title>Loading States and Feedback</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/5-3-loading-states-and-feedback.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>to know when the system is processing my request</iWant>
+    <soThat>I understand the system is working and not frozen</soThat>
+    <tasks>
+      <task id="1" ac="1">
+        <title>Implement loading spinner/indicator for API calls</title>
+        <subtasks>
+          <subtask>Review architecture patterns for loading states (components/ui/)</subtask>
+          <subtask>Create LoadingSpinner component following design system from Story 5.2</subtask>
+          <subtask>Integrate loading indicator with chat API calls (Epic 2 stories)</subtask>
+          <subtask>Integrate loading indicator with OCR API calls (Epic 1 Story 1.3)</subtask>
+          <subtask>Ensure loading indicator follows design system colors and spacing</subtask>
+          <subtask>Test loading indicator visibility and accessibility</subtask>
+          <subtask>Add unit tests for LoadingSpinner component</subtask>
+          <subtask>Add integration tests for loading states during API calls</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="2">
+        <title>Implement disabled states for buttons during processing</title>
+        <subtasks>
+          <subtask>Review existing button components (components/ui/Button.tsx)</subtask>
+          <subtask>Add disabled state styling following design system</subtask>
+          <subtask>Disable send button during message processing (Epic 2 Story 2.2)</subtask>
+          <subtask>Disable image upload button during OCR processing (Epic 1 Story 1.3)</subtask>
+          <subtask>Ensure disabled state meets WCAG contrast requirements</subtask>
+          <subtask>Add visual feedback for disabled state (cursor, opacity)</subtask>
+          <subtask>Add unit tests for button disabled states</subtask>
+          <subtask>Add integration tests for button disabling during API calls</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="3">
+        <title>Implement progress feedback for image uploads</title>
+        <subtasks>
+          <subtask>Review image upload component (components/problem-input/ImageUpload.tsx)</subtask>
+          <subtask>Add upload progress indicator (percentage or progress bar)</subtask>
+          <subtask>Show progress during image upload to Firebase Storage</subtask>
+          <subtask>Show progress during OCR processing</subtask>
+          <subtask>Ensure progress feedback follows design system styling</subtask>
+          <subtask>Handle upload cancellation gracefully</subtask>
+          <subtask>Add unit tests for progress feedback component</subtask>
+          <subtask>Add integration tests for image upload progress</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="4">
+        <title>Implement smooth transitions between states</title>
+        <subtasks>
+          <subtask>Review Tailwind CSS transition utilities</subtask>
+          <subtask>Add CSS transitions for loading state changes</subtask>
+          <subtask>Add transitions for button state changes</subtask>
+          <subtask>Add transitions for error/success message appearance</subtask>
+          <subtask>Ensure transitions are smooth and not jarring</subtask>
+          <subtask>Test transitions on different devices and browsers</subtask>
+          <subtask>Add unit tests for transition behavior</subtask>
+          <subtask>Add visual regression tests for state transitions</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="5">
+        <title>Implement clear error state communication</title>
+        <subtasks>
+          <subtask>Review error handling patterns from Epic 1 and Epic 2 stories</subtask>
+          <subtask>Create ErrorMessage component following design system</subtask>
+          <subtask>Display user-friendly error messages (no technical jargon)</subtask>
+          <subtask>Integrate error messages with chat API errors</subtask>
+          <subtask>Integrate error messages with OCR API errors</subtask>
+          <subtask>Include retry mechanisms for transient failures</subtask>
+          <subtask>Ensure error messages meet accessibility requirements</subtask>
+          <subtask>Add unit tests for ErrorMessage component</subtask>
+          <subtask>Add integration tests for error state handling</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="6">
+        <title>Implement success confirmations where appropriate</title>
+        <subtasks>
+          <subtask>Review PRD for success confirmation requirements</subtask>
+          <subtask>Create SuccessMessage component following design system</subtask>
+          <subtask>Add success confirmation for successful image upload</subtask>
+          <subtask>Add success confirmation for successful problem submission</subtask>
+          <subtask>Ensure success messages are subtle and not distracting</subtask>
+          <subtask>Add appropriate timing for success message display</subtask>
+          <subtask>Add unit tests for SuccessMessage component</subtask>
+          <subtask>Add integration tests for success confirmations</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <ac id="1">Loading spinner/indicator shows during API calls</ac>
+    <ac id="2">Disabled states for buttons during processing</ac>
+    <ac id="3">Progress feedback for image uploads</ac>
+    <ac id="4">Smooth transitions between states</ac>
+    <ac id="5">Error states are clearly communicated</ac>
+    <ac id="6">Success confirmations where appropriate</ac>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 5.3: Loading States and Feedback">
+        Story defines loading spinner/indicator during API calls, disabled button states, progress feedback for image uploads, smooth transitions, error communication, and success confirmations.
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Functional Requirements">
+        FR-6 defines typing indicators showing when AI tutor is generating response. FR-5 defines math rendering performance targets. Non-functional requirements specify performance targets for loading states.
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="User Experience Principles">
+        Visual feedback should include clear indicators when AI is "thinking" or generating responses. Error handling should follow user-friendly format with actionable guidance.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Epic 5: UI Polish">
+        UI Polish epic includes loading states, error handling, and user guidance components. Components should be in components/ui/ directory following established patterns.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Performance Considerations">
+        Loading states should show during API calls. Chat response time target is &lt; 2 seconds. Image upload/processing target is &lt; 5 seconds.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Implementation Patterns">
+        Loading states use React state hooks for tracking. Error handling follows try-catch patterns with user-friendly messages. Retry logic implemented with exponential backoff (up to 3 attempts).
+      </doc>
+      <doc path="docs/stories/5-2-modern-visual-design-system.md" title="Story 5.2: Modern Visual Design System" section="Dev Notes">
+        Design system establishes color palette, typography, spacing, and shadows. Loading states should use design system tokens for consistency. Design system configured in tailwind.config.js.
+      </doc>
+      <doc path="docs/stories/1-3-ocr-vision-llm-integration.md" title="Story 1.3: OCR/Vision LLM Integration" section="Dev Notes">
+        Error handling patterns include retry logic with exponential backoff, user-friendly error messages, and graceful degradation. Loading states during OCR processing are required.
+      </doc>
+      <doc path="docs/stories/2-3-llm-api-integration.md" title="Story 2.3: LLM API Integration" section="Dev Notes">
+        Error handling patterns include retry logic, rate limit handling, network timeout handling, and user-friendly error messages. Loading indicators required during API calls.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="27-267" reason="Main chat interface with existing loading state (isAIResponding), error display, and disabled state passed to MessageInput. Shows error display pattern with retry button.">
+        <snippet>Uses `isAIResponding` state for loading indicator. Error display uses inline styles with role="alert" and aria-live="assertive". Disabled state passed to MessageInput component.</snippet>
+      </artifact>
+      <artifact path="components/chat/MessageInput.tsx" kind="component" symbol="MessageInput" lines="19-240" reason="Message input component with disabled prop support. Shows validation error display pattern with role="alert" and aria-live="polite".">
+        <snippet>Accepts `disabled` prop and displays validation errors inline. Error display pattern uses red styling with icon and text.</snippet>
+      </artifact>
+      <artifact path="components/problem-input/ImageUpload.tsx" kind="component" symbol="ImageUpload" lines="17-424" reason="Image upload component with existing loading states (isUploading, isOCRLoading) and error display. Shows error handling patterns with retry mechanisms.">
+        <snippet>Uses `isUploading` and `isOCRLoading` states. Error display shows inline error messages with retry buttons. Handles both upload errors and OCR errors separately.</snippet>
+      </artifact>
+      <artifact path="components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" lines="14-175" reason="Text input component with disabled submit button state (isSubmitting) and validation error display pattern.">
+        <snippet>Submit button shows "Submitting..." text when `isSubmitting` is true. Disabled state styling uses Tailwind classes. Validation error display follows same pattern as other components.</snippet>
+      </artifact>
+      <artifact path="components/ui/ConfirmationDialog.tsx" kind="component" symbol="ConfirmationDialog" lines="1-122" reason="Example UI component showing accessibility patterns, focus management, and dialog structure. Reference for creating new UI components.">
+        <snippet>Shows proper accessibility patterns with ARIA attributes, focus management, keyboard navigation, and dialog structure. Uses Tailwind CSS for styling.</snippet>
+      </artifact>
+      <artifact path="app/api/chat/route.ts" kind="api-route" symbol="POST" lines="74-364" reason="Chat API route with retry logic, error handling patterns, and error response format. Shows how API errors are handled and returned to frontend.">
+        <snippet>Uses `retryWithBackoff` function with exponential backoff (up to 3 attempts). Returns user-friendly error messages for rate limits (429), auth errors (401), context overflow (400), and network timeouts. Error format includes success, data, and error fields.</snippet>
+      </artifact>
+      <artifact path="app/api/ocr/route.ts" kind="api-route" symbol="POST" lines="67-214" reason="OCR API route with retry logic, error handling patterns, and error response format. Shows how OCR errors are handled.">
+        <snippet>Uses `retryWithBackoff` function with exponential backoff. Handles quota errors (402), no text extracted errors (400), timeout errors (504), and general errors (500). Returns error messages with retry flags.</snippet>
+      </artifact>
+      <artifact path="lib/utils/error-handling.ts" kind="utility" symbol="error-handling" reason="May contain error formatting utilities. Should be checked for existing error handling helpers.">
+        <snippet>Location mentioned in story Dev Notes. May need updates for error formatting.</snippet>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.1" reason="Next.js framework for API routes and React components"/>
+        <package name="react" version="19.2.0" reason="React library for component development"/>
+        <package name="react-dom" version="19.2.0" reason="React DOM rendering"/>
+        <package name="tailwindcss" version="^4" reason="CSS framework for styling and transitions"/>
+        <package name="typescript" version="^5" reason="TypeScript for type safety"/>
+      </ecosystem>
+      <ecosystem name="testing">
+        <package name="vitest" version="^1.1.0" reason="Test runner for unit and integration tests"/>
+        <package name="@testing-library/react" version="^15.0.0" reason="React testing utilities"/>
+        <package name="@testing-library/user-event" version="^14.5.1" reason="User interaction simulation"/>
+        <package name="@testing-library/jest-dom" version="^6.1.5" reason="DOM matchers for assertions"/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="pattern">
+      <description>Loading state management: Use React state hooks (useState) for loading state tracking. Loading states should be local to components that trigger API calls. Use loading flags (isLoading, isUploading, isProcessing) for different operation types.</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Architecture-Patterns</source>
+    </constraint>
+    <constraint type="pattern">
+      <description>Component structure: Loading components should be in components/ui/ directory following design system patterns from Story 5.2. Components follow PascalCase naming matching file name.</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Architecture-Patterns</source>
+    </constraint>
+    <constraint type="pattern">
+      <description>API integration: Loading states during chat API calls (/app/api/chat/route.ts) and OCR API calls (/app/api/ocr/route.ts). Error handling follows patterns from Epic 1 Story 1.3 and Epic 2 Story 2.3 with retry logic (up to 3 attempts with exponential backoff).</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Architecture-Patterns</source>
+    </constraint>
+    <constraint type="pattern">
+      <description>State transitions: Use Tailwind CSS transition utilities (transition, duration, ease-in-out). Transitions should be smooth (200-300ms duration). Loading → Success transitions should be subtle. Loading → Error transitions should be clear but not jarring.</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Architecture-Patterns</source>
+    </constraint>
+    <constraint type="pattern">
+      <description>Error handling: Error messages follow user-friendly format (no technical jargon). Error messages include actionable guidance. Retry mechanisms provided for transient failures. Error states logged to console (dev) or Firebase Analytics (prod).</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Architecture-Patterns</source>
+    </constraint>
+    <constraint type="requirement">
+      <description>Accessibility: Loading indicators include ARIA labels (aria-label="Loading..."). Disabled buttons include aria-disabled attribute. Error messages include role="alert" for screen readers. Focus management during state transitions.</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Architecture-Patterns</source>
+    </constraint>
+    <constraint type="requirement">
+      <description>Design system: Loading states and feedback components must use design system tokens from Story 5.2 (colors, typography, spacing, shadows). Components should leverage Tailwind utilities and design tokens for consistency.</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Learnings-from-Previous-Story</source>
+    </constraint>
+    <constraint type="requirement">
+      <description>WCAG compliance: Disabled states must meet WCAG contrast requirements (4.5:1 minimum). Loading states and error messages must maintain accessibility standards from design system.</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Learnings-from-Previous-Story</source>
+    </constraint>
+    <constraint type="pattern">
+      <description>File naming: Components use PascalCase matching file name (e.g., LoadingSpinner.tsx contains LoadingSpinner component). Files match component name exactly. Functions use camelCase. Constants use UPPER_SNAKE_CASE.</description>
+      <source>docs/stories/5-3-loading-states-and-feedback.md#Architecture-Patterns</source>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="POST /api/chat" kind="REST endpoint" signature="POST /api/chat" path="app/api/chat/route.ts">
+      <request>
+        <field name="message" type="string" required="true"/>
+        <field name="conversationHistory" type="Message[]" required="false"/>
+        <field name="userId" type="string" required="false"/>
+        <field name="stuckState" type="StuckState" required="false"/>
+      </request>
+      <response success="true">
+        <field name="success" type="boolean" value="true"/>
+        <field name="data" type="object">
+          <field name="message" type="string"/>
+          <field name="messageId" type="string"/>
+          <field name="timestamp" type="string"/>
+        </field>
+      </response>
+      <response success="false">
+        <field name="success" type="boolean" value="false"/>
+        <field name="data" type="null"/>
+        <field name="error" type="string"/>
+      </response>
+      <errors>
+        <error code="400" message="Message is required and must be a string"/>
+        <error code="429" message="Too many requests. Please wait a moment and try again."/>
+        <error code="401" message="Authentication error. Please check your API key."/>
+        <error code="500" message="Unable to get tutor response. Please try again."/>
+      </errors>
+      <retry>Up to 3 attempts with exponential backoff</retry>
+    </interface>
+    <interface name="POST /api/ocr" kind="REST endpoint" signature="POST /api/ocr" path="app/api/ocr/route.ts">
+      <request>
+        <field name="image" type="FormData" required="true"/>
+      </request>
+      <response success="true">
+        <field name="text" type="string"/>
+      </response>
+      <response success="false">
+        <field name="error" type="string"/>
+        <field name="retry" type="boolean" required="false"/>
+      </response>
+      <errors>
+        <error code="400" message="Unable to read image. Please try a clearer photo or use text input."/>
+        <error code="402" message="OpenAI API quota exceeded. Please check your OpenAI account billing."/>
+        <error code="504" message="Request timed out. Please try again."/>
+        <error code="500" message="An unexpected error occurred. Please try again or use text input."/>
+      </errors>
+      <retry>Up to 3 attempts with exponential backoff (longer delays for rate limits)</retry>
+    </interface>
+    <interface name="MessageInput component" kind="React component" signature="MessageInput(props: MessageInputProps)" path="components/chat/MessageInput.tsx">
+      <props>
+        <prop name="onMessageSubmit" type="(message: string) => void" required="true"/>
+        <prop name="disabled" type="boolean" required="false" default="false"/>
+        <prop name="isInitialInput" type="boolean" required="false" default="false"/>
+        <prop name="ocrText" type="string" required="false"/>
+        <prop name="onOcrTextChange" type="(text: string) => void" required="false"/>
+      </props>
+      <behavior>Disables input and submit button when disabled prop is true. Shows validation errors inline.</behavior>
+    </interface>
+    <interface name="ImageUpload component" kind="React component" signature="ImageUpload(props: ImageUploadProps)" path="components/problem-input/ImageUpload.tsx">
+      <props>
+        <prop name="onImageSelect" type="(file: File) => void" required="false"/>
+        <prop name="onImageRemove" type="() => void" required="false"/>
+        <prop name="onOCRComplete" type="(extractedText: string) => void" required="false"/>
+        <prop name="onOCRError" type="(error: string) => void" required="false"/>
+        <prop name="maxSizeMB" type="number" required="false" default="10"/>
+      </props>
+      <state>
+        <stateField name="isUploading" type="boolean" description="Loading state during file upload"/>
+        <stateField name="isOCRLoading" type="boolean" description="Loading state during OCR processing"/>
+        <stateField name="error" type="string | null" description="Upload error message"/>
+        <stateField name="ocrError" type="string | null" description="OCR error message"/>
+      </state>
+      <behavior>Shows loading states during upload and OCR processing. Displays errors with retry buttons.</behavior>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing framework: Vitest for unit and integration tests. React Testing Library for component testing. Tests should be co-located with components in __tests__ directories. Test files follow naming pattern: ComponentName.test.tsx or ComponentName.integration.test.tsx. Tests should verify acceptance criteria, not just coverage. Accessibility tests should verify ARIA attributes, keyboard navigation, and screen reader compatibility.
+    </standards>
+    <locations>
+      <location>components/*/__tests__/</location>
+      <location>app/api/*/__tests__/</location>
+      <location>lib/*/__tests__/</location>
+    </locations>
+    <ideas>
+      <test idea="AC1" description="Test LoadingSpinner component renders with correct ARIA attributes (aria-label='Loading...')"/>
+      <test idea="AC1" description="Test loading indicator appears during chat API call in ChatInterface"/>
+      <test idea="AC1" description="Test loading indicator appears during OCR API call in ImageUpload"/>
+      <test idea="AC2" description="Test button disabled state styling meets WCAG contrast requirements"/>
+      <test idea="AC2" description="Test MessageInput submit button is disabled when isAIResponding is true"/>
+      <test idea="AC2" description="Test ImageUpload button is disabled during isUploading or isOCRLoading"/>
+      <test idea="AC3" description="Test ProgressBar component shows upload progress percentage"/>
+      <test idea="AC3" description="Test progress feedback appears during image upload to Firebase Storage"/>
+      <test idea="AC3" description="Test progress feedback appears during OCR processing"/>
+      <test idea="AC4" description="Test CSS transitions apply correctly to loading state changes (200-300ms duration)"/>
+      <test idea="AC4" description="Test button state transitions are smooth and not jarring"/>
+      <test idea="AC4" description="Test error/success message appearance uses smooth transitions"/>
+      <test idea="AC5" description="Test ErrorMessage component displays user-friendly error messages"/>
+      <test idea="AC5" description="Test error messages include role='alert' for screen readers"/>
+      <test idea="AC5" description="Test retry mechanisms appear for transient failures in error messages"/>
+      <test idea="AC5" description="Test error messages integrate with chat API errors"/>
+      <test idea="AC5" description="Test error messages integrate with OCR API errors"/>
+      <test idea="AC6" description="Test SuccessMessage component displays subtle success confirmations"/>
+      <test idea="AC6" description="Test success confirmation appears for successful image upload"/>
+      <test idea="AC6" description="Test success confirmation appears for successful problem submission"/>
+      <test idea="AC6" description="Test success messages have appropriate timing and auto-dismiss"/>
+      <test idea="integration" description="Integration test: Complete flow from image upload through OCR processing with loading states and error handling"/>
+      <test idea="integration" description="Integration test: Complete flow from message send through AI response with loading states and error handling"/>
+      <test idea="accessibility" description="Accessibility test: Loading indicators are accessible to screen readers"/>
+      <test idea="accessibility" description="Accessibility test: Disabled buttons are keyboard navigable and properly announced"/>
+      <test idea="accessibility" description="Accessibility test: Error messages are properly announced to screen readers"/>
+    </ideas>
+  </tests>
+</story-context>
+

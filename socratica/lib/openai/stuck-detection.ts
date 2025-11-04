@@ -5,6 +5,7 @@
  */
 
 import { Message } from "@/types/chat";
+import type { HintLevel } from "./prompts";
 
 /**
  * Confusion indicators - patterns that suggest student confusion
@@ -49,9 +50,9 @@ export const MAX_HINT_LEVEL = 3;
  * Level 3: 6+ stuck turns (most specific hint, but still not direct answer)
  * 
  * @param consecutiveConfused - Number of consecutive confused responses
- * @returns Hint level (1-3)
+ * @returns Hint level (0-3)
  */
-export function calculateHintLevel(consecutiveConfused: number): number {
+export function calculateHintLevel(consecutiveConfused: number): HintLevel {
   if (consecutiveConfused < 2) {
     return 0; // No hint needed
   } else if (consecutiveConfused <= 3) {

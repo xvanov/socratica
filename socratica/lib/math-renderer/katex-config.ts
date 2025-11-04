@@ -14,13 +14,13 @@
  * - Nested expressions: Fully supported (matrices within matrices, sums within fractions, etc.)
  */
 
-import type { KaTeXOptions } from 'katex';
+import type { KatexOptions } from 'katex';
 
 /**
  * TypeScript type for advanced notation configuration
- * Extends KaTeXOptions with documentation for advanced notation support
+ * Extends KatexOptions with documentation for advanced notation support
  */
-export interface AdvancedNotationConfig extends KaTeXOptions {
+export interface AdvancedNotationConfig extends KatexOptions {
   /** When false, KaTeX renders errors as HTML instead of throwing exceptions */
   throwOnError: false;
   /** Color for error messages when LaTeX is malformed */

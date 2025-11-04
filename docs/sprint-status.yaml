@@ -78,7 +78,7 @@ development_status:
   epic-5: backlog
   5-1-responsive-layout-design: ready-for-dev
   5-2-modern-visual-design-system: ready-for-dev
-  5-3-loading-states-and-feedback: backlog
+  5-3-loading-states-and-feedback: ready-for-dev
   5-4-accessibility-features: backlog
   5-5-error-handling-and-user-guidance: backlog
   5-6-testing-suite-5-algebra-problems: backlog
