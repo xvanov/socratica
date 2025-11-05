@@ -1,0 +1,63 @@
+[
+  {
+    "sessionId": "session_test_001",
+    "userId": "test_user_001",
+    "problemText": "Solve for x: 2x + 5 = 15",
+    "messages": [
+      {
+        "role": "student",
+        "content": "Solve for x: 2x + 5 = 15",
+        "timestamp": "2025-01-27T10:00:00.000Z"
+      },
+      {
+        "role": "tutor",
+        "content": "What operation could you use to isolate the variable?",
+        "timestamp": "2025-01-27T10:00:05.000Z"
+      },
+      {
+        "role": "student",
+        "content": "I should subtract 5 from both sides",
+        "timestamp": "2025-01-27T10:01:00.000Z"
+      }
+    ],
+    "completionStatus": "in_progress",
+    "createdAt": "2025-01-27T10:00:00.000Z",
+    "updatedAt": "2025-01-27T10:01:00.000Z"
+  },
+  {
+    "sessionId": "session_test_002",
+    "userId": "test_user_001",
+    "problemText": "Find the roots of x² - 5x + 6 = 0",
+    "messages": [
+      {
+        "role": "student",
+        "content": "Find the roots of x² - 5x + 6 = 0",
+        "timestamp": "2025-01-27T11:00:00.000Z"
+      },
+      {
+        "role": "tutor",
+        "content": "What two numbers multiply to give you 6?",
+        "timestamp": "2025-01-27T11:00:05.000Z"
+      }
+    ],
+    "completionStatus": "solved",
+    "createdAt": "2025-01-27T11:00:00.000Z",
+    "updatedAt": "2025-01-27T11:05:00.000Z"
+  },
+  {
+    "sessionId": "session_test_003",
+    "userId": "test_user_001",
+    "problemText": "Solve: 3x - 7 = 2",
+    "messages": [
+      {
+        "role": "student",
+        "content": "Solve: 3x - 7 = 2",
+        "timestamp": "2025-01-27T12:00:00.000Z"
+      }
+    ],
+    "completionStatus": "not_solved",
+    "createdAt": "2025-01-27T12:00:00.000Z",
+    "updatedAt": "2025-01-27T12:00:00.000Z"
+  }
+]
+

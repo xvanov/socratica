@@ -24,6 +24,10 @@ export interface ChatInterfaceProps {
   initialMessages?: Message[];
   ocrText?: string; // Text extracted from OCR, to prefill input
   onOcrTextChange?: (text: string) => void; // Callback when OCR text changes
+  problemText?: string; // Text input problem (for session saving)
+  problemImageUrl?: string; // Image URL if problem was uploaded (for session saving)
+  onSessionResumed?: (sessionId: string) => void; // Callback when session is resumed
+  sessionToResume?: string; // Session ID to resume (when set, loads and restores session)
 }
 
 /**

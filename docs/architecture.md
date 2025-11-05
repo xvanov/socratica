@@ -375,6 +375,18 @@ interface Message {
   - `ageVerified` (boolean): COPPA compliance
   - `createdAt` (timestamp): ISO 8601 string
 
+**sessions**
+- Document ID: Auto-generated (sessionId)
+- Fields:
+  - `userId` (string): Firebase Auth UID
+  - `problemText` (string, optional): Text input problem
+  - `problemImageUrl` (string, optional): Image URL if problem was uploaded
+  - `messages` (array): Array of Message objects (full conversation history)
+  - `completionStatus` (string): "solved" | "not_solved" | "in_progress"
+  - `createdAt` (timestamp): ISO 8601 string (UTC)
+  - `updatedAt` (timestamp): ISO 8601 string (UTC)
+  - `stuckState` (object, optional): StuckState object for stuck detection
+
 ### Data Models
 
 **Message:**
@@ -407,6 +419,21 @@ interface User {
   displayName: string,
   ageVerified: boolean,
   createdAt: string // ISO 8601
+}
+```
+
+**Session:**
+```typescript
+interface Session {
+  sessionId: string, // Auto-generated document ID from Firestore
+  userId: string, // Firebase Auth UID
+  problemText?: string, // Text input problem (optional)
+  problemImageUrl?: string, // Image URL if problem was uploaded (optional)
+  messages: Message[], // Full conversation history array
+  completionStatus: "solved" | "not_solved" | "in_progress",
+  createdAt: string, // ISO 8601 timestamp (UTC)
+  updatedAt: string, // ISO 8601 timestamp (UTC)
+  stuckState?: StuckState // Optional stuck detection state
 }
 ```
 

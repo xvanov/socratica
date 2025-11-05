@@ -41,15 +41,16 @@ This document breaks down Phase 1 and Phase 2 goalposts into implementable epics
 4. Epic 4: Math Rendering (4 stories)
 5. Epic 5: UI Polish (6 stories)
 
-**Phase 2 (Post-MVP) - 6 Epics, 14 Stories:**
+**Phase 2 (Post-MVP) - 7 Epics, 20 Stories:**
 6. Epic 6: Interactive Whiteboard (3 stories)
 7. Epic 7: Step Visualization (2 stories)
 8. Epic 8: Voice Interface (3 stories)
 9. Epic 9: Animated Avatar (3 stories)
 10. Epic 10: Difficulty Modes (2 stories)
 11. Epic 11: Problem Generation (2 stories)
+12. Epic 12: Authentication & Account Management (6 stories)
 
-**Total: Foundation (2 stories) + 11 Epics, 42 Stories**
+**Total: Foundation (2 stories) + 12 Epics, 48 Stories**
 
 **Estimated Timeline:**
 - Phase 1 (MVP): 5-6 weeks
@@ -117,6 +118,10 @@ Each story is sized for a single dev agent to complete independently (2-4 hour s
 ### Epic 11: Problem Generation
 **Goal:** Generate practice problems based on student's current work.
 **Value:** Enables independent practice and mastery building.
+
+### Epic 12: Authentication & Account Management
+**Goal:** Provide secure user authentication and account management capabilities to enable cross-device session persistence and personalized learning experiences.
+**Value:** Enables students to access their learning history across devices, personalize their experience, and maintain progress continuity. Critical foundation for session history (Epic 6 Story 6.1) and future personalized features.
 
 ---
 
@@ -994,6 +999,178 @@ So that I can practice independently and build mastery with appropriately challe
 
 ---
 
+### Epic 12: Authentication & Account Management
+
+**Goal:** Provide secure user authentication and account management capabilities to enable cross-device session persistence and personalized learning experiences.
+**Value:** Enables students to access their learning history across devices, personalize their experience, and maintain progress continuity. Critical foundation for session history (Epic 6 Story 6.1) and future personalized features.
+
+**Note:** This epic should be prioritized early as it's required for proper session history functionality. Story 6.1 currently uses localStorage fallback but needs proper authentication for cross-device persistence.
+
+#### Story 12.1: Google Sign-In Integration
+
+As a student,
+I want to sign in with my Google account,
+So that I can access my learning history across all my devices securely.
+
+**Acceptance Criteria:**
+1. Google Sign-In button is visible and accessible on the main interface
+2. Clicking sign-in initiates Firebase Auth Google Sign-In flow
+3. OAuth consent screen displays correctly
+4. After successful authentication, user is signed in and session persists
+5. User profile information (name, email, photo) is displayed when signed in
+6. Sign-out functionality is available and works correctly
+7. Authentication state persists across page reloads
+8. Error handling for authentication failures (network errors, user cancellation, etc.)
+9. Loading states shown during authentication process
+10. User-friendly error messages for authentication failures
+
+**Prerequisites:** Story 0.2 complete (Firebase setup exists)
+
+**Technical Notes:**
+- Use Firebase Auth Google Sign-In provider (already configured in Story 0.2)
+- Replace current localStorage-based AuthButton with Firebase Auth implementation
+- Handle authentication state with Firebase Auth state observer
+- Store user profile information in application state
+- Implement proper error handling for OAuth flow
+
+#### Story 12.2: User Profile Management
+
+As a student,
+I want to view and update my profile information,
+So that I can personalize my account and ensure my information is correct.
+
+**Acceptance Criteria:**
+1. Profile page/section displays user information (name, email, photo)
+2. User can view their profile information
+3. User can update display name (if supported by Firebase Auth)
+4. User profile photo displays correctly (from Google account or custom)
+5. Profile information is synced with Firebase Auth
+6. Changes are saved and persist across sessions
+7. Loading states shown during profile updates
+8. Success feedback when profile is updated
+9. Error handling for profile update failures
+10. Form validation for profile fields
+
+**Prerequisites:** Story 12.1 (Google Sign-In exists)
+
+**Technical Notes:**
+- Use Firebase Auth `updateProfile()` for name updates
+- Consider Firestore user profile document for extended profile data
+- Sync profile photo from Google account or allow custom upload
+- Validate profile updates before saving
+
+#### Story 12.3: Authentication State Management
+
+As a student,
+I want the application to remember my authentication state,
+So that I don't have to sign in every time I use the platform.
+
+**Acceptance Criteria:**
+1. Authentication state is tracked throughout the application
+2. Protected routes/components check authentication state
+3. Unauthenticated users see sign-in prompts where appropriate
+4. Authenticated users see personalized content
+5. Authentication state persists across browser sessions
+6. Token refresh happens automatically when needed
+7. Authentication state updates in real-time across all components
+8. Proper handling of expired sessions
+9. Redirect to sign-in when authentication is required
+10. Clear distinction between authenticated and guest states
+
+**Prerequisites:** Story 12.1 (Google Sign-In exists)
+
+**Technical Notes:**
+- Use Firebase Auth state observer for real-time auth state
+- Create React Context for authentication state management
+- Implement protected route wrapper component
+- Handle token refresh automatically
+- Manage session persistence via Firebase Auth persistence settings
+
+#### Story 12.4: Guest User Migration
+
+As a student,
+I want my local session history to be preserved when I sign in,
+So that I don't lose my previous work when creating an account.
+
+**Acceptance Criteria:**
+1. Detect existing localStorage sessions when user signs in
+2. Prompt user to migrate local sessions to account
+3. Migrate sessions from localStorage to Firestore linked to authenticated user
+4. Merge guest sessions with existing account sessions
+5. Handle duplicate session detection
+6. Provide clear feedback about migration progress
+7. Clean up localStorage after successful migration
+8. Handle migration errors gracefully
+9. Allow user to skip migration (keep local sessions separate)
+10. Sessions are accessible after migration completes
+
+**Prerequisites:** Story 12.1 (Google Sign-In exists), Story 6.1 (Session History exists - at least partial implementation)
+
+**Technical Notes:**
+- Read localStorage sessions before sign-in
+- Create migration utility function
+- Map local userId to Firebase Auth UID
+- Update session documents with new userId
+- Handle conflicts if sessions already exist
+- Provide migration UI flow
+
+#### Story 12.5: Account Settings & Preferences
+
+As a student,
+I want to manage my account settings and preferences,
+So that I can customize my learning experience.
+
+**Acceptance Criteria:**
+1. Settings page/section is accessible from user profile
+2. User can view current settings
+3. User can update preferences (e.g., notifications, theme, difficulty level)
+4. Settings are saved to Firestore user profile document
+5. Settings persist across sessions and devices
+6. Settings sync in real-time across open tabs
+7. Default settings are applied for new users
+8. Settings validation prevents invalid configurations
+9. Success feedback when settings are saved
+10. Error handling for settings save failures
+
+**Prerequisites:** Story 12.2 (User Profile exists)
+
+**Technical Notes:**
+- Create Firestore `users` collection for extended user data
+- Store preferences in user document
+- Use React Context or state management for settings
+- Implement settings validation
+- Sync settings across devices via Firestore
+
+#### Story 12.6: Account Deletion & Data Privacy
+
+As a student,
+I want to delete my account and all associated data,
+So that I can manage my privacy and data as needed.
+
+**Acceptance Criteria:**
+1. Account deletion option is available in settings
+2. Confirmation dialog prevents accidental deletion
+3. Deletion process clearly explains what data will be removed
+4. All user sessions are deleted from Firestore
+5. User profile document is deleted from Firestore
+6. Firebase Auth account is deleted
+7. Deletion confirmation is shown to user
+8. User is signed out after account deletion
+9. Error handling for deletion failures
+10. Option to cancel deletion process
+
+**Prerequisites:** Story 12.5 (Account Settings exists)
+
+**Technical Notes:**
+- Use Firebase Auth `deleteUser()` method
+- Delete all user sessions from Firestore
+- Delete user profile document
+- Handle cascading deletions
+- Provide clear warning about data permanence
+- Implement proper error recovery
+
+---
+
 ## Implementation Sequence and Dependencies
 
 ### Phase 1 Implementation Roadmap (MVP)
@@ -1058,22 +1235,25 @@ Epic 4 (Math Rendering) Story 4.1 can run in parallel with other foundation stor
 
 **Phase 2 Sequencing:**
 
-1. **Epic 6: Interactive Whiteboard** (requires Epic 5)
+1. **Epic 12: Authentication & Account Management** (requires Story 0.2, recommended early for Epic 6 Story 6.1)
+   - Story 12.1 → 12.2 → 12.3 → 12.4 (requires Story 6.1) → 12.5 → 12.6
+
+2. **Epic 6: Interactive Whiteboard** (requires Epic 5, Epic 12 Story 12.1 for proper session history)
    - Story 6.1 → 6.2 → 6.3
 
-2. **Epic 7: Step Visualization** (requires Epic 3, Epic 4)
+3. **Epic 7: Step Visualization** (requires Epic 3, Epic 4)
    - Story 7.1 → 7.2
 
-3. **Epic 8: Voice Interface** (requires Epic 2)
+4. **Epic 8: Voice Interface** (requires Epic 2)
    - Story 8.1 → 8.2 → 8.3
 
-4. **Epic 9: Animated Avatar** (requires Epic 5, Epic 8 Story 8.2)
+5. **Epic 9: Animated Avatar** (requires Epic 5, Epic 8 Story 8.2)
    - Story 9.1 → 9.2 (requires Epic 8 Story 8.2) → 9.3
 
-5. **Epic 10: Difficulty Modes** (requires Epic 3, Epic 5)
+6. **Epic 10: Difficulty Modes** (requires Epic 3, Epic 5)
    - Story 10.1 → 10.2
 
-6. **Epic 11: Problem Generation** (requires Epic 3, Epic 10)
+7. **Epic 11: Problem Generation** (requires Epic 3, Epic 10)
    - Story 11.1 → 11.2 (requires Epic 10)
 
 ### Dependency Graph Summary
@@ -1089,7 +1269,8 @@ Epic 5: Depends on multiple epics for polish
 
 **Phase 2 Dependencies:**
 ```
-Epic 6: Depends on Epic 5
+Epic 12: Depends on Story 0.2 (Firebase setup), recommended before Epic 6 Story 6.1
+Epic 6: Depends on Epic 5, Epic 12 Story 12.1 (for proper session history)
 Epic 7: Depends on Epic 3, Epic 4
 Epic 8: Depends on Epic 2
 Epic 9: Depends on Epic 5, Epic 8 Story 8.2
@@ -1253,17 +1434,24 @@ Epic 11: Depends on Epic 3, Epic 10
 
 **Phase 2 Considerations:**
 
-1. **Interactive Whiteboard (Epic 6)** requires:
+1. **Authentication & Account Management (Epic 12)** requires:
+   - Firebase Auth Google Sign-In provider (already configured)
+   - Migration strategy for localStorage guest sessions
+   - Firestore user profile collection design
+   - Should be prioritized early to support Epic 6 Story 6.1
+
+2. **Interactive Whiteboard (Epic 6)** requires:
    - WebSocket or similar for real-time synchronization
    - Canvas/drawing library selection
    - Performance optimization for mobile devices
+   - Proper authentication (Epic 12) for session persistence
 
-2. **Voice Interface (Epic 8)** requires:
+3. **Voice Interface (Epic 8)** requires:
    - Browser API support (Web Speech API)
    - Math-to-speech conversion for equations
    - Cross-browser compatibility considerations
 
-3. **Difficulty Modes (Epic 10)** requires:
+4. **Difficulty Modes (Epic 10)** requires:
    - Student progress tracking
    - Grade-level curriculum alignment
    - Performance metrics for adaptation

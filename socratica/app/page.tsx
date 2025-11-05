@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import ImageUpload from "@/components/problem-input/ImageUpload";
 import ChatInterface from "@/components/chat/ChatInterface";
 import Navigation from "@/components/ui/Navigation";
 import { NetworkStatusIndicator } from "@/components/ui/NetworkStatusIndicator";
 import FeatureInstructions from "@/components/ui/FeatureInstructions";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
-export default function Home() {
+function HomeContent() {
+  const searchParams = useSearchParams();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>("");
   const [ocrError, setOcrError] = useState<string | null>(null);
+  
+  // Get session to resume from URL query params
+  const sessionToResume = searchParams?.get("resume") || null;
 
   const handleImageSelect = (file: File) => {
     setSelectedImage(file);
@@ -58,6 +64,8 @@ export default function Home() {
                 <ChatInterface
                   ocrText={extractedText}
                   onOcrTextChange={handleOcrTextChange}
+                  problemText={extractedText}
+                  sessionToResume={sessionToResume || undefined}
                 />
                 <FeatureInstructions
                   title="How to use the chat interface"
@@ -112,5 +120,17 @@ export default function Home() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <LoadingSpinner size="lg" label="Loading..." />
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

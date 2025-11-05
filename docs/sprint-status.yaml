@@ -82,11 +82,11 @@ development_status:
   5-4-accessibility-features: done
   5-5-error-handling-and-user-guidance: done
   5-6-testing-suite-5-algebra-problems: done
-  epic-5-retrospective: optional
+  epic-5-retrospective: completed
 
   # Epic 6: Interactive Whiteboard
   epic-6: backlog
-  6-1-session-history-tracking: backlog
+  6-1-session-history-tracking: in-progress
   6-2-whiteboard-foundation-and-drawing-tools: backlog
   6-3-real-time-synchronization-and-persistence: backlog
   epic-6-retrospective: optional

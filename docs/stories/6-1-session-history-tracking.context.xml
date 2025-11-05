@@ -1,0 +1,228 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>6.1</storyId>
+    <title>Session History Tracking</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/6-1-session-history-tracking.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>to see a history of all problems I've attempted and be able to resume or delete previous sessions</iWant>
+    <soThat>I can track my learning progress and return to problems I was working on</soThat>
+    <tasks>
+      <task id="1" ac="2,13">Design Session data model and Firestore schema</task>
+      <task id="2" ac="9,10,13">Create Firestore service functions for session operations</task>
+      <task id="3" ac="1,2,3,12">Create SessionHistory component</task>
+      <task id="4" ac="2,7">Create SessionListItem component</task>
+      <task id="5" ac="10">Integrate session saving into ChatInterface</task>
+      <task id="6" ac="4,5,6">Implement session resume functionality</task>
+      <task id="7" ac="8,9">Implement session deletion functionality</task>
+      <task id="8" ac="11">Implement completion status tracking</task>
+      <task id="9" ac="4,5,6">Create session history API route</task>
+      <task id="10" ac="1">Add session history UI to main application layout</task>
+      <task id="11" ac="10">Update "New Problem" flow to save previous session</task>
+      <task id="12" ac="1-13">Testing and verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <ac id="1">Session history list displays all previous problem sessions</ac>
+    <ac id="2">Each session shows: problem text/image preview, completion status (solved/not solved/in progress), timestamp</ac>
+    <ac id="3">Sessions are sorted by most recent first</ac>
+    <ac id="4">Clicking a session loads that session's conversation history</ac>
+    <ac id="5">Resuming a session restores the full conversation context</ac>
+    <ac id="6">Problem input (text/image) is restored when resuming a session</ac>
+    <ac id="7">Delete button is available for each session</ac>
+    <ac id="8">Deletion requires confirmation dialog</ac>
+    <ac id="9">Deleted sessions are removed from history and Firestore</ac>
+    <ac id="10">Sessions are automatically saved when starting a new problem or when conversation ends</ac>
+    <ac id="11">Session completion status updates automatically when student solves the problem (or can be marked manually)</ac>
+    <ac id="12">Empty state shows when no sessions exist</ac>
+    <ac id="13">History persists across browser sessions and devices (for authenticated users)</ac>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 6.1: Session History Tracking">
+        Defines session history tracking requirements: display history, resume sessions, delete sessions, auto-save, completion status tracking, and persistence across devices.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Data Architecture">
+        Firestore collection patterns and data models. Defines Message and Conversation interfaces. Documents Firestore setup and patterns for collections.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Implementation Patterns">
+        Component naming patterns (PascalCase), file structure patterns, API route patterns (/app/api/{feature}/route.ts), and error handling patterns.
+      </doc>
+      <doc path="docs/stories/6-1-session-history-tracking.md" title="Story 6.1" section="Dev Notes">
+        Session data model interface, Firestore collection structure, naming patterns, project structure, security considerations, and integration points.
+      </doc>
+      <doc path="docs/stories/5-6-testing-suite-5-algebra-problems.md" title="Story 5.6" section="Dev Agent Record">
+        E2E testing patterns with Playwright, test fixtures pattern, unit test patterns, and test documentation standards.
+      </doc>
+      <doc path="docs/stories/2-5-session-management.md" title="Story 2.5" section="Dev Agent Record">
+        Session management patterns, ChatInterface state management, and ClearChatButton component for starting new sessions.
+      </doc>
+      <doc path="docs/stories/2-4-conversation-context-management.md" title="Story 2.4" section="Dev Agent Record">
+        Conversation history management patterns, message array structure, and ChatInterface integration patterns.
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="1-310">
+        Main chat interface component managing message state (useState), conversation history array, stuckState, and API integration. Ready for session saving integration.
+      </file>
+      <file path="socratica/components/chat/ClearChatButton.tsx" kind="component" symbol="ClearChatButton" lines="1-42">
+        Button component for clearing chat and starting new problem. Needs enhancement to save session before clearing.
+      </file>
+      <file path="socratica/components/ui/ConfirmationDialog.tsx" kind="component" symbol="ConfirmationDialog" lines="1-157">
+        Reusable confirmation dialog component with accessibility features (ARIA labels, keyboard navigation, focus trap). Can be reused for session deletion confirmation.
+      </file>
+      <file path="socratica/lib/firebase/firestore.ts" kind="service" symbol="db" lines="1-10">
+        Firestore instance export using Firebase SDK. Ready for session collection operations.
+      </file>
+      <file path="socratica/lib/firebase/auth.ts" kind="service" symbol="auth" lines="1-5">
+        Firebase Auth instance export for user authentication. Required for session authorization.
+      </file>
+      <file path="socratica/lib/firebase/config.ts" kind="config" symbol="app" lines="1-23">
+        Firebase configuration initialization. Contains API keys and project settings.
+      </file>
+      <file path="socratica/app/api/chat/route.ts" kind="api" symbol="POST" lines="74-364">
+        Chat API route handling POST requests with conversation history and stuckState. Pattern for session API routes.
+      </file>
+      <file path="socratica/types/chat.ts" kind="types" symbol="Message, StuckState" lines="1-61">
+        TypeScript interfaces for Message, StuckState, and chat-related types. Session interface should extend these patterns.
+      </file>
+      <file path="socratica/tests/e2e/algebra-problems.test.ts" kind="test" symbol="E2E tests" lines="1-500">
+        E2E test patterns using Playwright. Reference for creating session history E2E tests.
+      </file>
+      <file path="socratica/tests/utils/e2e-helpers.ts" kind="test" symbol="E2E helpers" lines="1-239">
+        E2E test helper utilities for common operations. Reusable patterns for session testing.
+      </file>
+      <file path="socratica/lib/utils/__tests__/socratic-validation.test.ts" kind="test" symbol="Unit tests" lines="1-395">
+        Unit test patterns for validation logic. Reference for session validation tests.
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="firebase" version="^12.5.0">Firebase SDK for Firestore, Auth, and Storage</package>
+        <package name="next" version="16.0.1">Next.js framework for API routes and React components</package>
+        <package name="react" version="19.2.0">React library for component development</package>
+        <package name="typescript" version="^5">TypeScript for type safety</package>
+        <package name="@playwright/test" version="^1.40.0">Playwright for E2E testing</package>
+        <package name="vitest" version="^1.1.0">Vitest for unit testing</package>
+        <package name="@testing-library/react" version="^15.0.0">React Testing Library for component tests</package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Component naming: PascalCase matching file name (e.g., SessionHistory.tsx contains SessionHistory component)</constraint>
+    <constraint>File naming: Match component name exactly</constraint>
+    <constraint>Function naming: camelCase (e.g., saveSession(), resumeSession())</constraint>
+    <constraint>Constants naming: UPPER_SNAKE_CASE (e.g., SESSION_COLLECTION_NAME)</constraint>
+    <constraint>Types/Interfaces: PascalCase (e.g., Session, SessionListItemProps)</constraint>
+    <constraint>API routes: Pattern /app/api/{feature}/route.ts (e.g., /app/api/sessions/route.ts)</constraint>
+    <constraint>Firestore collection: Use 'sessions' collection name</constraint>
+    <constraint>Session data model: Must include sessionId, userId, problemText, problemImageUrl, messages, completionStatus, createdAt, updatedAt, stuckState (optional)</constraint>
+    <constraint>Completion status: Enum type 'solved' | 'not_solved' | 'in_progress'</constraint>
+    <constraint>Firebase Auth: Required for session access, users can only access their own sessions</constraint>
+    <constraint>Timestamps: ISO 8601 format strings (UTC)</constraint>
+    <constraint>Testing: Follow Playwright E2E patterns and Vitest unit test patterns</constraint>
+    <constraint>Accessibility: ARIA labels, keyboard navigation, focus management required</constraint>
+    <constraint>Responsive design: Mobile, tablet, desktop layouts required</constraint>
+    <constraint>Error handling: Graceful error handling with user-friendly messages</constraint>
+    <constraint>ConfirmationDialog: Reuse existing ConfirmationDialog component for deletion</constraint>
+    <constraint>Session persistence: Must persist across browser sessions and devices for authenticated users</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Session" kind="TypeScript interface" signature="interface Session { sessionId: string; userId: string; problemText?: string; problemImageUrl?: string; messages: Message[]; completionStatus: 'solved' | 'not_solved' | 'in_progress'; createdAt: string; updatedAt: string; stuckState?: StuckState; }" path="socratica/types/session.ts">
+      Session data model interface to be created
+    </interface>
+    <interface name="POST /api/sessions" kind="REST endpoint" signature="POST /api/sessions - Create new session. Body: { userId, problemText?, problemImageUrl?, messages, completionStatus, stuckState? }. Response: { success: boolean, data: Session | null, error: string | null }" path="socratica/app/api/sessions/route.ts">
+      API route for creating sessions
+    </interface>
+    <interface name="GET /api/sessions" kind="REST endpoint" signature="GET /api/sessions - List user's sessions. Query: userId (from auth). Response: { success: boolean, data: Session[] | null, error: string | null }" path="socratica/app/api/sessions/route.ts">
+      API route for listing sessions
+    </interface>
+    <interface name="GET /api/sessions/[sessionId]" kind="REST endpoint" signature="GET /api/sessions/[sessionId] - Get specific session. Response: { success: boolean, data: Session | null, error: string | null }" path="socratica/app/api/sessions/[sessionId]/route.ts">
+      API route for getting session by ID
+    </interface>
+    <interface name="PUT /api/sessions/[sessionId]" kind="REST endpoint" signature="PUT /api/sessions/[sessionId] - Update session. Body: Partial&lt;Session&gt;. Response: { success: boolean, data: Session | null, error: string | null }" path="socratica/app/api/sessions/[sessionId]/route.ts">
+      API route for updating sessions
+    </interface>
+    <interface name="DELETE /api/sessions/[sessionId]" kind="REST endpoint" signature="DELETE /api/sessions/[sessionId] - Delete session. Response: { success: boolean, data: null, error: string | null }" path="socratica/app/api/sessions/[sessionId]/route.ts">
+      API route for deleting sessions
+    </interface>
+    <interface name="saveSession" kind="function" signature="async function saveSession(session: Session): Promise&lt;Session&gt;" path="socratica/lib/firebase/sessions.ts">
+      Firestore service function to create/update session
+    </interface>
+    <interface name="getUserSessions" kind="function" signature="async function getUserSessions(userId: string): Promise&lt;Session[]&gt;" path="socratica/lib/firebase/sessions.ts">
+      Firestore service function to fetch user's sessions
+    </interface>
+    <interface name="getSessionById" kind="function" signature="async function getSessionById(sessionId: string): Promise&lt;Session | null&gt;" path="socratica/lib/firebase/sessions.ts">
+      Firestore service function to fetch specific session
+    </interface>
+    <interface name="deleteSession" kind="function" signature="async function deleteSession(sessionId: string): Promise&lt;void&gt;" path="socratica/lib/firebase/sessions.ts">
+      Firestore service function to delete session
+    </interface>
+    <interface name="updateSessionCompletionStatus" kind="function" signature="async function updateSessionCompletionStatus(sessionId: string, status: 'solved' | 'not_solved' | 'in_progress'): Promise&lt;Session&gt;" path="socratica/lib/firebase/sessions.ts">
+      Firestore service function to update completion status
+    </interface>
+    <interface name="ChatInterfaceProps" kind="TypeScript interface" signature="interface ChatInterfaceProps { initialMessages?: Message[]; ocrText?: string; onOcrTextChange?: (text: string) => void; }" path="socratica/types/chat.ts">
+      Existing ChatInterface props - may need extension for session resume
+    </interface>
+    <interface name="Message" kind="TypeScript interface" signature="interface Message { role: MessageRole; content: string; timestamp: Date | string; }" path="socratica/types/chat.ts">
+      Message interface used in session conversation history
+    </interface>
+    <interface name="StuckState" kind="TypeScript interface" signature="interface StuckState { consecutiveConfused: number; isStuck: boolean; lastConfusedIndex: number | null; }" path="socratica/types/chat.ts">
+      StuckState interface optionally stored in sessions
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing framework: Playwright for E2E tests, Vitest for unit tests. E2E tests follow patterns in tests/e2e/algebra-problems.test.ts with helper utilities in tests/utils/e2e-helpers.ts. Unit tests follow patterns in lib/utils/__tests__/socratic-validation.test.ts. Test fixtures use JSON files in __fixtures__/ directory. Components should have co-located test files (e.g., SessionHistory.test.tsx). Tests must verify acceptance criteria, not just coverage. Error handling, responsive design, and accessibility must be tested.
+    </standards>
+    <locations>
+      Component tests: socratica/components/sessions/__tests__/
+      Unit tests: socratica/lib/firebase/__tests__/ (for session service functions)
+      E2E tests: socratica/tests/e2e/
+      Test fixtures: socratica/__fixtures__/sessions/
+      Test utilities: socratica/tests/utils/
+    </locations>
+    <ideas>
+      <test ac="1">E2E: Verify session history list displays when sessions exist. Test empty state when no sessions.</test>
+      <test ac="2">E2E: Verify each session item shows problem preview (text truncation or image thumbnail), completion status badge, and formatted timestamp.</test>
+      <test ac="3">E2E: Verify sessions are sorted by most recent first (check createdAt timestamps).</test>
+      <test ac="4">E2E: Click session item and verify conversation history loads correctly.</test>
+      <test ac="5">E2E: Resume session and verify conversation context is restored (messages array matches).</test>
+      <test ac="6">E2E: Resume session and verify problem input (text/image) is restored correctly.</test>
+      <test ac="7">E2E: Verify delete button is visible and accessible for each session.</test>
+      <test ac="8">E2E: Click delete button and verify confirmation dialog appears with correct message.</test>
+      <test ac="9">E2E: Confirm deletion and verify session removed from list and Firestore.</test>
+      <test ac="10">E2E: Start new problem and verify previous session is saved. Test auto-save during conversation.</test>
+      <test ac="11">E2E: Solve problem and verify completion status updates automatically. Test manual status update.</test>
+      <test ac="12">E2E: Verify empty state displays correctly when no sessions exist.</test>
+      <test ac="13">E2E: Verify sessions persist across browser sessions (localStorage/sessionStorage check). Test persistence across devices for authenticated users.</test>
+      <test>Unit: Test saveSession() function creates session in Firestore with correct fields.</test>
+      <test>Unit: Test getUserSessions() returns only user's sessions, sorted by most recent.</test>
+      <test>Unit: Test getSessionById() returns correct session or null if not found.</test>
+      <test>Unit: Test deleteSession() removes session from Firestore.</test>
+      <test>Unit: Test updateSessionCompletionStatus() updates status correctly.</test>
+      <test>Unit: Test session validation (required fields, status enum values).</test>
+      <test>Integration: Test API route authentication (users can only access their own sessions).</test>
+      <test>Integration: Test API route error handling (network errors, Firestore errors).</test>
+      <test>Component: Test SessionHistory component renders list correctly.</test>
+      <test>Component: Test SessionListItem component displays session preview and handles actions.</test>
+      <test>Component: Test ConfirmationDialog integration for session deletion.</test>
+      <test>Component: Test ChatInterface session saving integration.</test>
+      <test>Accessibility: Test keyboard navigation in session list.</test>
+      <test>Accessibility: Test screen reader announcements for session actions.</test>
+      <test>Responsive: Test session list layout on mobile, tablet, desktop breakpoints.</test>
+    </ideas>
+  </tests>
+</story-context>
+

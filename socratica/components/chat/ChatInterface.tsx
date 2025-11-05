@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ClearChatButton from "./ClearChatButton";
+import SaveSessionButton from "./SaveSessionButton";
+import CompleteButton from "./CompleteButton";
 import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
@@ -12,9 +14,26 @@ import { resetStuckState } from "@/lib/openai/stuck-detection";
 import { formatError, ErrorType, ERROR_MESSAGES } from "@/lib/utils/error-handling";
 import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 import { calculateRetryDelay, waitForRetry, DEFAULT_RETRY_CONFIG, formatRetryMessage } from "@/lib/utils/retry";
+import { saveSession, getSessionById, updateSessionCompletionStatus } from "@/lib/firebase/sessions";
+import { CompletionStatus, Session } from "@/types/session";
+import { getLocalUserIdHelper } from "@/lib/firebase/sessions-local";
+
+// Check if Firebase is configured (client-side check)
+const isFirebaseConfigured = () => {
+  if (typeof window === "undefined") return false;
+  return !!(
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID !== "undefined" &&
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY !== "undefined"
+  );
+};
 
 // Stable empty array to avoid creating new references on each render
 const EMPTY_MESSAGES: Message[] = [];
+
+// Auto-save interval in milliseconds (5 minutes)
+const AUTO_SAVE_INTERVAL = 5 * 60 * 1000;
 
 /**
  * ChatInterface component - Main chat interface that displays messages
@@ -25,12 +44,17 @@ export default function ChatInterface({
   initialMessages,
   ocrText,
   onOcrTextChange,
+  problemText,
+  problemImageUrl,
+  onSessionResumed,
+  sessionToResume,
 }: ChatInterfaceProps) {
   // Use stable empty array if not provided
   const stableInitialMessages = initialMessages ?? EMPTY_MESSAGES;
   const [messages, setMessages] = useState<Message[]>(stableInitialMessages);
   const [isAIResponding, setIsAIResponding] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [retryMessage, setRetryMessage] = useState<string | null>(null);
   const [retryAttempt, setRetryAttempt] = useState<number>(0);
   const [isRetrying, setIsRetrying] = useState(false);
@@ -38,9 +62,257 @@ export default function ChatInterface({
   const [stuckState, setStuckState] = useState<StuckState>(resetStuckState());
   const prevInitialMessagesRef = useRef<Message[]>(stableInitialMessages);
   const isOnline = useNetworkStatus();
+  // Get current user ID - always use localStorage for MVP
+  // Initialize immediately if we're on the client side
+  const [userId] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return getLocalUserIdHelper();
+    }
+    return "";
+  });
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [currentCompletionStatus, setCurrentCompletionStatus] = useState<CompletionStatus>("in_progress");
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const saveCurrentSessionRef = useRef<(() => Promise<void>) | null>(null);
   
   // Determine if this is the initial input (no messages yet)
   const isInitialInput = messages.length === 0;
+
+  /**
+   * Determine completion status based on conversation
+   */
+  const determineCompletionStatus = (): CompletionStatus => {
+    // Check if last tutor message indicates problem is solved
+    const lastTutorMessage = [...messages].reverse().find((msg) => msg.role === "tutor");
+    if (lastTutorMessage) {
+      const content = lastTutorMessage.content.toLowerCase();
+      if (
+        content.includes("correct") ||
+        content.includes("well done") ||
+        content.includes("you got it") ||
+        content.includes("exactly right")
+      ) {
+        return "solved";
+      }
+    }
+    // If conversation has messages, it's in progress, otherwise not started
+    return messages.length > 0 ? "in_progress" : "not_solved";
+  };
+
+  /**
+   * Save current session to Firestore
+   */
+  const saveCurrentSession = useCallback(async (): Promise<void> => {
+    if (!userId || userId === "" || messages.length === 0) {
+      return; // Don't save empty sessions or when not authenticated
+    }
+    
+    try {
+      const completionStatus = determineCompletionStatus();
+      // Ensure messages are properly serialized
+      const serializedMessages = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp: typeof msg.timestamp === "string" ? msg.timestamp : msg.timestamp?.toISOString() || new Date().toISOString(),
+      }));
+      
+      const sessionData: Partial<Session> = {
+        userId,
+        problemText: problemText || undefined,
+        problemImageUrl: problemImageUrl || undefined,
+        messages: serializedMessages,
+        completionStatus,
+        stuckState: stuckState,
+      };
+
+      // If we have a current session ID, update it; otherwise create new
+      if (currentSessionId) {
+        sessionData.sessionId = currentSessionId;
+      }
+
+      console.log("saveCurrentSession - Session data before save:", { 
+        userId: sessionData.userId, 
+        messageCount: sessionData.messages?.length,
+        messages: sessionData.messages,
+        sessionId: sessionData.sessionId 
+      });
+      const savedSession = await saveSession(sessionData as Partial<Session> & { userId: string });
+      console.log("saveCurrentSession - Session saved:", { sessionId: savedSession.sessionId, messageCount: savedSession.messages?.length });
+      setCurrentSessionId(savedSession.sessionId);
+      setCurrentCompletionStatus(savedSession.completionStatus);
+    } catch (err) {
+      // Don't show error to user for background saves - just log it
+      console.error("Failed to save session:", err);
+      throw err; // Re-throw for manual saves
+    }
+  }, [userId, messages, problemText, problemImageUrl, stuckState, currentSessionId]);
+
+  // Store save function in ref to prevent infinite loops
+  saveCurrentSessionRef.current = saveCurrentSession;
+
+  /**
+   * Handle manual save button click
+   */
+  const handleManualSave = async () => {
+    if (!userId || userId === "") {
+      setError("Unable to save session");
+      return;
+    }
+
+    if (messages.length === 0) {
+      setError("No messages to save");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      setError(null);
+      setSuccessMessage(null);
+      await saveCurrentSession();
+      // Show success message briefly
+      setSuccessMessage("Session saved successfully!");
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 2000);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? `Failed to save session: ${err.message}`
+          : "Failed to save session"
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Auto-save session periodically
+  useEffect(() => {
+    if (!userId || messages.length === 0) {
+      return;
+    }
+
+    // Clear existing timer
+    if (autoSaveTimerRef.current) {
+      clearInterval(autoSaveTimerRef.current);
+    }
+
+    // Set up auto-save timer - use ref to avoid re-creating on every render
+    autoSaveTimerRef.current = setInterval(() => {
+      if (saveCurrentSessionRef.current) {
+        saveCurrentSessionRef.current();
+      }
+    }, AUTO_SAVE_INTERVAL);
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearInterval(autoSaveTimerRef.current);
+      }
+    };
+  }, [userId, messages.length]); // Removed saveCurrentSession from dependencies
+
+  // Save session when component unmounts (user navigates away)
+  useEffect(() => {
+    return () => {
+      if (userId && messages.length > 0 && saveCurrentSessionRef.current) {
+        saveCurrentSessionRef.current();
+      }
+      if (autoSaveTimerRef.current) {
+        clearInterval(autoSaveTimerRef.current);
+      }
+    };
+  }, [userId, messages.length]); // Removed saveCurrentSession from dependencies
+
+  // Save session when starting new problem (when problemText or problemImageUrl changes)
+  useEffect(() => {
+    if (userId && (problemText || problemImageUrl) && messages.length === 0) {
+      // New problem started - save previous session if exists
+      if (messages.length === 0 && currentSessionId) {
+        // Save current session before starting new one
+        saveCurrentSession().then(() => {
+          // Clear current session ID and completion status for new session
+          setCurrentSessionId(null);
+          setCurrentCompletionStatus("in_progress");
+        });
+      }
+    }
+  }, [problemText, problemImageUrl]);
+
+  /**
+   * Resume a session by loading it from Firestore
+   */
+  const resumeSession = useCallback(async (sessionId: string) => {
+    if (!userId) {
+      setError("Please sign in to resume sessions");
+      return;
+    }
+
+    try {
+      const session = await getSessionById(sessionId);
+      if (!session) {
+        setError("Session not found");
+        return;
+      }
+
+      // Verify session belongs to current user
+      if (session.userId !== userId) {
+        setError("You don't have permission to access this session");
+        return;
+      }
+
+      // Restore conversation history
+      console.log("resumeSession - Session loaded:", { sessionId, messageCount: session.messages?.length, messages: session.messages });
+      const restoredMessages: Message[] = (session.messages || []).map((msg: any) => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp:
+          typeof msg.timestamp === "string"
+            ? new Date(msg.timestamp)
+            : msg.timestamp || new Date(),
+      }));
+      console.log("resumeSession - Restored messages:", restoredMessages.length, restoredMessages);
+      
+      // Clear any existing messages first
+      setMessages([]);
+      // Then set restored messages after a brief delay to ensure state update
+      setTimeout(() => {
+        setMessages(restoredMessages);
+        console.log("resumeSession - Messages set in state:", restoredMessages.length);
+      }, 0);
+
+      // Restore stuck state if available
+      if (session.stuckState) {
+        setStuckState(session.stuckState);
+      }
+
+      // Set current session ID and completion status
+      setCurrentSessionId(sessionId);
+      setCurrentCompletionStatus(session.completionStatus);
+
+      // Restore problem input via callbacks (parent component should handle display)
+      if (session.problemText && onOcrTextChange) {
+        onOcrTextChange(session.problemText);
+      }
+
+      // Call onSessionResumed callback if provided
+      if (onSessionResumed) {
+        onSessionResumed(sessionId);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to resume session"
+      );
+    }
+  }, [userId, onOcrTextChange, onSessionResumed]);
+
+  // Resume session when sessionToResume prop is set
+  useEffect(() => {
+    if (sessionToResume && userId) {
+      resumeSession(sessionToResume);
+    }
+  }, [sessionToResume, userId, resumeSession]);
 
   // Update messages when initialMessages prop changes (for testing and dynamic updates)
   // Only update if initialMessages actually changed (by reference or content)
@@ -214,7 +486,17 @@ export default function ChatInterface({
   };
 
   // Clear chat functionality
-  const clearChat = () => {
+  const clearChat = async () => {
+    // Save current session before clearing (if authenticated and has messages)
+    if (userId && messages.length > 0) {
+      try {
+        await saveCurrentSession();
+      } catch (err) {
+        // Log error but don't block clearing
+        console.error("Failed to save session before clearing:", err);
+      }
+    }
+
     // Clear conversation history
     setMessages([]);
     // Clear error state and retry message state
@@ -226,6 +508,9 @@ export default function ChatInterface({
     setIsAIResponding(false);
     // Reset stuck state (starting new problem session)
     setStuckState(resetStuckState());
+    // Clear current session ID and completion status
+    setCurrentSessionId(null);
+    setCurrentCompletionStatus("in_progress");
     // Hide confirmation dialog
     setShowConfirmDialog(false);
   };
@@ -245,6 +530,33 @@ export default function ChatInterface({
     setShowConfirmDialog(false);
   };
 
+  // Handle complete button click
+  const handleComplete = async () => {
+    if (!currentSessionId || !userId) {
+      setError("No session to complete");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      setError(null);
+      const updatedSession = await updateSessionCompletionStatus(currentSessionId, "solved");
+      setCurrentCompletionStatus("solved");
+      setSuccessMessage("Session marked as complete!");
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 2000);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? `Failed to mark session as complete: ${err.message}`
+          : "Failed to mark session as complete"
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div
       className="flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] dark:bg-[var(--surface)] overflow-x-hidden shadow-sm"
@@ -261,10 +573,22 @@ export default function ChatInterface({
           <h2 className="text-lg font-semibold text-[var(--foreground)]">
             Chat with Tutor
           </h2>
-          <ClearChatButton
-            onClick={handleClearChatClick}
-            disabled={isAIResponding || messages.length === 0}
-          />
+          <div className="flex items-center gap-2">
+            <CompleteButton
+              onClick={handleComplete}
+              disabled={messages.length === 0 || !userId || userId === "" || !currentSessionId}
+              isCompleted={currentCompletionStatus === "solved"}
+            />
+            <SaveSessionButton
+              onClick={handleManualSave}
+              disabled={messages.length === 0 || !userId || userId === ""}
+              isSaving={isSaving}
+            />
+            <ClearChatButton
+              onClick={handleClearChatClick}
+              disabled={isAIResponding || messages.length === 0}
+            />
+          </div>
         </header>
         <MessageList messages={messages} />
         {/* Loading indicator */}
@@ -276,6 +600,17 @@ export default function ChatInterface({
             aria-label="AI tutor is responding"
           >
             <LoadingSpinner size="sm" label="AI tutor is thinking..." />
+          </div>
+        )}
+        {/* Success message display */}
+        {successMessage && (
+          <div className="border-t border-[var(--border)] bg-[var(--accent-success-50)] dark:bg-[var(--accent-success-900)]/20 px-4 py-3 transition-opacity duration-200">
+            <div className="flex items-center gap-2 text-[var(--accent-success-800)] dark:text-[var(--accent-success-200)]">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm font-medium">{successMessage}</span>
+            </div>
           </div>
         )}
         {/* Error display with retry button */}

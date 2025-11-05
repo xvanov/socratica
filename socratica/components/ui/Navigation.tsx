@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AuthButton from "./AuthButton";
 
 /**
  * Navigation Component
@@ -66,6 +67,7 @@ export default function Navigation() {
   // Navigation items (currently placeholder - can be extended)
   const navItems = [
     { label: "Home", href: "/", id: "nav-home" },
+    { label: "Session History", href: "/sessions", id: "nav-sessions" },
     { label: "About", href: "#about", id: "nav-about" },
     { label: "Help", href: "#help", id: "nav-help" },
   ];
@@ -102,6 +104,7 @@ export default function Navigation() {
                 {item.label}
               </a>
             ))}
+            <AuthButton showSignOut={true} />
           </div>
 
           {/* Mobile Menu Button - Visible on mobile/tablet, hidden on desktop */}
@@ -178,6 +181,9 @@ export default function Navigation() {
                   {item.label}
                 </a>
               ))}
+              <div className="px-3 py-2">
+                <AuthButton showSignOut={true} />
+              </div>
             </div>
           </div>
         )}
