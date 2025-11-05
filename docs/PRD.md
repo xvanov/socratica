@@ -791,15 +791,15 @@ Requirements have been decomposed into implementable epics and stories. See [Epi
   4. Epic 4: Math Rendering (4 stories) - Maps to FR-5
   5. Epic 5: UI Polish (6 stories) - Maps to FR-13, FR-14, FR-15, accessibility requirements
 
-- **Phase 2 (Post-MVP)**: 6 Epics, 30 Stories
-  6. Epic 6: Interactive Whiteboard (5 stories)
-  7. Epic 7: Step Visualization (5 stories)
-  8. Epic 8: Voice Interface (5 stories)
-  9. Epic 9: Animated Avatar (5 stories)
-  10. Epic 10: Difficulty Modes (5 stories)
-  11. Epic 11: Problem Generation (5 stories)
+- **Phase 2 (Post-MVP)**: 6 Epics, 15 Stories
+  6. Epic 6: Interactive Whiteboard (3 stories)
+  7. Epic 7: Step Visualization (2 stories)
+  8. Epic 8: Voice Interface (3 stories)
+  9. Epic 9: Animated Avatar (3 stories)
+  10. Epic 10: Difficulty Modes (2 stories)
+  11. Epic 11: Problem Generation (2 stories)
 
-**Total: 11 Epics, 56 Stories**
+**Total: 11 Epics, 58 Stories**
 
 **Estimated Timeline:**
 - Phase 1 (MVP): 5-6 weeks

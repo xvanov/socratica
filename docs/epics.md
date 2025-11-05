@@ -41,15 +41,15 @@ This document breaks down Phase 1 and Phase 2 goalposts into implementable epics
 4. Epic 4: Math Rendering (4 stories)
 5. Epic 5: UI Polish (6 stories)
 
-**Phase 2 (Post-MVP) - 6 Epics, 13 Stories:**
-6. Epic 6: Interactive Whiteboard (2 stories)
+**Phase 2 (Post-MVP) - 6 Epics, 14 Stories:**
+6. Epic 6: Interactive Whiteboard (3 stories)
 7. Epic 7: Step Visualization (2 stories)
 8. Epic 8: Voice Interface (3 stories)
 9. Epic 9: Animated Avatar (3 stories)
 10. Epic 10: Difficulty Modes (2 stories)
 11. Epic 11: Problem Generation (2 stories)
 
-**Total: Foundation (2 stories) + 11 Epics, 41 Stories**
+**Total: Foundation (2 stories) + 11 Epics, 42 Stories**
 
 **Estimated Timeline:**
 - Phase 1 (MVP): 5-6 weeks
@@ -646,7 +646,30 @@ So that I can trust it will help me with my homework.
 **Goal:** Shared visual canvas for diagrams, graphs, and geometric problem solving.
 **Value:** Enables visual learning for geometry and graphing concepts.
 
-#### Story 6.1: Whiteboard Foundation & Drawing Tools
+#### Story 6.1: Session History Tracking
+
+As a student,
+I want to see a history of all problems I've attempted and be able to resume or delete previous sessions,
+So that I can track my learning progress and return to problems I was working on.
+
+**Acceptance Criteria:**
+1. Session history list displays all previous problem sessions
+2. Each session shows: problem text/image preview, completion status (solved/not solved/in progress), timestamp
+3. Sessions are sorted by most recent first
+4. Clicking a session loads that session's conversation history
+5. Resuming a session restores the full conversation context
+6. Problem input (text/image) is restored when resuming a session
+7. Delete button is available for each session
+8. Deletion requires confirmation dialog
+9. Deleted sessions are removed from history and Firestore
+10. Sessions are automatically saved when starting a new problem or when conversation ends
+11. Session completion status updates automatically when student solves the problem (or can be marked manually)
+12. Empty state shows when no sessions exist
+13. History persists across browser sessions and devices (for authenticated users)
+
+**Prerequisites:** Epic 5 complete (UI foundation exists), Story 2.5 complete (session management exists), Story 0.2 complete (Firebase setup exists)
+
+#### Story 6.2: Whiteboard Foundation & Drawing Tools
 
 As a student,
 I want a shared drawing canvas with comprehensive drawing tools and mathematical diagram support,
@@ -669,7 +692,7 @@ So that I can visually represent geometric problems and graphs.
 
 **Prerequisites:** Epic 5 complete (UI foundation exists)
 
-#### Story 6.2: Real-Time Synchronization & Persistence
+#### Story 6.3: Real-Time Synchronization & Persistence
 
 As a student,
 I want to collaborate with the AI tutor on the whiteboard and have my drawings persist,
@@ -687,7 +710,7 @@ So that we can work together visually and I don't lose my work while solving a p
 9. Handles session timeout gracefully
 10. Export/import whiteboard state
 
-**Prerequisites:** Story 6.1 (whiteboard foundation and tools exist)
+**Prerequisites:** Story 6.2 (whiteboard foundation and tools exist)
 
 ---
 
@@ -1036,7 +1059,7 @@ Epic 4 (Math Rendering) Story 4.1 can run in parallel with other foundation stor
 **Phase 2 Sequencing:**
 
 1. **Epic 6: Interactive Whiteboard** (requires Epic 5)
-   - Story 6.1 → 6.2
+   - Story 6.1 → 6.2 → 6.3
 
 2. **Epic 7: Step Visualization** (requires Epic 3, Epic 4)
    - Story 7.1 → 7.2

@@ -1,0 +1,129 @@
+{
+  "type": "quadratic",
+  "description": "Quadratic equation problems - solve equations of the form ax^2 + bx + c = 0",
+  "problems": [
+    {
+      "id": "quadratic-001",
+      "problem": "Solve: x^2 - 5x + 6 = 0",
+      "difficulty": "factoring",
+      "category": "factoring_method",
+      "method": "factoring",
+      "expectedMathNotation": ["x^2", "-", "5x", "+", "6", "=", "0"],
+      "expectedQuestions": [
+        "What two numbers multiply to give you 6?",
+        "What two numbers add to give you -5?",
+        "Can you factor this quadratic?",
+        "What factors of 6 could work?",
+        "How can you break this into two binomials?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about factoring approach",
+        "Student identifies factors",
+        "AI guides through factoring process",
+        "Student finds roots",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "quadratic-002",
+      "problem": "Solve: x^2 - 9 = 0",
+      "difficulty": "difference_of_squares",
+      "category": "difference_of_squares",
+      "method": "factoring",
+      "expectedMathNotation": ["x^2", "-", "9", "=", "0"],
+      "expectedQuestions": [
+        "What special pattern do you notice here?",
+        "Can you recognize this as a difference of squares?",
+        "What are the factors of x^2 - 9?",
+        "How can you solve this?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about special pattern",
+        "Student recognizes difference of squares",
+        "AI guides through factoring",
+        "Student solves",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "quadratic-003",
+      "problem": "Solve: x^2 + 4x + 4 = 0",
+      "difficulty": "perfect_square",
+      "category": "perfect_square_trinomial",
+      "method": "factoring",
+      "expectedMathNotation": ["x^2", "+", "4x", "+", "4", "=", "0"],
+      "expectedQuestions": [
+        "What pattern do you see here?",
+        "Can this be written as a perfect square?",
+        "What would (x + ?)^2 equal?",
+        "How can you factor this?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about pattern recognition",
+        "Student identifies perfect square",
+        "AI guides through solution",
+        "Student solves",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "quadratic-004",
+      "problem": "Solve: 2x^2 - 7x + 3 = 0",
+      "difficulty": "factoring",
+      "category": "factoring_method",
+      "method": "factoring",
+      "expectedMathNotation": ["2x^2", "-", "7x", "+", "3", "=", "0"],
+      "expectedQuestions": [
+        "What's different about this quadratic?",
+        "Can you factor when the leading coefficient isn't 1?",
+        "What two numbers multiply to give you 2 * 3 = 6?",
+        "What two numbers add to -7?",
+        "How can you use the AC method?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about leading coefficient",
+        "Student identifies need for AC method",
+        "AI guides through factoring",
+        "Student solves",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "quadratic-005",
+      "problem": "Solve: x^2 + 6x + 1 = 0",
+      "difficulty": "quadratic_formula",
+      "category": "quadratic_formula_method",
+      "method": "quadratic_formula",
+      "expectedMathNotation": ["x^2", "+", "6x", "+", "1", "=", "0"],
+      "expectedQuestions": [
+        "Can you factor this easily?",
+        "What other method could you use?",
+        "What's the quadratic formula?",
+        "What are the values of a, b, and c?",
+        "How would you substitute into the formula?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about factoring feasibility",
+        "Student identifies need for quadratic formula",
+        "AI guides through identifying a, b, c",
+        "AI guides through substitution",
+        "Student solves",
+        "AI confirms"
+      ]
+    }
+  ],
+  "testMetadata": {
+    "totalProblems": 5,
+    "difficultyLevels": ["factoring", "difference_of_squares", "perfect_square", "quadratic_formula"],
+    "categories": ["factoring_method", "difference_of_squares", "perfect_square_trinomial", "quadratic_formula_method"],
+    "methods": ["factoring", "quadratic_formula"],
+    "created": "2025-01-27",
+    "purpose": "E2E testing for quadratic equation problem types"
+  }
+}
+

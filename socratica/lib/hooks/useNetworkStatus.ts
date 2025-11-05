@@ -8,12 +8,12 @@ import { useState, useEffect } from "react";
  * @returns isOnline - boolean indicating if device is online
  */
 export function useNetworkStatus(): boolean {
-  const [isOnline, setIsOnline] = useState<boolean>(
-    typeof navigator !== "undefined" ? navigator.onLine : true
-  );
+  // Always initialize to true to ensure server/client hydration match
+  // The actual network status will be set in useEffect after mount
+  const [isOnline, setIsOnline] = useState<boolean>(true);
 
   useEffect(() => {
-    // Set initial status
+    // Set initial status after mount to avoid hydration mismatch
     setIsOnline(navigator.onLine);
 
     // Handle online event

@@ -1,0 +1,128 @@
+{
+  "type": "systems",
+  "description": "Systems of equations problems - solve for multiple variables",
+  "problems": [
+    {
+      "id": "systems-001",
+      "problem": "Solve: 2x + y = 7, x - y = 2",
+      "difficulty": "2x2",
+      "category": "substitution",
+      "method": "substitution",
+      "expectedMathNotation": ["2x", "+", "y", "=", "7", ",", "x", "-", "y", "=", "2"],
+      "expectedQuestions": [
+        "What do you notice about the y terms?",
+        "Which method might work well here?",
+        "Can you eliminate one variable?",
+        "What happens if you add the equations?",
+        "How could you use substitution?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about method choice",
+        "Student chooses elimination or substitution",
+        "AI guides through chosen method",
+        "Student solves for one variable",
+        "AI guides to find second variable",
+        "AI confirms solution"
+      ]
+    },
+    {
+      "id": "systems-002",
+      "problem": "Solve: x + 2y = 8, 3x - y = 1",
+      "difficulty": "2x2",
+      "category": "elimination",
+      "method": "elimination",
+      "expectedMathNotation": ["x", "+", "2y", "=", "8", ",", "3x", "-", "y", "=", "1"],
+      "expectedQuestions": [
+        "What variables do you see?",
+        "How can you eliminate one variable?",
+        "What would you need to multiply?",
+        "Can you make the coefficients match?",
+        "What's your first step?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about elimination approach",
+        "Student identifies need to multiply",
+        "AI guides through elimination",
+        "Student solves",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "systems-003",
+      "problem": "Solve: y = 2x + 1, 3x + y = 10",
+      "difficulty": "substitution",
+      "category": "substitution",
+      "method": "substitution",
+      "expectedMathNotation": ["y", "=", "2x", "+", "1", ",", "3x", "+", "y", "=", "10"],
+      "expectedQuestions": [
+        "What's already solved for in the first equation?",
+        "Can you substitute that into the second equation?",
+        "What would you replace y with?",
+        "How does substitution work here?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about y being isolated",
+        "Student identifies substitution opportunity",
+        "AI guides through substitution",
+        "Student solves",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "systems-004",
+      "problem": "Solve: 2x + 3y = 12, 4x - y = 5",
+      "difficulty": "elimination",
+      "category": "elimination",
+      "method": "elimination",
+      "expectedMathNotation": ["2x", "+", "3y", "=", "12", ",", "4x", "-", "y", "=", "5"],
+      "expectedQuestions": [
+        "Which variable would be easier to eliminate?",
+        "How can you make the coefficients match?",
+        "What would you multiply?",
+        "What's your strategy?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about elimination strategy",
+        "Student chooses variable to eliminate",
+        "AI guides through multiplication",
+        "Student eliminates and solves",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "systems-005",
+      "problem": "Solve: x - y = 3, 2x + y = 9",
+      "difficulty": "2x2",
+      "category": "elimination",
+      "method": "elimination",
+      "expectedMathNotation": ["x", "-", "y", "=", "3", ",", "2x", "+", "y", "=", "9"],
+      "expectedQuestions": [
+        "What happens if you add these equations?",
+        "Can you eliminate y directly?",
+        "What do you get when you add them?",
+        "What's your next step?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about adding equations",
+        "Student adds equations",
+        "AI guides through solving",
+        "Student finds both variables",
+        "AI confirms"
+      ]
+    }
+  ],
+  "testMetadata": {
+    "totalProblems": 5,
+    "difficultyLevels": ["2x2", "substitution", "elimination"],
+    "categories": ["substitution", "elimination"],
+    "methods": ["substitution", "elimination"],
+    "created": "2025-01-27",
+    "purpose": "E2E testing for systems of equations problem types"
+  }
+}
+

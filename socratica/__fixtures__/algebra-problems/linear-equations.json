@@ -1,0 +1,116 @@
+{
+  "type": "linear",
+  "description": "Linear equation problems - solve for x in equations of the form ax + b = c",
+  "problems": [
+    {
+      "id": "linear-001",
+      "problem": "Solve for x: 2x + 5 = 13",
+      "difficulty": "simple",
+      "category": "basic_linear",
+      "expectedMathNotation": ["2x", "+", "5", "=", "13"],
+      "expectedQuestions": [
+        "What operation could you use to isolate the variable?",
+        "What's happening to the x in this equation?",
+        "What do you need to do to both sides?",
+        "Can you think about what number plus 5 equals 13?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks guiding question about isolating variable",
+        "Student responds with partial understanding",
+        "AI asks follow-up question",
+        "Student eventually solves",
+        "AI confirms understanding"
+      ]
+    },
+    {
+      "id": "linear-002",
+      "problem": "Solve for x: 3x - 7 = 8",
+      "difficulty": "simple",
+      "category": "basic_linear",
+      "expectedMathNotation": ["3x", "-", "7", "=", "8"],
+      "expectedQuestions": [
+        "What operation is being performed on the x?",
+        "How can you undo subtraction?",
+        "What would you add to both sides?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks guiding question",
+        "Student works through solution",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "linear-003",
+      "problem": "Solve for x: 4x + 2 = 3x + 10",
+      "difficulty": "multi-step",
+      "category": "multi_step_linear",
+      "expectedMathNotation": ["4x", "+", "2", "=", "3x", "+", "10"],
+      "expectedQuestions": [
+        "What do you notice about both sides of the equation?",
+        "What happens if you subtract the same term from both sides?",
+        "Can you group the x terms together?",
+        "What would be your first step?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about both sides having variables",
+        "Student identifies need to combine like terms",
+        "AI guides through subtraction step",
+        "Student completes solution",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "linear-004",
+      "problem": "Solve for x: (x + 3)/2 = 5",
+      "difficulty": "fractions",
+      "category": "fractional_linear",
+      "expectedMathNotation": ["(", "x", "+", "3", ")", "/", "2", "=", "5"],
+      "expectedQuestions": [
+        "What operation is being performed on (x + 3)?",
+        "How can you undo division?",
+        "What happens if you multiply both sides by 2?",
+        "What should you do first?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about the division operation",
+        "Student identifies need to multiply",
+        "AI guides through multiplication",
+        "Student solves remaining equation",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "linear-005",
+      "problem": "Solve for x: 5x - 3 = 2x + 12",
+      "difficulty": "multi-step",
+      "category": "multi_step_linear",
+      "expectedMathNotation": ["5x", "-", "3", "=", "2x", "+", "12"],
+      "expectedQuestions": [
+        "What do you see on both sides of the equation?",
+        "How can you get all x terms on one side?",
+        "What operation should you use?",
+        "What's your next step after moving terms?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about variables on both sides",
+        "Student subtracts 2x from both sides",
+        "AI guides through remaining steps",
+        "Student completes solution",
+        "AI confirms"
+      ]
+    }
+  ],
+  "testMetadata": {
+    "totalProblems": 5,
+    "difficultyLevels": ["simple", "multi-step", "fractions"],
+    "categories": ["basic_linear", "multi_step_linear", "fractional_linear"],
+    "created": "2025-01-27",
+    "purpose": "E2E testing for linear equation problem types"
+  }
+}
+

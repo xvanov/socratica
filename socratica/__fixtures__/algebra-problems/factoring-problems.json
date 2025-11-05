@@ -1,0 +1,121 @@
+{
+  "type": "factoring",
+  "description": "Factoring problems - factor polynomials into products",
+  "problems": [
+    {
+      "id": "factoring-001",
+      "problem": "Factor: x^2 + 7x + 12",
+      "difficulty": "simple",
+      "category": "trinomial_factoring",
+      "expectedMathNotation": ["x^2", "+", "7x", "+", "12"],
+      "expectedQuestions": [
+        "What two numbers multiply to give you 12?",
+        "What two numbers add to give you 7?",
+        "Can you find factors of 12 that sum to 7?",
+        "How can you write this as two binomials?",
+        "What are the factors?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about factors of 12",
+        "Student identifies 3 and 4",
+        "AI guides through factoring process",
+        "Student writes factored form",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "factoring-002",
+      "problem": "Factor: x^2 - 9",
+      "difficulty": "difference_of_squares",
+      "category": "difference_of_squares",
+      "expectedMathNotation": ["x^2", "-", "9"],
+      "expectedQuestions": [
+        "What special pattern do you see?",
+        "Can you recognize this as a difference of squares?",
+        "What's the formula for difference of squares?",
+        "What are the factors?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about pattern recognition",
+        "Student identifies difference of squares",
+        "AI guides through factoring",
+        "Student writes (x-3)(x+3)",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "factoring-003",
+      "problem": "Factor: x^2 - 5x + 6",
+      "difficulty": "simple",
+      "category": "trinomial_factoring",
+      "expectedMathNotation": ["x^2", "-", "5x", "+", "6"],
+      "expectedQuestions": [
+        "What two numbers multiply to 6?",
+        "What two numbers add to -5?",
+        "What are the signs?",
+        "Can you factor this trinomial?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about factors",
+        "Student identifies -2 and -3",
+        "AI guides through factoring",
+        "Student writes (x-2)(x-3)",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "factoring-004",
+      "problem": "Factor: 2x^2 + 7x + 3",
+      "difficulty": "ac_method",
+      "category": "ac_method_factoring",
+      "expectedMathNotation": ["2x^2", "+", "7x", "+", "3"],
+      "expectedQuestions": [
+        "What's different about this quadratic?",
+        "Can you use the AC method?",
+        "What's a * c?",
+        "What two numbers multiply to 6 and add to 7?",
+        "How do you split the middle term?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about leading coefficient",
+        "Student identifies need for AC method",
+        "AI guides through AC method steps",
+        "Student factors",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "factoring-005",
+      "problem": "Factor: x^2 - 4x + 4",
+      "difficulty": "perfect_square",
+      "category": "perfect_square_trinomial",
+      "expectedMathNotation": ["x^2", "-", "4x", "+", "4"],
+      "expectedQuestions": [
+        "What pattern do you recognize?",
+        "Can this be a perfect square?",
+        "What would (x - ?)^2 equal?",
+        "How can you check if it's a perfect square?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about pattern",
+        "Student recognizes perfect square",
+        "AI guides through verification",
+        "Student writes (x-2)^2",
+        "AI confirms"
+      ]
+    }
+  ],
+  "testMetadata": {
+    "totalProblems": 5,
+    "difficultyLevels": ["simple", "difference_of_squares", "ac_method", "perfect_square"],
+    "categories": ["trinomial_factoring", "difference_of_squares", "ac_method_factoring", "perfect_square_trinomial"],
+    "created": "2025-01-27",
+    "purpose": "E2E testing for factoring problem types"
+  }
+}
+

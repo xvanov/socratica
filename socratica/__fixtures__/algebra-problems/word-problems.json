@@ -1,0 +1,130 @@
+{
+  "type": "word",
+  "description": "Word problems converted to equations - solve real-world problems",
+  "problems": [
+    {
+      "id": "word-001",
+      "problem": "A number is 5 more than twice another number. Their sum is 23. Find the numbers.",
+      "difficulty": "simple",
+      "category": "number_problems",
+      "convertedEquation": "x + (2x + 5) = 23 or y = 2x + 5, x + y = 23",
+      "expectedMathNotation": ["x", "+", "2x", "+", "5", "=", "23"],
+      "expectedQuestions": [
+        "What are you trying to find?",
+        "Can you translate '5 more than twice another number' into an equation?",
+        "What variable should you use?",
+        "How can you set up the equation?",
+        "What does 'their sum is 23' tell you?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about what to find",
+        "Student identifies variables",
+        "AI guides through translation",
+        "Student sets up equation",
+        "AI guides through solving",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "word-002",
+      "problem": "The perimeter of a rectangle is 30 meters. The length is 3 meters more than the width. Find the dimensions.",
+      "difficulty": "geometry",
+      "category": "geometry_problems",
+      "convertedEquation": "2w + 2(w + 3) = 30",
+      "expectedMathNotation": ["2w", "+", "2", "(", "w", "+", "3", ")", "=", "30"],
+      "expectedQuestions": [
+        "What are you trying to find?",
+        "What's the formula for perimeter?",
+        "How can you represent the length?",
+        "What equation can you write?",
+        "How do you solve for w?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about perimeter formula",
+        "Student identifies variables",
+        "AI guides through setting up equation",
+        "Student solves equation",
+        "AI confirms dimensions"
+      ]
+    },
+    {
+      "id": "word-003",
+      "problem": "Sarah has $45. She spends some money and has $18 left. How much did she spend?",
+      "difficulty": "simple",
+      "category": "money_problems",
+      "convertedEquation": "45 - x = 18",
+      "expectedMathNotation": ["45", "-", "x", "=", "18"],
+      "expectedQuestions": [
+        "What are you trying to find?",
+        "What operation represents spending?",
+        "How can you write this as an equation?",
+        "What's the unknown?",
+        "How do you solve?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about what to find",
+        "Student sets up equation",
+        "AI guides through solving",
+        "Student finds answer",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "word-004",
+      "problem": "The sum of two consecutive integers is 25. Find the integers.",
+      "difficulty": "simple",
+      "category": "number_problems",
+      "convertedEquation": "x + (x + 1) = 25",
+      "expectedMathNotation": ["x", "+", "x", "+", "1", "=", "25"],
+      "expectedQuestions": [
+        "What are consecutive integers?",
+        "How can you represent the first integer?",
+        "How can you represent the second integer?",
+        "What equation can you write?",
+        "How do you solve?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about consecutive integers",
+        "Student identifies variables",
+        "AI guides through equation setup",
+        "Student solves",
+        "AI confirms"
+      ]
+    },
+    {
+      "id": "word-005",
+      "problem": "A train travels 120 miles in 3 hours. At the same rate, how long will it take to travel 200 miles?",
+      "difficulty": "rate",
+      "category": "rate_problems",
+      "convertedEquation": "120/3 = 200/x or rate = distance/time",
+      "expectedMathNotation": ["120", "/", "3", "=", "200", "/", "x"],
+      "expectedQuestions": [
+        "What's the relationship between distance, rate, and time?",
+        "What's the rate of the train?",
+        "How can you set up a proportion?",
+        "What equation can you write?",
+        "How do you solve for x?"
+      ],
+      "expectedWorkflow": [
+        "Student submits problem",
+        "AI asks about rate formula",
+        "Student identifies rate = 40 mph",
+        "AI guides through proportion setup",
+        "Student solves",
+        "AI confirms"
+      ]
+    }
+  ],
+  "testMetadata": {
+    "totalProblems": 5,
+    "difficultyLevels": ["simple", "geometry", "money", "rate"],
+    "categories": ["number_problems", "geometry_problems", "money_problems", "rate_problems"],
+    "created": "2025-01-27",
+    "purpose": "E2E testing for word problem types converted to equations"
+  }
+}
+
