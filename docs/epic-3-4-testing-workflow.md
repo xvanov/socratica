@@ -288,3 +288,4 @@ Open browser DevTools Console and check:
 // Look for "HINT GENERATION INSTRUCTIONS" when stuck
 ```
 
+

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import AuthButton from "./AuthButton";
+import { useAuth } from "@/hooks/useAuth";
+import AuthButton from "@/components/auth/AuthButton";
+import Link from "next/link";
 
 /**
  * Navigation Component
@@ -19,6 +21,7 @@ import AuthButton from "./AuthButton";
  */
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -68,8 +71,14 @@ export default function Navigation() {
   const navItems = [
     { label: "Home", href: "/", id: "nav-home" },
     { label: "Session History", href: "/sessions", id: "nav-sessions" },
-    { label: "About", href: "#about", id: "nav-about" },
-    { label: "Help", href: "#help", id: "nav-help" },
+    ...(user
+      ? [
+          { label: "Profile", href: "/profile", id: "nav-profile" },
+          { label: "Settings", href: "/settings", id: "nav-settings" },
+        ]
+      : []),
+    { label: "About", href: "/about", id: "nav-about" },
+    { label: "Help", href: "/help", id: "nav-help" },
   ];
 
   return (
@@ -95,16 +104,16 @@ export default function Navigation() {
           {/* Desktop Navigation - Hidden on mobile, visible on lg screens */}
           <div className="hidden lg:flex lg:items-center lg:space-x-8">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.id}
                 href={item.href}
                 className="text-base text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-zinc-50 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 rounded px-2 py-1 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label={item.label}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
-            <AuthButton showSignOut={true} />
+            <AuthButton />
           </div>
 
           {/* Mobile Menu Button - Visible on mobile/tablet, hidden on desktop */}
@@ -163,7 +172,7 @@ export default function Navigation() {
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navItems.map((item, index) => (
-                <a
+                <Link
                   key={item.id}
                   href={item.href}
                   className="block px-3 py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 min-h-[44px] flex items-center"
@@ -179,10 +188,10 @@ export default function Navigation() {
                   }}
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
               <div className="px-3 py-2">
-                <AuthButton showSignOut={true} />
+                <AuthButton />
               </div>
             </div>
           </div>

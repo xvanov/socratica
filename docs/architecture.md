@@ -539,6 +539,41 @@ interface Session {
 - Enforce size limits (max 10MB)
 - Scan for malicious content
 
+### Firestore Security Rules
+
+**Implementation:** Security rules are defined in `firestore.rules` and enforced server-side by Firebase.
+
+**Rule Structure:**
+- **Helper Functions:**
+  - `isAuthenticated()`: Checks if user is authenticated via Firebase Auth
+  - `isOwner(userId)`: Checks if authenticated user owns the document
+
+**Users Collection (`/users/{userId}`):**
+- **Read:** Users can only read their own profile (`isOwner(userId)`)
+- **Create:** Users can create their own profile on first sign-in (`isOwner(userId)`)
+- **Update:** Users can update their own profile (`isOwner(userId)`)
+- **Delete:** Users can delete their own profile (`isOwner(userId)`)
+
+**Sessions Collection (`/sessions/{sessionId}`):**
+- **Read:** Users can read sessions where `resource.data.userId == request.auth.uid`
+- **Create:** Users can create sessions with `request.resource.data.userId == request.auth.uid`
+- **Update:** Users can update sessions where `resource.data.userId == request.auth.uid`
+- **Delete:** Users can delete sessions where `resource.data.userId == request.auth.uid`
+
+**Default Rule:**
+- All other collections and documents are denied by default (`allow read, write: if false`)
+
+**Security Principles:**
+1. **Authentication Required:** All operations require authentication (except public read-only data if added in future)
+2. **Owner-Only Access:** Users can only access their own data
+3. **Data Integrity:** Create operations validate that `userId` matches authenticated user
+4. **Fail-Safe Default:** Default deny rule prevents accidental exposure of new collections
+
+**Testing:**
+- Rules should be tested with Firebase Emulator before production deployment
+- Unit tests verify client-side validation, but server-side rules are the source of truth
+- Security rules are deployed via Firebase CLI: `firebase deploy --only firestore:rules`
+
 ---
 
 ## Performance Considerations

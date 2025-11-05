@@ -1,24 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
-import AuthButton from "@/components/ui/AuthButton";
+import AuthButton from "@/components/auth/AuthButton";
 import SessionListItem from "./SessionListItem";
 import { Session, SessionHistoryProps } from "@/types/session";
 import { getUserSessions, deleteSession } from "@/lib/firebase/sessions";
-import { getLocalUserIdHelper } from "@/lib/firebase/sessions-local";
-
-// Check if Firebase is configured (client-side check)
-const isFirebaseConfigured = () => {
-  if (typeof window === "undefined") return false;
-  return !!(
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID !== "undefined" &&
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY !== "undefined"
-  );
-};
+import { useAuth } from "@/hooks/useAuth";
 
 /**
  * SessionHistory component - Displays list of user's problem-solving sessions
@@ -34,47 +23,69 @@ const isFirebaseConfigured = () => {
 export default function SessionHistory({
   onResumeSession,
 }: SessionHistoryProps) {
+  const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isIndexBuilding, setIsIndexBuilding] = useState(false);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Get current user ID - always use localStorage for MVP
+  // Fetch sessions when user is authenticated
   useEffect(() => {
-    // Always use localStorage - no Firebase needed
-    setIsAuthLoading(false);
-    const localUserId = getLocalUserIdHelper();
-    setUserId(localUserId);
-  }, []);
+    if (authLoading) {
+      return; // Wait for auth to finish loading
+    }
 
-  // Fetch sessions when userId is available
-  useEffect(() => {
-    if (!userId) {
-      setIsLoading(false); // Stop loading if no userId
+    if (!user) {
+      // No user signed in - no sessions to show
+      setIsLoading(false);
+      setSessions([]);
       return;
+    }
+
+    // Clear any existing retry timeout
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current);
+      retryTimeoutRef.current = null;
     }
 
     const fetchSessions = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const userSessions = await getUserSessions(userId);
+        setIsIndexBuilding(false);
+        const userSessions = await getUserSessions(user.uid);
         setSessions(userSessions);
       } catch (err) {
         console.error("Error fetching sessions:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load session history"
-        );
+        const errorMessage = err instanceof Error ? err.message : "Failed to load session history";
+        
+        // Check if error is about index building
+        if (errorMessage.includes("index is currently building") || errorMessage.includes("requires an index")) {
+          setIsIndexBuilding(true);
+          setError("Firestore index is building. This usually takes 1-5 minutes. The page will automatically refresh when ready.");
+          
+          // Retry after 30 seconds
+          retryTimeoutRef.current = setTimeout(() => {
+            fetchSessions();
+          }, 30000);
+        } else {
+          setError(errorMessage);
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchSessions();
-  }, [userId]);
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+    };
+  }, [user, authLoading]);
 
   const handleResume = (session: Session) => {
     if (onResumeSession) {
@@ -100,23 +111,22 @@ export default function SessionHistory({
         err instanceof Error ? err.message : "Failed to delete session"
       );
       // Re-fetch sessions on error to restore state
-      if (userId) {
-        const userSessions = await getUserSessions(userId);
+      if (user) {
+        const userSessions = await getUserSessions(user.uid);
         setSessions(userSessions);
       }
     }
   };
 
-  if (isAuthLoading || isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="flex items-center justify-center p-8" role="status" aria-live="polite">
-        <LoadingSpinner size="md" label={isAuthLoading ? "Checking authentication..." : "Loading session history..."} />
+        <LoadingSpinner size="md" label={authLoading ? "Checking authentication..." : "Loading session history..."} />
       </div>
     );
   }
 
-  if (!userId) {
-    // This shouldn't happen with localStorage, but just in case
+  if (!user) {
     return (
       <div
         className="flex flex-col items-center justify-center p-8 text-center space-y-4"
@@ -124,8 +134,9 @@ export default function SessionHistory({
         aria-live="polite"
       >
         <p className="text-sm text-[var(--neutral-600)] dark:text-[var(--neutral-400)]">
-          Initializing session storage...
+          Please sign in to view your session history.
         </p>
+        <AuthButton variant="signin" />
       </div>
     );
   }
@@ -134,6 +145,14 @@ export default function SessionHistory({
     return (
       <div className="p-4">
         <ErrorMessage message={error} />
+        {isIndexBuilding && (
+          <div className="mt-4 text-center">
+            <LoadingSpinner size="sm" label="Waiting for index to be ready..." />
+            <p className="mt-2 text-xs text-[var(--neutral-600)] dark:text-[var(--neutral-400)]">
+              The page will automatically refresh when the index is ready. This usually takes 1-5 minutes.
+            </p>
+          </div>
+        )}
       </div>
     );
   }

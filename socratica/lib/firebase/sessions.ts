@@ -1,7 +1,7 @@
 /**
  * Session Firestore service functions
  * Handles CRUD operations for session history tracking
- * Falls back to localStorage if Firebase is not configured
+ * Requires Firebase authentication - uses Firebase Auth user ID
  */
 
 import {
@@ -20,28 +20,12 @@ import {
   FirestoreError,
   DocumentData,
 } from "firebase/firestore";
-// db is imported lazily to avoid initialization errors when Firebase isn't configured
+import { db } from "./firestore";
 import {
   Session,
   CompletionStatus,
   SESSION_COLLECTION_NAME,
 } from "@/types/session";
-import * as LocalSessions from "./sessions-local";
-
-// Check if Firebase is configured (client-side check)
-const isFirebaseConfigured = () => {
-  if (typeof window === "undefined") return false;
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-  return !!(
-    projectId &&
-    apiKey &&
-    projectId !== "undefined" &&
-    apiKey !== "undefined" &&
-    projectId.trim() !== "" &&
-    apiKey.trim() !== ""
-  );
-};
 
 /**
  * Converts Firestore document to Session object
@@ -122,9 +106,52 @@ function sessionToFirestoreData(session: Partial<Session>): Record<string, unkno
  * @throws Error if Firestore operation fails
  */
 export async function saveSession(session: Partial<Session> & { userId: string }): Promise<Session> {
-  // Always use localStorage for MVP - Firebase not configured
-  console.log("saveSession - Using localStorage");
-  return LocalSessions.saveSessionLocal(session);
+  try {
+    const sessionsRef = collection(db, SESSION_COLLECTION_NAME);
+    const sessionData = sessionToFirestoreData(session);
+    
+    if (session.sessionId) {
+      // Update existing session
+      const sessionRef = doc(db, SESSION_COLLECTION_NAME, session.sessionId);
+      
+      // Verify session exists and belongs to user before updating
+      const existingDoc = await getDoc(sessionRef);
+      if (!existingDoc.exists()) {
+        throw new Error("Session not found");
+      }
+      
+      const existingData = existingDoc.data();
+      if (existingData.userId !== session.userId) {
+        throw new Error("You don't have permission to update this session");
+      }
+      
+      await updateDoc(sessionRef, sessionData);
+      
+      // Fetch updated session
+      const updatedDoc = await getDoc(sessionRef);
+      if (!updatedDoc.exists()) {
+        throw new Error("Session not found after update");
+      }
+      return firestoreDocToSession(updatedDoc.id, updatedDoc.data());
+    } else {
+      // Create new session
+      const docRef = await addDoc(sessionsRef, sessionData);
+      const newDoc = await getDoc(docRef);
+      if (!newDoc.exists()) {
+        throw new Error("Session not found after creation");
+      }
+      return firestoreDocToSession(newDoc.id, newDoc.data());
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError;
+    // Log detailed error for debugging
+    console.error("Firestore save error:", {
+      code: firestoreError.code,
+      message: firestoreError.message,
+      stack: firestoreError.stack,
+    });
+    throw new Error(`Failed to save session: ${firestoreError.message || firestoreError.code || "Unknown error"}`);
+  }
 }
 
 /**
@@ -134,9 +161,22 @@ export async function saveSession(session: Partial<Session> & { userId: string }
  * @throws Error if Firestore operation fails
  */
 export async function getUserSessions(userId: string): Promise<Session[]> {
-  // Always use localStorage for MVP - Firebase not configured
-  console.log("getUserSessions - Using localStorage");
-  return LocalSessions.getUserSessionsLocal(userId);
+  try {
+    const sessionsRef = collection(db, SESSION_COLLECTION_NAME);
+    const q = query(
+      sessionsRef,
+      where("userId", "==", userId),
+      orderBy("createdAt", "desc")
+    );
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.docs.map((doc) =>
+      firestoreDocToSession(doc.id, doc.data())
+    );
+  } catch (error) {
+    const firestoreError = error as FirestoreError;
+    throw new Error(`Failed to fetch user sessions: ${firestoreError.message}`);
+  }
 }
 
 /**
@@ -146,11 +186,19 @@ export async function getUserSessions(userId: string): Promise<Session[]> {
  * @throws Error if Firestore operation fails
  */
 export async function getSessionById(sessionId: string): Promise<Session | null> {
-  // Always use localStorage for MVP - Firebase not configured
-  console.log("getSessionById - Using localStorage", sessionId);
-  const session = await LocalSessions.getSessionByIdLocal(sessionId);
-  console.log("getSessionById - Session retrieved:", session ? { sessionId: session.sessionId, messageCount: session.messages?.length, messages: session.messages } : null);
-  return session;
+  try {
+    const sessionRef = doc(db, SESSION_COLLECTION_NAME, sessionId);
+    const sessionDoc = await getDoc(sessionRef);
+    
+    if (!sessionDoc.exists()) {
+      return null;
+    }
+    
+    return firestoreDocToSession(sessionDoc.id, sessionDoc.data());
+  } catch (error) {
+    const firestoreError = error as FirestoreError;
+    throw new Error(`Failed to fetch session: ${firestoreError.message}`);
+  }
 }
 
 /**
@@ -159,9 +207,13 @@ export async function getSessionById(sessionId: string): Promise<Session | null>
  * @throws Error if Firestore operation fails
  */
 export async function deleteSession(sessionId: string): Promise<void> {
-  // Always use localStorage for MVP - Firebase not configured
-  console.log("deleteSession - Using localStorage");
-  return LocalSessions.deleteSessionLocal(sessionId);
+  try {
+    const sessionRef = doc(db, SESSION_COLLECTION_NAME, sessionId);
+    await deleteDoc(sessionRef);
+  } catch (error) {
+    const firestoreError = error as FirestoreError;
+    throw new Error(`Failed to delete session: ${firestoreError.message}`);
+  }
 }
 
 /**
@@ -175,8 +227,22 @@ export async function updateSessionCompletionStatus(
   sessionId: string,
   status: CompletionStatus
 ): Promise<Session> {
-  // Always use localStorage for MVP - Firebase not configured
-  console.log("updateSessionCompletionStatus - Using localStorage", { sessionId, status });
-  return LocalSessions.updateSessionCompletionStatusLocal(sessionId, status);
+  try {
+    const sessionRef = doc(db, SESSION_COLLECTION_NAME, sessionId);
+    await updateDoc(sessionRef, {
+      completionStatus: status,
+      updatedAt: serverTimestamp(),
+    });
+    
+    const updatedDoc = await getDoc(sessionRef);
+    if (!updatedDoc.exists()) {
+      throw new Error("Session not found after update");
+    }
+    
+    return firestoreDocToSession(updatedDoc.id, updatedDoc.data());
+  } catch (error) {
+    const firestoreError = error as FirestoreError;
+    throw new Error(`Failed to update session status: ${firestoreError.message}`);
+  }
 }
 

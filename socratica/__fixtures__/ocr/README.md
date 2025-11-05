@@ -28,3 +28,4 @@ const imageFile = new File([imageBuffer], 'polynomial-equation.png', { type: 'im
 - Use descriptive filenames that indicate what the image tests
 - Add corresponding expected output files (`.expected.txt`) if needed
 
+

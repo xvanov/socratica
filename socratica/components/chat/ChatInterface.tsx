@@ -16,7 +16,7 @@ import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 import { calculateRetryDelay, waitForRetry, DEFAULT_RETRY_CONFIG, formatRetryMessage } from "@/lib/utils/retry";
 import { saveSession, getSessionById, updateSessionCompletionStatus } from "@/lib/firebase/sessions";
 import { CompletionStatus, Session } from "@/types/session";
-import { getLocalUserIdHelper } from "@/lib/firebase/sessions-local";
+import { useAuth } from "@/hooks/useAuth";
 
 // Check if Firebase is configured (client-side check)
 const isFirebaseConfigured = () => {
@@ -62,14 +62,7 @@ export default function ChatInterface({
   const [stuckState, setStuckState] = useState<StuckState>(resetStuckState());
   const prevInitialMessagesRef = useRef<Message[]>(stableInitialMessages);
   const isOnline = useNetworkStatus();
-  // Get current user ID - always use localStorage for MVP
-  // Initialize immediately if we're on the client side
-  const [userId] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return getLocalUserIdHelper();
-    }
-    return "";
-  });
+  const { user } = useAuth(); // Get Firebase Auth user
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [currentCompletionStatus, setCurrentCompletionStatus] = useState<CompletionStatus>("in_progress");
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -104,7 +97,7 @@ export default function ChatInterface({
    * Save current session to Firestore
    */
   const saveCurrentSession = useCallback(async (): Promise<void> => {
-    if (!userId || userId === "" || messages.length === 0) {
+    if (!user?.uid || messages.length === 0) {
       return; // Don't save empty sessions or when not authenticated
     }
     
@@ -118,7 +111,7 @@ export default function ChatInterface({
       }));
       
       const sessionData: Partial<Session> = {
-        userId,
+        userId: user.uid,
         problemText: problemText || undefined,
         problemImageUrl: problemImageUrl || undefined,
         messages: serializedMessages,
@@ -142,11 +135,12 @@ export default function ChatInterface({
       setCurrentSessionId(savedSession.sessionId);
       setCurrentCompletionStatus(savedSession.completionStatus);
     } catch (err) {
-      // Don't show error to user for background saves - just log it
+      // Log error for debugging
+      const errorMessage = err instanceof Error ? err.message : "Failed to save session";
       console.error("Failed to save session:", err);
-      throw err; // Re-throw for manual saves
+      throw err; // Re-throw for manual saves to be handled by handleManualSave
     }
-  }, [userId, messages, problemText, problemImageUrl, stuckState, currentSessionId]);
+  }, [user, messages, problemText, problemImageUrl, stuckState, currentSessionId]);
 
   // Store save function in ref to prevent infinite loops
   saveCurrentSessionRef.current = saveCurrentSession;
@@ -155,8 +149,8 @@ export default function ChatInterface({
    * Handle manual save button click
    */
   const handleManualSave = async () => {
-    if (!userId || userId === "") {
-      setError("Unable to save session");
+    if (!user?.uid) {
+      setError("Please sign in to save sessions");
       return;
     }
 
@@ -188,7 +182,7 @@ export default function ChatInterface({
 
   // Auto-save session periodically
   useEffect(() => {
-    if (!userId || messages.length === 0) {
+    if (!user?.uid || messages.length === 0) {
       return;
     }
 
@@ -209,23 +203,23 @@ export default function ChatInterface({
         clearInterval(autoSaveTimerRef.current);
       }
     };
-  }, [userId, messages.length]); // Removed saveCurrentSession from dependencies
+  }, [user, messages.length]); // Removed saveCurrentSession from dependencies
 
   // Save session when component unmounts (user navigates away)
   useEffect(() => {
     return () => {
-      if (userId && messages.length > 0 && saveCurrentSessionRef.current) {
+      if (user?.uid && messages.length > 0 && saveCurrentSessionRef.current) {
         saveCurrentSessionRef.current();
       }
       if (autoSaveTimerRef.current) {
         clearInterval(autoSaveTimerRef.current);
       }
     };
-  }, [userId, messages.length]); // Removed saveCurrentSession from dependencies
+  }, [user, messages.length]); // Removed saveCurrentSession from dependencies
 
   // Save session when starting new problem (when problemText or problemImageUrl changes)
   useEffect(() => {
-    if (userId && (problemText || problemImageUrl) && messages.length === 0) {
+    if (user?.uid && (problemText || problemImageUrl) && messages.length === 0) {
       // New problem started - save previous session if exists
       if (messages.length === 0 && currentSessionId) {
         // Save current session before starting new one
@@ -242,7 +236,7 @@ export default function ChatInterface({
    * Resume a session by loading it from Firestore
    */
   const resumeSession = useCallback(async (sessionId: string) => {
-    if (!userId) {
+    if (!user?.uid) {
       setError("Please sign in to resume sessions");
       return;
     }
@@ -255,7 +249,7 @@ export default function ChatInterface({
       }
 
       // Verify session belongs to current user
-      if (session.userId !== userId) {
+      if (session.userId !== user.uid) {
         setError("You don't have permission to access this session");
         return;
       }
@@ -305,14 +299,14 @@ export default function ChatInterface({
           : "Failed to resume session"
       );
     }
-  }, [userId, onOcrTextChange, onSessionResumed]);
+  }, [user, onOcrTextChange, onSessionResumed]);
 
   // Resume session when sessionToResume prop is set
   useEffect(() => {
-    if (sessionToResume && userId) {
+    if (sessionToResume && user?.uid) {
       resumeSession(sessionToResume);
     }
-  }, [sessionToResume, userId, resumeSession]);
+  }, [sessionToResume, user, resumeSession]);
 
   // Update messages when initialMessages prop changes (for testing and dynamic updates)
   // Only update if initialMessages actually changed (by reference or content)
@@ -371,9 +365,25 @@ export default function ChatInterface({
         }),
       });
 
-      const data = await response.json();
+      // Parse response JSON (can only be read once)
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        // If JSON parsing fails, create a basic error response
+        data = {
+          success: false,
+          error: response.status === 429
+            ? "Too many requests. Please wait a moment and try again."
+            : response.status >= 500
+            ? "The service is temporarily unavailable. Please try again in a moment."
+            : response.status === 401 || response.status === 403
+            ? "There was an authentication issue. Please refresh the page and try again."
+            : "Unable to get tutor response. Please try again.",
+        };
+      }
 
-      // Handle API response
+      // Handle API response errors
       if (!response.ok || !data.success) {
         // Format error message using error handling utilities
         const errorMessage = formatError(
@@ -488,7 +498,7 @@ export default function ChatInterface({
   // Clear chat functionality
   const clearChat = async () => {
     // Save current session before clearing (if authenticated and has messages)
-    if (userId && messages.length > 0) {
+    if (user?.uid && messages.length > 0) {
       try {
         await saveCurrentSession();
       } catch (err) {
@@ -532,7 +542,7 @@ export default function ChatInterface({
 
   // Handle complete button click
   const handleComplete = async () => {
-    if (!currentSessionId || !userId) {
+    if (!currentSessionId || !user?.uid) {
       setError("No session to complete");
       return;
     }
@@ -576,12 +586,12 @@ export default function ChatInterface({
           <div className="flex items-center gap-2">
             <CompleteButton
               onClick={handleComplete}
-              disabled={messages.length === 0 || !userId || userId === "" || !currentSessionId}
+              disabled={messages.length === 0 || !user?.uid || !currentSessionId}
               isCompleted={currentCompletionStatus === "solved"}
             />
             <SaveSessionButton
               onClick={handleManualSave}
-              disabled={messages.length === 0 || !userId || userId === ""}
+              disabled={messages.length === 0 || !user?.uid}
               isSaving={isSaving}
             />
             <ClearChatButton

@@ -240,3 +240,4 @@ Adaptive questioning adjusts the complexity of AI tutor questions based on your 
 
 **Note:** The system maintains Socratic approach at ALL levels - it always asks questions, never gives direct answers. The complexity adjusts, but the method (Socratic questioning) stays consistent.
 
+

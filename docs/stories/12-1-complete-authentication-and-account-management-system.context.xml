@@ -1,0 +1,252 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>12</epicId>
+    <storyId>12.1</storyId>
+    <title>Complete Authentication & Account Management System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/12-1-complete-authentication-and-account-management-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>secure authentication and complete account management capabilities</iWant>
+    <soThat>I can access my learning history across all my devices, personalize my experience, and maintain progress continuity</soThat>
+    <tasks>
+      <task id="1" title="Create Firebase Auth service functions" acs="2,4,5,6,8,9">
+        Create `lib/firebase/auth.ts` file (extend existing if present). Implement `signInWithGoogle()`, `signOut()`, `onAuthStateChanged()`, `getCurrentUser()`, `updateAuthProfile()`, `deleteAuthUser()` functions. Handle authentication errors and map to user-friendly messages. Write unit tests.
+      </task>
+      <task id="2" title="Create React Context for authentication state management" acs="10,15,18">
+        Create `hooks/useAuth.ts` hook and `components/auth/AuthProvider.tsx` component. Implement AuthContext with user, loading, error state. Implement `signIn()`, `signOut()`, `updateProfile()`, `deleteAccount()` methods. Set up `onAuthStateChanged` observer. Write unit tests.
+      </task>
+      <task id="3" title="Create AuthButton component" acs="1,2,7,8,9">
+        Create `components/auth/AuthButton.tsx` file. Implement sign-in and sign-out button variants. Integrate with useAuth hook. Display loading states and error messages. Style with Tailwind CSS. Ensure accessibility and responsive design. Write component tests.
+      </task>
+      <task id="4" title="Create ProtectedRoute component" acs="11,12,13,17">
+        Create `components/auth/ProtectedRoute.tsx` file. Implement wrapper component that checks auth state via useAuth. Show loading spinner when loading. Show sign-in prompt or redirect when unauthenticated. Render protected content when authenticated. Write component tests.
+      </task>
+      <task id="5" title="Create Firestore user profile service functions" acs="19,24,25,33,34,43,44">
+        Create `lib/firebase/users.ts` file (or extend firestore.ts). Implement `getUserProfile()`, `createUserProfile()`, `updateUserProfile()`, `deleteUserProfile()`, `getUserPreferences()`, `updateUserPreferences()` functions. Handle Firestore errors gracefully. Write unit tests.
+      </task>
+      <task id="6" title="Create ProfilePage component" acs="19,20,21,22,23,24,25,26,27,28,29">
+        Create `components/auth/ProfilePage.tsx` file. Display user profile information (name, email, photo). Load user profile data from Firestore. Implement form for updating display name. Implement form validation. Call updateProfile() and updateUserProfile(). Display loading states and success feedback. Write component tests.
+      </task>
+      <task id="7" title="Create SettingsPage component" acs="30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49">
+        Create `components/auth/SettingsPage.tsx` file. Display current settings/preferences. Load user preferences from Firestore. Implement form for updating preferences. Implement settings validation. Apply default settings for new users. Implement account deletion option with confirmation dialog. Implement account deletion flow (delete sessions, profile, Firebase Auth account). Write component tests.
+      </task>
+      <task id="8" title="Integrate authentication into main application layout" acs="1,10,11,12,13,18">
+        Update root layout (`app/layout.tsx`) to wrap app with AuthProvider. Add AuthButton to main navigation/header. Update navigation to show authenticated vs unauthenticated states. Add ProfilePage route (`app/profile/page.tsx`). Add SettingsPage route (`app/settings/page.tsx`). Update protected routes to use ProtectedRoute wrapper. Test authentication flow end-to-end.
+      </task>
+      <task id="9" title="Implement token refresh handling" acs="14,16">
+        Configure Firebase Auth persistence settings (browserLocalPersistence). Implement automatic token refresh handling. Handle expired session scenarios. Test token refresh across page reloads. Write unit tests.
+      </task>
+      <task id="10" title="Implement session persistence" acs="4,5">
+        Configure Firebase Auth persistence to browserLocalPersistence. Test session persistence across page reloads and browser tabs. Verify session restoration on app restart. Write integration tests.
+      </task>
+      <task id="11" title="Create user profile data model and types" acs="19,24,33">
+        Create `lib/types/user.ts` file. Define UserProfile, UserPreferences, AuthState, AuthContextValue interfaces. Export all types. Document data model in architecture notes.
+      </task>
+      <task id="12" title="Update Firestore security rules for user profiles" acs="33,43,44">
+        Create/update `firestore.rules` file. Add rules for `users` collection (users can only access their own documents). Add rules for `sessions` collection (users can only access their own sessions). Test security rules with Firebase emulator. Document security rules.
+      </task>
+      <task id="13" title="Testing and verification" acs="1-49">
+        Create E2E tests for authentication flow, profile management, and settings management. Create integration tests for Firestore operations. Create unit tests for all service functions. Test responsive design and accessibility. Test error scenarios.
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <ac id="1">Google Sign-In button is visible and accessible on the main interface</ac>
+    <ac id="2">Clicking sign-in initiates Firebase Auth Google Sign-In flow</ac>
+    <ac id="3">OAuth consent screen displays correctly</ac>
+    <ac id="4">After successful authentication, user is signed in and session persists</ac>
+    <ac id="5">Authentication state persists across page reloads</ac>
+    <ac id="6">Error handling for authentication failures (network errors, user cancellation, etc.)</ac>
+    <ac id="7">Loading states shown during authentication process</ac>
+    <ac id="8">User-friendly error messages for authentication failures</ac>
+    <ac id="9">Sign-out functionality is available and works correctly</ac>
+    <ac id="10">Authentication state is tracked throughout the application using React Context</ac>
+    <ac id="11">Protected routes/components check authentication state</ac>
+    <ac id="12">Unauthenticated users see sign-in prompts where appropriate</ac>
+    <ac id="13">Authenticated users see personalized content</ac>
+    <ac id="14">Token refresh happens automatically when needed</ac>
+    <ac id="15">Authentication state updates in real-time across all components</ac>
+    <ac id="16">Proper handling of expired sessions</ac>
+    <ac id="17">Redirect to sign-in when authentication is required</ac>
+    <ac id="18">Clear distinction between authenticated and guest states</ac>
+    <ac id="19">User profile information (name, email, photo) is displayed when signed in</ac>
+    <ac id="20">Profile page/section displays user information</ac>
+    <ac id="21">User can view their profile information</ac>
+    <ac id="22">User can update display name (if supported by Firebase Auth)</ac>
+    <ac id="23">User profile photo displays correctly (from Google account or custom)</ac>
+    <ac id="24">Profile information is synced with Firebase Auth</ac>
+    <ac id="25">Changes are saved and persist across sessions</ac>
+    <ac id="26">Loading states shown during profile updates</ac>
+    <ac id="27">Success feedback when profile is updated</ac>
+    <ac id="28">Error handling for profile update failures</ac>
+    <ac id="29">Form validation for profile fields</ac>
+    <ac id="30">Settings page/section is accessible from user profile</ac>
+    <ac id="31">User can view current settings</ac>
+    <ac id="32">User can update preferences (e.g., notifications, theme, difficulty level)</ac>
+    <ac id="33">Settings are saved to Firestore user profile document</ac>
+    <ac id="34">Settings persist across sessions and devices</ac>
+    <ac id="35">Settings sync in real-time across open tabs</ac>
+    <ac id="36">Default settings are applied for new users</ac>
+    <ac id="37">Settings validation prevents invalid configurations</ac>
+    <ac id="38">Success feedback when settings are saved</ac>
+    <ac id="39">Error handling for settings save failures</ac>
+    <ac id="40">Account deletion option is available in settings</ac>
+    <ac id="41">Confirmation dialog prevents accidental deletion</ac>
+    <ac id="42">Deletion process clearly explains what data will be removed</ac>
+    <ac id="43">All user sessions are deleted from Firestore</ac>
+    <ac id="44">User profile document is deleted from Firestore</ac>
+    <ac id="45">Firebase Auth account is deleted</ac>
+    <ac id="46">Deletion confirmation is shown to user</ac>
+    <ac id="47">User is signed out after account deletion</ac>
+    <ac id="48">Error handling for deletion failures</ac>
+    <ac id="49">Option to cancel deletion process</ac>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 12: Authentication & Account Management">
+        Epic 12 provides secure user authentication and account management capabilities. Story 12.1 implements complete authentication and account management system with Firebase Auth Google Sign-In, user profile management, account settings, and secure account deletion.
+      </doc>
+      <doc path="docs/tech-spec-epic-12.md" title="Epic Technical Specification: Authentication & Account Management" section="Acceptance Criteria (Authoritative)">
+        Comprehensive technical specification with 49 acceptance criteria organized into 5 categories: Authentication & Sign-In, Authentication State Management, User Profile, Account Settings & Preferences, Account Deletion & Data Privacy.
+      </doc>
+      <doc path="docs/tech-spec-epic-12.md" title="Epic Technical Specification: Authentication & Account Management" section="Data Models and Contracts">
+        UserProfile interface: userId (Firebase Auth UID), email, displayName, photoURL, preferences (UserPreferences), createdAt, updatedAt. UserPreferences: theme, notifications, difficultyLevel. AuthState and AuthContextValue interfaces for React Context.
+      </doc>
+      <doc path="docs/tech-spec-epic-12.md" title="Epic Technical Specification: Authentication & Account Management" section="APIs and Interfaces">
+        Firebase Auth Methods: signInWithGoogle(), signOut(), onAuthStateChanged(), getCurrentUser(), updateAuthProfile(), deleteAuthUser(). Firestore User Profile Methods: getUserProfile(), createUserProfile(), updateUserProfile(), deleteUserProfile(), getUserPreferences(), updateUserPreferences().
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="ADR-004: Minimal Authentication (Google Sign-In)">
+        Decision to use Firebase Auth with Google Sign-In only. Rationale: Fast setup, one-click sign-in reduces friction, COPPA compliant, email available for age verification.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="ADR-006: React Context API for State Management">
+        Decision to use React Context API instead of external state management libraries. Rationale: No extra dependencies, sufficient for MVP conversation state, works well with Next.js App Router.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Data Architecture">
+        Firestore Collections: `users` collection with document ID as Firebase Auth UID. Fields: email, displayName, ageVerified, createdAt. `sessions` collection with userId field linking to Firebase Auth UID.
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Epic Breakdown">
+        Epic 12: Authentication & Account Management (1 story) provides secure user authentication and account management capabilities to enable cross-device session persistence and personalized learning experiences.
+      </doc>
+      <doc path="docs/stories/6-1-session-history-tracking.md" title="Story 6.1: Session History Tracking" section="Dev Agent Record">
+        Session history tracking system uses Firestore `sessions` collection linked to userId field. Current implementation uses localStorage fallback but ready for Firebase Auth integration. When implementing authentication, ensure session queries filter by Firebase Auth UID instead of localStorage userId.
+      </doc>
+      <doc path="docs/stories/0-2-firebase-project-setup.md" title="Story 0.2: Firebase Project Setup" section="Dev Agent Record">
+        Firebase project configured with Firestore, Auth, and Storage. Firebase Auth instance exported from `lib/firebase/auth.ts`. Firestore instance exported from `lib/firebase/firestore.ts`. Firebase Auth Google Sign-In provider configuration exists but may need verification.
+      </doc>
+    </docs>
+    <code>
+      <code path="lib/firebase/auth.ts" kind="service" symbol="auth" lines="1-5" reason="Firebase Auth instance exported. Needs extension for Google Sign-In provider integration."/>
+      <code path="lib/firebase/firestore.ts" kind="service" symbol="db" lines="1-5" reason="Firestore instance exported. Ready for user profile collection operations."/>
+      <code path="lib/firebase/sessions.ts" kind="service" symbol="getUserSessions, saveSession, deleteSession" lines="124-181" reason="Firestore service patterns established. Follow similar patterns for user profile service functions. Sessions collection uses userId field ready for Firebase Auth UID."/>
+      <code path="lib/firebase/sessions-local.ts" kind="service" symbol="getLocalUserIdHelper" lines="15-22" reason="LocalStorage fallback implementation. When implementing Firebase Auth, replace localStorage userId with Firebase Auth UID."/>
+      <code path="components/ui/AuthButton.tsx" kind="component" symbol="AuthButton" lines="22-109" reason="Existing AuthButton component uses localStorage fallback. Needs replacement with Firebase Auth Google Sign-In implementation."/>
+      <code path="components/ui/ConfirmationDialog.tsx" kind="component" symbol="ConfirmationDialog" lines="15-156" reason="Reusable confirmation dialog component. Can be reused for account deletion confirmation dialog."/>
+      <code path="components/ui/Navigation.tsx" kind="component" symbol="Navigation" lines="20-195" reason="Navigation component exists. Needs update to include authentication state and profile/settings links."/>
+      <code path="components/sessions/SessionHistory.tsx" kind="component" symbol="SessionHistory" lines="34-205" reason="Session history component patterns established. Create auth components following similar patterns in `components/auth/` directory."/>
+      <code path="components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" lines="43-645" reason="ChatInterface uses React useState for state management. Authentication state management via React Context aligns with existing patterns."/>
+      <code path="types/session.ts" kind="type" symbol="Session, CompletionStatus" lines="11-41" reason="Session interface includes userId field ready for Firebase Auth UID. Follow similar patterns for UserProfile type definition."/>
+    </code>
+    <dependencies>
+      <node>
+        <package name="firebase" version="^12.5.0" reason="Firebase SDK for Authentication, Firestore, and Storage services"/>
+        <package name="next" version="16.0.1" reason="Next.js 15 App Router framework"/>
+        <package name="react" version="19.2.0" reason="React library for UI components"/>
+        <package name="react-dom" version="19.2.0" reason="React DOM rendering"/>
+        <package name="typescript" version="^5" reason="TypeScript for type safety"/>
+      </node>
+      <devDependencies>
+        <package name="vitest" version="^1.1.0" reason="Unit testing framework"/>
+        <package name="@testing-library/react" version="^15.0.0" reason="React component testing utilities"/>
+        <package name="@playwright/test" version="^1.40.0" reason="E2E testing framework"/>
+        <package name="@testing-library/user-event" version="^14.5.1" reason="User interaction simulation for tests"/>
+      </devDependencies>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      Use React Context API (`hooks/useAuth.ts`, `components/auth/AuthProvider.tsx`) for authentication state management per ADR-006. Firebase Auth `onAuthStateChanged` observer updates React Context state.
+    </constraint>
+    <constraint type="architecture">
+      Use Firebase Auth Google Sign-In provider (already configured in Story 0.2) per ADR-004. Replace localStorage-based authentication with Firebase Auth OAuth flow. Firebase Auth handles token management and session persistence via `browserLocalPersistence` setting.
+    </constraint>
+    <constraint type="naming">
+      Components: PascalCase matching file name (e.g., `AuthProvider.tsx` contains `AuthProvider` component). Files: Match component name exactly. Functions: camelCase (e.g., `signInWithGoogle()`, `getUserProfile()`). Constants: UPPER_SNAKE_CASE (e.g., `USERS_COLLECTION_NAME`). Types/Interfaces: PascalCase (e.g., `UserProfile`, `AuthState`).
+    </constraint>
+    <constraint type="error-handling">
+      Map Firebase Auth errors to user-friendly error messages. Handle network errors, user cancellation, expired sessions. Display error messages in UI components. Log errors appropriately for debugging.
+    </constraint>
+    <constraint type="security">
+      Firebase Auth provides built-in security features (CSRF protection, token validation). Firestore security rules enforce data access restrictions (users can only access their own documents). Account deletion cascades properly to prevent orphaned data (sessions, conversations).
+    </constraint>
+    <constraint type="data-model">
+      User Profile Firestore collection: `users` collection with document ID as Firebase Auth UID (userId). Fields: userId, email, displayName, photoURL, preferences (UserPreferences), createdAt (ISO 8601), updatedAt (ISO 8601).
+    </constraint>
+    <constraint type="integration">
+      Session history (Story 6.1) will use Firebase Auth UID instead of localStorage userId. Firestore `sessions` collection already linked to userId field (ready for Firebase Auth). Integration points: AuthProvider wraps root layout, AuthButton integrates into navigation, ProtectedRoute wraps protected routes.
+    </constraint>
+    <constraint type="testing">
+      Follow Test-Driven Development (TDD) approach: Red-Green-Refactor cycle. Unit tests for auth utilities and hooks (Vitest). Component tests for UI components (Testing Library). Integration tests for Firestore operations. E2E tests for authentication flows (Playwright). Test coverage: All 49 acceptance criteria covered by tests.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="signInWithGoogle" kind="function" signature="async (): Promise&lt;UserCredential&gt;" path="lib/firebase/auth.ts" reason="Firebase Auth Google Sign-In function. Initiates OAuth flow with Google provider."/>
+    <interface name="signOut" kind="function" signature="async (): Promise&lt;void&gt;" path="lib/firebase/auth.ts" reason="Firebase Auth sign-out function. Signs out current user."/>
+    <interface name="onAuthStateChanged" kind="function" signature="(callback: (user: User | null) =&gt; void): Unsubscribe" path="lib/firebase/auth.ts" reason="Firebase Auth state observer. Triggers callback when authentication state changes. Returns unsubscribe function."/>
+    <interface name="getUserProfile" kind="function" signature="async (userId: string): Promise&lt;UserProfile | null&gt;" path="lib/firebase/users.ts" reason="Fetch user profile from Firestore. Returns UserProfile object or null if not found."/>
+    <interface name="createUserProfile" kind="function" signature="async (user: FirebaseUser): Promise&lt;void&gt;" path="lib/firebase/users.ts" reason="Create user profile document in Firestore on first sign-in. Takes Firebase Auth User object."/>
+    <interface name="updateUserProfile" kind="function" signature="async (userId: string, updates: Partial&lt;UserProfile&gt;): Promise&lt;void&gt;" path="lib/firebase/users.ts" reason="Update user profile fields in Firestore. Takes userId and partial UserProfile updates."/>
+    <interface name="deleteUserProfile" kind="function" signature="async (userId: string): Promise&lt;void&gt;" path="lib/firebase/users.ts" reason="Delete user profile document from Firestore. Used during account deletion flow."/>
+    <interface name="getUserPreferences" kind="function" signature="async (userId: string): Promise&lt;UserPreferences&gt;" path="lib/firebase/users.ts" reason="Fetch user preferences from Firestore user profile document."/>
+    <interface name="updateUserPreferences" kind="function" signature="async (userId: string, preferences: Partial&lt;UserPreferences&gt;): Promise&lt;void&gt;" path="lib/firebase/users.ts" reason="Update user preferences in Firestore user profile document."/>
+    <interface name="useAuth" kind="hook" signature="(): AuthContextValue" path="hooks/useAuth.ts" reason="React hook for accessing authentication state and methods. Returns AuthContextValue with user, loading, error, signIn, signOut, updateProfile, deleteAccount."/>
+    <interface name="AuthProvider" kind="component" signature="AuthProvider({ children: React.ReactNode })" path="components/auth/AuthProvider.tsx" reason="React Context provider for authentication state. Wraps application and provides auth state to all child components."/>
+    <interface name="AuthButton" kind="component" signature="AuthButton({ variant?: 'signin' | 'signout', className?: string })" path="components/auth/AuthButton.tsx" reason="Sign-in/Sign-out button component. Shows sign-in button when unauthenticated, sign-out button when authenticated."/>
+    <interface name="ProtectedRoute" kind="component" signature="ProtectedRoute({ children: React.ReactNode, fallback?: React.ReactNode })" path="components/auth/ProtectedRoute.tsx" reason="Route protection wrapper component. Checks auth state and renders protected content or fallback/redirect when unauthenticated."/>
+    <interface name="ConfirmationDialog" kind="component" signature="ConfirmationDialog({ isOpen: boolean, onConfirm: () =&gt; void, onCancel: () =&gt; void, title?: string, message?: string })" path="components/ui/ConfirmationDialog.tsx" reason="Reusable confirmation dialog component. Can be used for account deletion confirmation. Includes accessibility features (focus trap, keyboard navigation)."/>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow Test-Driven Development (TDD) approach: Red-Green-Refactor cycle. Test pyramid: Unit tests (40%) for business logic and utilities, Component tests (30%) for React components, Integration tests (20%) for API routes and external services, E2E tests (10%) for complete user flows. Use Vitest for unit/component tests, Playwright for E2E tests, Testing Library for React component testing. Tests must verify acceptance criteria explicitly, be simple and maintainable, run fast, and be independent (no shared state). Tests must NOT test implementation details, third-party library internals, or have dependencies on external services (use mocks).
+    </standards>
+    <locations>
+      Unit tests: `lib/firebase/__tests__/` for service functions, `hooks/__tests__/` for hooks. Component tests: `components/auth/__tests__/` for auth components. Integration tests: `tests/integration/` for Firestore operations. E2E tests: `tests/e2e/` for authentication flows. Test fixtures: `__fixtures__/` directory for test data.
+    </locations>
+    <ideas>
+      <test ac="1" type="component">Test AuthButton renders sign-in button when user is unauthenticated. Verify button is visible and accessible.</test>
+      <test ac="2" type="integration">Test clicking sign-in button calls signInWithGoogle() function. Verify OAuth flow initiates.</test>
+      <test ac="3" type="e2e">Test OAuth consent screen displays correctly after clicking sign-in button.</test>
+      <test ac="4" type="e2e">Test user is signed in and session persists after successful authentication.</test>
+      <test ac="5" type="e2e">Test authentication state persists across page reloads. Verify user remains signed in after refresh.</test>
+      <test ac="6" type="unit">Test error handling for authentication failures (network errors, user cancellation). Verify error messages are user-friendly.</test>
+      <test ac="7" type="component">Test loading states shown during authentication process. Verify loading indicator displays.</test>
+      <test ac="9" type="e2e">Test sign-out functionality works correctly. Verify user is signed out and session cleared.</test>
+      <test ac="10" type="unit">Test authentication state is tracked throughout application using React Context. Verify AuthProvider provides state to all components.</test>
+      <test ac="11" type="component">Test ProtectedRoute component checks authentication state. Verify protected content renders when authenticated.</test>
+      <test ac="12" type="component">Test unauthenticated users see sign-in prompts. Verify ProtectedRoute shows fallback when unauthenticated.</test>
+      <test ac="14" type="integration">Test token refresh happens automatically when needed. Verify Firebase Auth handles token refresh.</test>
+      <test ac="15" type="integration">Test authentication state updates in real-time across all components. Verify Context updates propagate.</test>
+      <test ac="19" type="component">Test user profile information (name, email, photo) is displayed when signed in. Verify ProfilePage displays user data.</test>
+      <test ac="22" type="e2e">Test user can update display name. Verify updateProfile() is called and changes persist.</test>
+      <test ac="24" type="integration">Test profile information is synced with Firebase Auth. Verify Firestore profile updates when Firebase Auth profile updates.</test>
+      <test ac="32" type="e2e">Test user can update preferences (theme, notifications, difficulty level). Verify updateUserPreferences() is called.</test>
+      <test ac="33" type="integration">Test settings are saved to Firestore user profile document. Verify Firestore document updates.</test>
+      <test ac="40" type="component">Test account deletion option is available in settings. Verify delete button is visible.</test>
+      <test ac="41" type="e2e">Test confirmation dialog prevents accidental deletion. Verify dialog appears before deletion.</test>
+      <test ac="43" type="integration">Test all user sessions are deleted from Firestore during account deletion. Verify sessions collection query returns empty.</test>
+      <test ac="44" type="integration">Test user profile document is deleted from Firestore during account deletion. Verify document no longer exists.</test>
+      <test ac="45" type="integration">Test Firebase Auth account is deleted during account deletion flow. Verify deleteAuthUser() is called.</test>
+      <test ac="47" type="e2e">Test user is signed out after account deletion. Verify authentication state is cleared.</test>
+    </ideas>
+  </tests>
+</story-context>
+

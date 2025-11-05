@@ -4,7 +4,6 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ImageUpload from "@/components/problem-input/ImageUpload";
 import ChatInterface from "@/components/chat/ChatInterface";
-import Navigation from "@/components/ui/Navigation";
 import { NetworkStatusIndicator } from "@/components/ui/NetworkStatusIndicator";
 import FeatureInstructions from "@/components/ui/FeatureInstructions";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
@@ -48,7 +47,6 @@ function HomeContent() {
     <div className="flex min-h-screen items-center justify-center bg-[var(--surface)] font-sans dark:bg-[var(--background)] overflow-x-hidden">
       <NetworkStatusIndicator />
       <div className="flex flex-col w-full min-h-screen">
-        <Navigation />
         <main className="flex flex-1 w-full max-w-4xl mx-auto flex-col py-8 px-4 bg-[var(--surface-elevated)] dark:bg-[var(--background)] sm:px-8 sm:py-16 overflow-x-hidden">
           <div className="w-full space-y-6">
             <div className="text-center space-y-4">

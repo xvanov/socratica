@@ -41,16 +41,16 @@ This document breaks down Phase 1 and Phase 2 goalposts into implementable epics
 4. Epic 4: Math Rendering (4 stories)
 5. Epic 5: UI Polish (6 stories)
 
-**Phase 2 (Post-MVP) - 7 Epics, 20 Stories:**
+**Phase 2 (Post-MVP) - 7 Epics, 15 Stories:**
 6. Epic 6: Interactive Whiteboard (3 stories)
 7. Epic 7: Step Visualization (2 stories)
 8. Epic 8: Voice Interface (3 stories)
 9. Epic 9: Animated Avatar (3 stories)
 10. Epic 10: Difficulty Modes (2 stories)
 11. Epic 11: Problem Generation (2 stories)
-12. Epic 12: Authentication & Account Management (6 stories)
+12. Epic 12: Authentication & Account Management (1 story)
 
-**Total: Foundation (2 stories) + 12 Epics, 48 Stories**
+**Total: Foundation (2 stories) + 12 Epics, 43 Stories**
 
 **Estimated Timeline:**
 - Phase 1 (MVP): 5-6 weeks
@@ -1006,168 +1006,111 @@ So that I can practice independently and build mastery with appropriately challe
 
 **Note:** This epic should be prioritized early as it's required for proper session history functionality. Story 6.1 currently uses localStorage fallback but needs proper authentication for cross-device persistence.
 
-#### Story 12.1: Google Sign-In Integration
+#### Story 12.1: Complete Authentication & Account Management System
 
 As a student,
-I want to sign in with my Google account,
-So that I can access my learning history across all my devices securely.
+I want secure authentication and complete account management capabilities,
+So that I can access my learning history across all my devices, personalize my experience, and maintain progress continuity.
 
 **Acceptance Criteria:**
+
+**Authentication & Sign-In:**
 1. Google Sign-In button is visible and accessible on the main interface
 2. Clicking sign-in initiates Firebase Auth Google Sign-In flow
 3. OAuth consent screen displays correctly
 4. After successful authentication, user is signed in and session persists
-5. User profile information (name, email, photo) is displayed when signed in
-6. Sign-out functionality is available and works correctly
-7. Authentication state persists across page reloads
-8. Error handling for authentication failures (network errors, user cancellation, etc.)
-9. Loading states shown during authentication process
-10. User-friendly error messages for authentication failures
+5. Authentication state persists across page reloads
+6. Error handling for authentication failures (network errors, user cancellation, etc.)
+7. Loading states shown during authentication process
+8. User-friendly error messages for authentication failures
+9. Sign-out functionality is available and works correctly
+
+**Authentication State Management:**
+10. Authentication state is tracked throughout the application using React Context
+11. Protected routes/components check authentication state
+12. Unauthenticated users see sign-in prompts where appropriate
+13. Authenticated users see personalized content
+14. Token refresh happens automatically when needed
+15. Authentication state updates in real-time across all components
+16. Proper handling of expired sessions
+17. Redirect to sign-in when authentication is required
+18. Clear distinction between authenticated and guest states
+
+**User Profile:**
+19. User profile information (name, email, photo) is displayed when signed in
+20. Profile page/section displays user information
+21. User can view their profile information
+22. User can update display name (if supported by Firebase Auth)
+23. User profile photo displays correctly (from Google account or custom)
+24. Profile information is synced with Firebase Auth
+25. Changes are saved and persist across sessions
+26. Loading states shown during profile updates
+27. Success feedback when profile is updated
+28. Error handling for profile update failures
+29. Form validation for profile fields
+
+**Account Settings & Preferences:**
+30. Settings page/section is accessible from user profile
+31. User can view current settings
+32. User can update preferences (e.g., notifications, theme, difficulty level)
+33. Settings are saved to Firestore user profile document
+34. Settings persist across sessions and devices
+35. Settings sync in real-time across open tabs
+36. Default settings are applied for new users
+37. Settings validation prevents invalid configurations
+38. Success feedback when settings are saved
+39. Error handling for settings save failures
+
+**Account Deletion & Data Privacy:**
+40. Account deletion option is available in settings
+41. Confirmation dialog prevents accidental deletion
+42. Deletion process clearly explains what data will be removed
+43. All user sessions are deleted from Firestore
+44. User profile document is deleted from Firestore
+45. Firebase Auth account is deleted
+46. Deletion confirmation is shown to user
+47. User is signed out after account deletion
+48. Error handling for deletion failures
+49. Option to cancel deletion process
 
 **Prerequisites:** Story 0.2 complete (Firebase setup exists)
 
 **Technical Notes:**
+
+**Authentication:**
 - Use Firebase Auth Google Sign-In provider (already configured in Story 0.2)
 - Replace current localStorage-based AuthButton with Firebase Auth implementation
 - Handle authentication state with Firebase Auth state observer
+- Create React Context for authentication state management
+- Implement protected route wrapper component
+- Manage session persistence via Firebase Auth persistence settings
+
+**Profile Management:**
 - Store user profile information in application state
-- Implement proper error handling for OAuth flow
-
-#### Story 12.2: User Profile Management
-
-As a student,
-I want to view and update my profile information,
-So that I can personalize my account and ensure my information is correct.
-
-**Acceptance Criteria:**
-1. Profile page/section displays user information (name, email, photo)
-2. User can view their profile information
-3. User can update display name (if supported by Firebase Auth)
-4. User profile photo displays correctly (from Google account or custom)
-5. Profile information is synced with Firebase Auth
-6. Changes are saved and persist across sessions
-7. Loading states shown during profile updates
-8. Success feedback when profile is updated
-9. Error handling for profile update failures
-10. Form validation for profile fields
-
-**Prerequisites:** Story 12.1 (Google Sign-In exists)
-
-**Technical Notes:**
 - Use Firebase Auth `updateProfile()` for name updates
-- Consider Firestore user profile document for extended profile data
+- Create Firestore `users` collection for extended user data
 - Sync profile photo from Google account or allow custom upload
 - Validate profile updates before saving
 
-#### Story 12.3: Authentication State Management
-
-As a student,
-I want the application to remember my authentication state,
-So that I don't have to sign in every time I use the platform.
-
-**Acceptance Criteria:**
-1. Authentication state is tracked throughout the application
-2. Protected routes/components check authentication state
-3. Unauthenticated users see sign-in prompts where appropriate
-4. Authenticated users see personalized content
-5. Authentication state persists across browser sessions
-6. Token refresh happens automatically when needed
-7. Authentication state updates in real-time across all components
-8. Proper handling of expired sessions
-9. Redirect to sign-in when authentication is required
-10. Clear distinction between authenticated and guest states
-
-**Prerequisites:** Story 12.1 (Google Sign-In exists)
-
-**Technical Notes:**
-- Use Firebase Auth state observer for real-time auth state
-- Create React Context for authentication state management
-- Implement protected route wrapper component
-- Handle token refresh automatically
-- Manage session persistence via Firebase Auth persistence settings
-
-#### Story 12.4: Guest User Migration
-
-As a student,
-I want my local session history to be preserved when I sign in,
-So that I don't lose my previous work when creating an account.
-
-**Acceptance Criteria:**
-1. Detect existing localStorage sessions when user signs in
-2. Prompt user to migrate local sessions to account
-3. Migrate sessions from localStorage to Firestore linked to authenticated user
-4. Merge guest sessions with existing account sessions
-5. Handle duplicate session detection
-6. Provide clear feedback about migration progress
-7. Clean up localStorage after successful migration
-8. Handle migration errors gracefully
-9. Allow user to skip migration (keep local sessions separate)
-10. Sessions are accessible after migration completes
-
-**Prerequisites:** Story 12.1 (Google Sign-In exists), Story 6.1 (Session History exists - at least partial implementation)
-
-**Technical Notes:**
-- Read localStorage sessions before sign-in
-- Create migration utility function
-- Map local userId to Firebase Auth UID
-- Update session documents with new userId
-- Handle conflicts if sessions already exist
-- Provide migration UI flow
-
-#### Story 12.5: Account Settings & Preferences
-
-As a student,
-I want to manage my account settings and preferences,
-So that I can customize my learning experience.
-
-**Acceptance Criteria:**
-1. Settings page/section is accessible from user profile
-2. User can view current settings
-3. User can update preferences (e.g., notifications, theme, difficulty level)
-4. Settings are saved to Firestore user profile document
-5. Settings persist across sessions and devices
-6. Settings sync in real-time across open tabs
-7. Default settings are applied for new users
-8. Settings validation prevents invalid configurations
-9. Success feedback when settings are saved
-10. Error handling for settings save failures
-
-**Prerequisites:** Story 12.2 (User Profile exists)
-
-**Technical Notes:**
-- Create Firestore `users` collection for extended user data
-- Store preferences in user document
+**Settings & Preferences:**
+- Store preferences in Firestore user profile document
 - Use React Context or state management for settings
 - Implement settings validation
 - Sync settings across devices via Firestore
 
-#### Story 12.6: Account Deletion & Data Privacy
-
-As a student,
-I want to delete my account and all associated data,
-So that I can manage my privacy and data as needed.
-
-**Acceptance Criteria:**
-1. Account deletion option is available in settings
-2. Confirmation dialog prevents accidental deletion
-3. Deletion process clearly explains what data will be removed
-4. All user sessions are deleted from Firestore
-5. User profile document is deleted from Firestore
-6. Firebase Auth account is deleted
-7. Deletion confirmation is shown to user
-8. User is signed out after account deletion
-9. Error handling for deletion failures
-10. Option to cancel deletion process
-
-**Prerequisites:** Story 12.5 (Account Settings exists)
-
-**Technical Notes:**
+**Account Deletion:**
 - Use Firebase Auth `deleteUser()` method
 - Delete all user sessions from Firestore
 - Delete user profile document
 - Handle cascading deletions
 - Provide clear warning about data permanence
 - Implement proper error recovery
+
+**Error Handling:**
+- Implement proper error handling for OAuth flow
+- Handle network errors, user cancellation, expired sessions
+- Provide user-friendly error messages throughout
+- Log errors appropriately for debugging
 
 ---
 
@@ -1236,7 +1179,7 @@ Epic 4 (Math Rendering) Story 4.1 can run in parallel with other foundation stor
 **Phase 2 Sequencing:**
 
 1. **Epic 12: Authentication & Account Management** (requires Story 0.2, recommended early for Epic 6 Story 6.1)
-   - Story 12.1 → 12.2 → 12.3 → 12.4 (requires Story 6.1) → 12.5 → 12.6
+   - Story 12.1 (Complete Authentication & Account Management System)
 
 2. **Epic 6: Interactive Whiteboard** (requires Epic 5, Epic 12 Story 12.1 for proper session history)
    - Story 6.1 → 6.2 → 6.3
@@ -1436,7 +1379,6 @@ Epic 11: Depends on Epic 3, Epic 10
 
 1. **Authentication & Account Management (Epic 12)** requires:
    - Firebase Auth Google Sign-In provider (already configured)
-   - Migration strategy for localStorage guest sessions
    - Firestore user profile collection design
    - Should be prioritized early to support Epic 6 Story 6.1
 

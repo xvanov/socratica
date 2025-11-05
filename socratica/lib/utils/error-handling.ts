@@ -192,7 +192,11 @@ export function getUserFriendlyError(
       return ERROR_MESSAGES.NETWORK.GENERIC;
 
     case ErrorType.API_ERROR:
-      if (originalMessage?.toLowerCase().includes("rate limit") || originalMessage?.includes("429")) {
+      if (
+        originalMessage?.toLowerCase().includes("rate limit") ||
+        originalMessage?.toLowerCase().includes("too many requests") ||
+        originalMessage?.includes("429")
+      ) {
         return ERROR_MESSAGES.API.RATE_LIMIT;
       }
       if (
