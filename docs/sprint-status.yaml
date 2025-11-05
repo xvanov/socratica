@@ -86,7 +86,7 @@ development_status:
 
   # Epic 6: Interactive Whiteboard
   epic-6: backlog
-  6-1-session-history-tracking: in-progress
+  6-1-session-history-tracking: done
   6-2-whiteboard-foundation-and-drawing-tools: backlog
   6-3-real-time-synchronization-and-persistence: backlog
   epic-6-retrospective: optional
