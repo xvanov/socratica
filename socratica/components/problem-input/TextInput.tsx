@@ -116,13 +116,16 @@ export default function TextInput({
                   : "border-zinc-300 bg-white focus:border-zinc-950 focus:ring-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-zinc-50 dark:focus:ring-zinc-50"
               }`}
               aria-label="Math problem input field"
-              aria-describedby="problem-input-description"
+              aria-describedby="problem-input-description problem-input-preview"
               aria-required="true"
               aria-invalid={validationError ? "true" : "false"}
               aria-errormessage={validationError ? "problem-input-error" : undefined}
             />
             <p id="problem-input-description" className="sr-only">
               Enter your math problem. Press Enter to submit or Shift+Enter for a new line.
+            </p>
+            <p id="problem-input-preview" className="sr-only">
+              Math preview updates automatically as you type.
             </p>
           </div>
           {/* Math preview - below on mobile, beside on desktop */}
@@ -164,7 +167,7 @@ export default function TextInput({
         <button
           type="submit"
           disabled={isSubmitting || !!validationError}
-          className="flex h-12 w-full items-center justify-center rounded-lg bg-zinc-950 px-5 text-base font-medium text-white transition-colors hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-400 disabled:text-zinc-300 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-50 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-500 sm:w-auto sm:px-8"
+          className="flex h-12 min-h-[44px] w-full items-center justify-center rounded-lg bg-zinc-950 px-5 text-base font-medium text-white transition-colors hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-400 disabled:text-zinc-300 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-50 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-500 sm:w-auto sm:px-8"
           aria-label="Submit problem"
         >
           {isSubmitting ? "Submitting..." : "Submit Problem"}

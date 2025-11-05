@@ -1,6 +1,6 @@
 "use client";
 
-import { parseLaTeX, type ParsedSegment } from "@/lib/math-renderer/latex-parser";
+import { parseLaTeX, autoWrapMath, normalizeMultiLineEquations, type ParsedSegment } from "@/lib/math-renderer/latex-parser";
 import MathDisplay from "./MathDisplay";
 import MathBlock from "./MathBlock";
 
@@ -43,8 +43,14 @@ export default function MessageContent({
   }
 
   try {
+    // Normalize multi-line equations broken by OCR before processing
+    const normalizedContent = normalizeMultiLineEquations(content);
+    
+    // Auto-wrap math expressions in plain text (e.g., from OCR) before parsing
+    const wrappedContent = autoWrapMath(normalizedContent);
+    
     // Parse content to detect LaTeX expressions
-    const segments: ParsedSegment[] = parseLaTeX(content);
+    const segments: ParsedSegment[] = parseLaTeX(wrappedContent);
 
     // Debug logging in development
     if (process.env.NODE_ENV === "development") {

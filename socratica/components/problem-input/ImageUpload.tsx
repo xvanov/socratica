@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import ErrorMessage from "@/components/ui/ErrorMessage";
+import SuccessMessage from "@/components/ui/SuccessMessage";
 
 interface ImageUploadProps {
   onImageSelect?: (file: File) => void;
@@ -294,13 +297,14 @@ export default function ImageUpload({
       </p>
 
       {/* Upload button or preview */}
-      {!previewUrl && !isUploading && (
+      {!previewUrl && !isUploading && !isOCRLoading && (
         <button
           type="button"
           onClick={handleButtonClick}
-          disabled={isUploading}
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-zinc-300 bg-white px-4 py-3 text-base font-medium text-zinc-700 transition-colors hover:border-zinc-400 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-800 dark:focus:ring-zinc-50"
+          disabled={isUploading || isOCRLoading}
+          className="flex h-12 min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-base font-medium text-[var(--neutral-700)] transition-all duration-200 hover:border-[var(--neutral-400)] hover:bg-[var(--surface)] focus:outline-none focus:ring-2 focus:ring-[var(--foreground)] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[var(--surface)] dark:text-[var(--neutral-300)] dark:hover:border-[var(--neutral-600)] dark:hover:bg-[var(--neutral-800)] dark:focus:ring-[var(--neutral-100)] shadow-sm"
           aria-label="Upload image"
+          aria-disabled={isUploading || isOCRLoading}
         >
           <svg
             className="h-5 w-5"
@@ -322,22 +326,18 @@ export default function ImageUpload({
 
       {/* Loading state */}
       {(isUploading || isOCRLoading) && (
-        <div className="flex h-32 w-full items-center justify-center rounded-lg border border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-          <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 border-t-zinc-950 dark:border-zinc-600 dark:border-t-zinc-50" />
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              {isOCRLoading
-                ? "Extracting text from image..."
-                : "Processing image..."}
-            </p>
-          </div>
+        <div className="flex h-32 w-full items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface)] transition-opacity duration-200">
+          <LoadingSpinner
+            size="md"
+            label={isOCRLoading ? "Extracting text from image..." : "Processing image..."}
+          />
         </div>
       )}
 
       {/* Image preview */}
-      {previewUrl && !isUploading && (
-        <div className="relative w-full">
-          <div className="relative overflow-hidden rounded-lg border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+      {previewUrl && !isUploading && !isOCRLoading && (
+        <div className="relative w-full transition-opacity duration-200">
+          <div className="relative overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] dark:bg-[var(--surface)] shadow-sm">
             <img
               src={previewUrl}
               alt="Preview of uploaded math problem"
@@ -346,7 +346,7 @@ export default function ImageUpload({
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-950/80 text-white transition-colors hover:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 dark:bg-zinc-50/80 dark:text-zinc-950 dark:hover:bg-zinc-50 dark:focus:ring-zinc-50"
+              className="absolute right-2 top-2 flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-[var(--neutral-900)]/80 text-white transition-all duration-200 hover:bg-[var(--neutral-900)] focus:outline-none focus:ring-2 focus:ring-[var(--foreground)] focus:ring-offset-2 dark:bg-[var(--neutral-100)]/80 dark:text-[var(--neutral-900)] dark:hover:bg-[var(--neutral-100)] dark:focus:ring-[var(--neutral-100)]"
               aria-label="Remove image"
             >
               <svg
@@ -366,57 +366,38 @@ export default function ImageUpload({
             </button>
           </div>
           {selectedFile && (
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-2 text-sm text-[var(--neutral-600)] dark:text-[var(--neutral-400)]">
               {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
             </p>
           )}
         </div>
       )}
 
+      {/* Success message for successful OCR */}
+      {previewUrl && !isUploading && !isOCRLoading && !ocrError && selectedFile && (
+        <SuccessMessage
+          message="Image uploaded successfully. Text extracted from image."
+          duration={3000}
+        />
+      )}
+
       {/* Error display */}
       {(error || ocrError) && (
-        <div className="rounded-lg border border-red-300 bg-red-50 p-4 dark:border-red-700 dark:bg-red-900/20">
-          <div className="flex items-start gap-3">
-            <svg
-              className="h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-red-800 dark:text-red-200">
-                {error || ocrError}
-              </p>
-              <div className="mt-2 flex gap-2">
-                {error && (
-                  <button
-                    type="button"
-                    onClick={handleRetry}
-                    className="text-sm font-medium text-red-600 underline transition-colors hover:text-red-800 dark:text-red-400 dark:hover:text-red-200"
-                  >
-                    Try again
-                  </button>
-                )}
-                {ocrError && (
-                  <button
-                    type="button"
-                    onClick={handleRetryOCR}
-                    className="text-sm font-medium text-red-600 underline transition-colors hover:text-red-800 dark:text-red-400 dark:hover:text-red-200"
-                  >
-                    Retry OCR
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
+        <div className="transition-opacity duration-200">
+          {error && (
+            <ErrorMessage
+              message={error}
+              onRetry={handleRetry}
+              retryLabel="Try again"
+            />
+          )}
+          {ocrError && (
+            <ErrorMessage
+              message={ocrError}
+              onRetry={handleRetryOCR}
+              retryLabel="Retry OCR"
+            />
+          )}
         </div>
       )}
     </div>

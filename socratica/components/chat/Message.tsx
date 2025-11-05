@@ -32,27 +32,26 @@ export default function Message({ message, index }: MessageProps) {
   const timestamp = formatTimestamp(message.timestamp);
 
   return (
-    <div
-      className={`flex w-full ${isStudent ? "justify-end" : "justify-start"}`}
-      role="article"
+    <article
+      className={`flex w-full ${isStudent ? "justify-end" : "justify-start"} overflow-x-hidden`}
       aria-label={`${message.role} message`}
     >
       <div
-        className={`flex max-w-[80%] flex-col gap-1 sm:max-w-[70%] ${
+        className={`flex max-w-[85%] flex-col gap-1 sm:max-w-[75%] md:max-w-[70%] ${
           isStudent ? "items-end" : "items-start"
         }`}
       >
         <div
-          className={`rounded-lg px-4 py-3 text-base leading-relaxed ${
+          className={`rounded-lg px-4 py-3 text-base leading-relaxed break-words ${
             isStudent
-              ? "bg-blue-600 text-white dark:bg-blue-500"
-              : "bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-zinc-50"
+              ? "bg-[var(--primary-600)] text-white dark:bg-[var(--primary-500)]"
+              : "bg-[var(--surface)] text-[var(--foreground)] dark:bg-[var(--neutral-800)] dark:text-[var(--neutral-100)]"
           }`}
         >
           <MessageContent content={message.content} />
         </div>
         <div
-          className={`text-xs text-zinc-500 dark:text-zinc-400 ${
+          className={`text-xs text-[var(--neutral-500)] dark:text-[var(--neutral-400)] ${
             isStudent ? "text-right" : "text-left"
           }`}
           aria-label={`Message timestamp: ${timestamp}`}
@@ -60,7 +59,7 @@ export default function Message({ message, index }: MessageProps) {
           {timestamp}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 

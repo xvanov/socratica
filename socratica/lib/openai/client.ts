@@ -23,13 +23,46 @@ export const openai = new OpenAI({
 const OCR_PROMPT = `Extract the text from this image. This is a math problem, so please:
 1. Extract all text exactly as it appears
 2. Preserve mathematical notation (operators, symbols, equations)
-3. Maintain the structure and formatting
-4. If the image contains only math equations, extract them as LaTeX where possible
-5. Return only the extracted text, no additional commentary`;
+3. Keep equations on single lines - do not break equations across multiple lines
+4. If an equation appears on multiple lines visually, join it into a single line (e.g., "2x = 6" not "2\\nx\\n=\\n6")
+5. If the image contains math equations, extract them as LaTeX where possible
+6. Maintain structure between different problems/questions (use line breaks between problems, not within equations)
+7. Return only the extracted text as plain text - do NOT use markdown formatting, code blocks, or triple backticks
+8. Do not include any markdown code fences or formatting symbols`;
 
 export interface OCRResponse {
   text: string;
   error?: string;
+}
+
+/**
+ * Cleans OCR output by removing markdown code blocks and other formatting artifacts.
+ * 
+ * OCR models sometimes wrap output in markdown code blocks (triple backticks).
+ * This function removes those artifacts.
+ * 
+ * @param text - Raw OCR text that may contain markdown formatting
+ * @returns Cleaned text without markdown formatting
+ */
+function cleanOCRText(text: string): string {
+  if (!text) return text;
+  
+  let cleaned = text.trim();
+  
+  // Remove markdown code blocks (``` at start and end)
+  // Matches: ```\n...\n``` or ```...``` on same line
+  cleaned = cleaned.replace(/^```[\w]*\n?/gm, ''); // Opening ```
+  cleaned = cleaned.replace(/\n?```$/gm, ''); // Closing ```
+  cleaned = cleaned.replace(/```[\w]*$/gm, ''); // Closing ``` at end of line
+  
+  // Remove any remaining isolated triple backticks
+  cleaned = cleaned.replace(/```/g, '');
+  
+  // Clean up excessive whitespace that might result
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n'); // Max 2 consecutive newlines
+  cleaned = cleaned.trim();
+  
+  return cleaned;
 }
 
 /**
@@ -81,18 +114,21 @@ export async function extractTextFromImage(
     });
 
     // Extract text from response
-    const extractedText =
+    const rawText =
       response.choices[0]?.message?.content?.trim() || "";
 
-    if (!extractedText) {
+    if (!rawText) {
       return {
         text: "",
         error: "No text could be extracted from the image.",
       };
     }
 
+    // Clean markdown formatting artifacts from OCR output
+    const cleanedText = cleanOCRText(rawText);
+
     return {
-      text: extractedText,
+      text: cleanedText,
     };
   } catch (error: unknown) {
     // Handle OpenAI API errors

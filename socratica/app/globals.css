@@ -1,26 +1,261 @@
 @import "tailwindcss";
 
+/* Design System - Color Palette */
+/* Educational, calming colors that promote focus */
 :root {
+  /* Neutral Colors - Backgrounds and Text */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
+  --surface: #f8f9fa;
+  --surface-elevated: #ffffff;
+  --border: #e5e7eb;
+  
+  /* Primary Colors - Educational Blue (calming, promotes focus) */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6; /* Base primary */
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+  
+  /* Accent Colors - Encouragement (success/green) */
+  --accent-success-50: #f0fdf4;
+  --accent-success-100: #dcfce7;
+  --accent-success-200: #bbf7d0;
+  --accent-success-300: #86efac;
+  --accent-success-400: #4ade80;
+  --accent-success-500: #22c55e; /* Base success */
+  --accent-success-600: #16a34a;
+  --accent-success-700: #15803d;
+  --accent-success-800: #166534;
+  --accent-success-900: #14532d;
+  
+  /* Accent Colors - Feedback (subtle orange/yellow) */
+  --accent-feedback-50: #fffbeb;
+  --accent-feedback-100: #fef3c7;
+  --accent-feedback-200: #fde68a;
+  --accent-feedback-300: #fcd34d;
+  --accent-feedback-400: #fbbf24;
+  --accent-feedback-500: #f59e0b; /* Base feedback */
+  --accent-feedback-600: #d97706;
+  --accent-feedback-700: #b45309;
+  --accent-feedback-800: #92400e;
+  --accent-feedback-900: #78350f;
+  
+  /* Neutral Grays - Text and UI Elements */
+  --neutral-50: #f9fafb;
+  --neutral-100: #f3f4f6;
+  --neutral-200: #e5e7eb;
+  --neutral-300: #d1d5db;
+  --neutral-400: #9ca3af;
+  --neutral-500: #6b7280;
+  --neutral-600: #4b5563;
+  --neutral-700: #374151;
+  --neutral-800: #1f2937;
+  --neutral-900: #111827;
+  
+  /* Semantic Colors - Error (subtle red) */
+  --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-200: #fecaca;
+  --error-300: #fca5a5;
+  --error-400: #f87171;
+  --error-500: #ef4444; /* Base error */
+  --error-600: #dc2626;
+  --error-700: #b91c1c;
+  --error-800: #991b1b;
+  --error-900: #7f1d1d;
+}
+
+/* Dark Mode Color Palette */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Neutral Colors - Dark Mode */
+    --background: #0a0a0a;
+    --foreground: #f5f5f5;
+    --surface: #161616;
+    --surface-elevated: #1f1f1f;
+    --border: #2a2a2a;
+    
+    /* Primary Colors - Adjusted for dark mode */
+    --primary-50: #1e3a8a;
+    --primary-100: #1e40af;
+    --primary-200: #1d4ed8;
+    --primary-300: #2563eb;
+    --primary-400: #3b82f6;
+    --primary-500: #60a5fa; /* Base primary - lighter for dark mode */
+    --primary-600: #93c5fd;
+    --primary-700: #bfdbfe;
+    --primary-800: #dbeafe;
+    --primary-900: #eff6ff;
+    
+    /* Accent Success - Adjusted for dark mode */
+    --accent-success-500: #4ade80; /* Lighter for dark mode */
+    --accent-success-600: #22c55e;
+    
+    /* Accent Feedback - Adjusted for dark mode */
+    --accent-feedback-500: #fbbf24; /* Lighter for dark mode */
+    --accent-feedback-600: #f59e0b;
+    
+    /* Neutral Grays - Inverted for dark mode */
+    --neutral-50: #111827;
+    --neutral-100: #1f2937;
+    --neutral-200: #374151;
+    --neutral-300: #4b5563;
+    --neutral-400: #6b7280;
+    --neutral-500: #9ca3af;
+    --neutral-600: #d1d5db;
+    --neutral-700: #e5e7eb;
+    --neutral-800: #f3f4f6;
+    --neutral-900: #f9fafb;
+    
+    /* Error - Adjusted for dark mode */
+    --error-500: #f87171; /* Lighter for dark mode */
+    --error-600: #ef4444;
+  }
+}
+
+/* Design System - Typography Scale */
+:root {
+  /* Font Families */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* Typography Scale - Responsive */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+}
+
+/* Design System - Spacing Scale (Tailwind default: 4px base unit) */
+:root {
+  --spacing-0: 0px;
+  --spacing-1: 0.25rem;   /* 4px */
+  --spacing-2: 0.5rem;    /* 8px */
+  --spacing-3: 0.75rem;   /* 12px */
+  --spacing-4: 1rem;      /* 16px */
+  --spacing-5: 1.25rem;   /* 20px */
+  --spacing-6: 1.5rem;    /* 24px */
+  --spacing-8: 2rem;      /* 32px */
+  --spacing-10: 2.5rem;   /* 40px */
+  --spacing-12: 3rem;     /* 48px */
+  --spacing-16: 4rem;     /* 64px */
+  --spacing-20: 5rem;     /* 80px */
+}
+
+/* Design System - Shadow System */
+:root {
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* Dark mode shadows - adjusted for dark backgrounds */
+  --shadow-sm-dark: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-base-dark: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-md-dark: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg-dark: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl-dark: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  
+  /* Primary Colors */
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  
+  /* Accent Colors */
+  --color-accent-success-500: var(--accent-success-500);
+  --color-accent-success-600: var(--accent-success-600);
+  --color-accent-feedback-500: var(--accent-feedback-500);
+  --color-accent-feedback-600: var(--accent-feedback-600);
+  
+  /* Neutral Colors */
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+  
+  /* Error Colors */
+  --color-error-500: var(--error-500);
+  --color-error-600: var(--error-600);
+  
+  /* Typography */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  /* Prevent horizontal scrolling */
+  overflow-x: hidden;
+  /* Ensure minimum font size for readability on mobile */
+  font-size: var(--text-base);
+  /* Ensure proper line height for readability */
+  line-height: var(--leading-normal);
+}
+
+/* Accessibility - Focus Indicators */
+/* Ensure all focusable elements have visible focus indicators */
+*:focus-visible {
+  outline: 2px solid var(--primary-600);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Dark mode focus indicators */
+@media (prefers-color-scheme: dark) {
+  *:focus-visible {
+    outline-color: var(--primary-500);
+  }
+}
+
+/* Remove default focus outline for mouse users (keep for keyboard users) */
+*:focus:not(:focus-visible) {
+  outline: none;
 }

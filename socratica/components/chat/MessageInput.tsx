@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { validateMessage } from "@/lib/utils/validation";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 interface MessageInputProps {
   onMessageSubmit: (message: string) => void;
@@ -114,7 +115,7 @@ export default function MessageInput({
     : "resize-none";
 
   return (
-    <form onSubmit={handleSubmit} className={`w-full ${isInitialInput ? "p-4" : "border-t border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900"}`}>
+    <form onSubmit={handleSubmit} className={`w-full ${isInitialInput ? "p-4" : "border-t border-[var(--border)] bg-[var(--surface-elevated)] dark:bg-[var(--surface)]"}`}>
       <div className={`flex flex-col gap-2 ${isInitialInput ? "" : "p-4"}`}>
         <label htmlFor="message-input" className="sr-only">
           {isInitialInput ? "Math problem input" : "Message input"}
@@ -129,10 +130,10 @@ export default function MessageInput({
             placeholder={finalPlaceholder}
             rows={textareaRows}
             disabled={isDisabled}
-            className={`${isInitialInput ? "w-full" : "flex-1"} ${textareaClassName} rounded-lg border px-4 py-3 text-base text-zinc-950 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-500 dark:text-zinc-50 dark:placeholder-zinc-400 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 ${
+            className={`${isInitialInput ? "w-full" : "flex-1"} ${textareaClassName} rounded-lg border px-4 py-3 text-base text-[var(--foreground)] placeholder-[var(--neutral-500)] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[var(--surface)] disabled:text-[var(--neutral-500)] dark:placeholder-[var(--neutral-400)] dark:disabled:bg-[var(--neutral-800)] dark:disabled:text-[var(--neutral-600)] transition-all duration-200 ${
               validationError
-                ? "border-red-300 bg-white focus:border-red-500 focus:ring-red-500 dark:border-red-700 dark:bg-zinc-900 dark:focus:border-red-400 dark:focus:ring-red-400"
-                : "border-zinc-300 bg-white focus:border-zinc-950 focus:ring-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-zinc-50 dark:focus:ring-zinc-50"
+                ? "border-[var(--error-300)] bg-[var(--surface-elevated)] focus:border-[var(--error-500)] focus:ring-[var(--error-500)] dark:border-[var(--error-700)] dark:bg-[var(--surface)] dark:focus:border-[var(--error-400)] dark:focus:ring-[var(--error-400)]"
+                : "border-[var(--border)] bg-[var(--surface-elevated)] focus:border-[var(--foreground)] focus:ring-[var(--foreground)] dark:bg-[var(--surface)] dark:focus:border-[var(--neutral-100)] dark:focus:ring-[var(--neutral-100)]"
             }`}
             aria-label="Message input field"
             aria-describedby="message-input-description"
@@ -151,28 +152,16 @@ export default function MessageInput({
           <button
             type="submit"
             disabled={isDisabled || !!validationError || !inputValue.trim()}
-            className={`flex h-12 ${isInitialInput ? "w-full" : "w-12 flex-shrink-0"} items-center justify-center rounded-lg bg-zinc-950 px-4 text-base font-medium text-white transition-colors hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-400 disabled:text-zinc-300 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus:ring-zinc-50 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-500 ${isInitialInput ? "sm:w-auto sm:px-8" : ""}`}
+            className={`flex h-12 min-h-[44px] ${isInitialInput ? "w-full" : "w-12 min-w-[44px] flex-shrink-0"} items-center justify-center rounded-lg bg-[var(--primary-600)] px-4 text-base font-medium text-white transition-all duration-200 hover:bg-[var(--primary-700)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-600)] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[var(--neutral-400)] disabled:text-[var(--neutral-300)] disabled:opacity-75 dark:bg-[var(--primary-500)] dark:hover:bg-[var(--primary-400)] dark:focus:ring-[var(--primary-500)] dark:disabled:bg-[var(--neutral-700)] dark:disabled:text-[var(--neutral-500)] shadow-sm ${isInitialInput ? "sm:w-auto sm:px-8" : ""}`}
             aria-label={isInitialInput ? "Submit problem" : "Send message"}
+            aria-disabled={isDisabled || !!validationError || !inputValue.trim()}
           >
             {isSubmitting ? (
               <>
                 {isInitialInput ? (
                   "Submitting..."
                 ) : (
-                  <svg
-                    className="h-5 w-5 animate-spin"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    />
-                  </svg>
+                  <LoadingSpinner size="sm" />
                 )}
               </>
             ) : (
@@ -209,13 +198,13 @@ export default function MessageInput({
         {validationError && (
           <div
             id="message-input-error"
-            className="rounded-lg border border-red-300 bg-red-50 p-2 dark:border-red-700 dark:bg-red-900/20"
+            className="rounded-lg border border-[var(--error-300)] bg-[var(--error-50)] p-2 dark:border-[var(--error-700)] dark:bg-[var(--error-900)]/20 transition-opacity duration-200"
             role="alert"
             aria-live="polite"
           >
             <div className="flex items-start gap-2">
               <svg
-                className="h-4 w-4 flex-shrink-0 text-red-600 dark:text-red-400"
+                className="h-4 w-4 flex-shrink-0 text-[var(--error-600)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -228,7 +217,7 @@ export default function MessageInput({
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="text-xs font-medium text-red-800 dark:text-red-200">
+              <p className="text-xs font-medium text-[var(--error-800)] dark:text-[var(--error-200)]">
                 {validationError}
               </p>
             </div>

@@ -40,7 +40,7 @@ export default function MathDisplay({
   try {
     return (
       <span
-        className={className}
+        className={`inline-block max-w-full ${className}`}
         aria-label={`Mathematical expression: ${expression}`}
       >
         <InlineMath math={expression} errorColor={KATEX_CONFIG.errorColor} />

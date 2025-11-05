@@ -187,7 +187,9 @@ describe("TextInput", () => {
     
     expect(textarea).toHaveAttribute("aria-label", "Math problem input field");
     expect(textarea).toHaveAttribute("aria-required", "true");
-    expect(textarea).toHaveAttribute("aria-describedby", "problem-input-description");
+    // aria-describedby includes both description and preview
+    const describedBy = textarea.getAttribute("aria-describedby");
+    expect(describedBy).toContain("problem-input-description");
   });
 
   it("should submit on Enter key press", async () => {

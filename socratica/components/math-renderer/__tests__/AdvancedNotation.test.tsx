@@ -456,9 +456,10 @@ describe('Advanced Math Notation Support', () => {
 
       const { container: studentContainer } = render(<Message message={studentMessage} index={0} />);
       
-      // Student message should have blue background
-      const studentBubble = studentContainer.querySelector('.bg-blue-600');
-      expect(studentBubble).toBeInTheDocument();
+      // Student message should have primary color background
+      const studentBubble = studentContainer.querySelector('.rounded-lg');
+      expect(studentBubble).toBeTruthy();
+      expect(studentBubble).toHaveClass('bg-[var(--primary-600)]');
 
       const tutorMessage: MessageType = {
         role: 'tutor',
@@ -468,9 +469,10 @@ describe('Advanced Math Notation Support', () => {
 
       const { container: tutorContainer } = render(<Message message={tutorMessage} index={1} />);
       
-      // Tutor message should have gray background
-      const tutorBubble = tutorContainer.querySelector('.bg-zinc-100');
-      expect(tutorBubble).toBeInTheDocument();
+      // Tutor message should have surface color background
+      const tutorBubble = tutorContainer.querySelector('.rounded-lg');
+      expect(tutorBubble).toBeTruthy();
+      expect(tutorBubble).toHaveClass('bg-[var(--surface)]');
     });
   });
 

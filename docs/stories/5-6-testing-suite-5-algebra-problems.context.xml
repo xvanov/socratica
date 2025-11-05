@@ -1,0 +1,227 @@
+<story-context id="5-6-testing-suite-5-algebra-problems" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>6</storyId>
+    <title>Testing Suite - 5+ Algebra Problems</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/5-6-testing-suite-5-algebra-problems.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a student</asA>
+    <iWant>I want the system to work correctly for various algebra problem types</iWant>
+    <soThat>so that I can trust it will help me with my homework</soThat>
+    <tasks>
+      <task id="1" ac="1">
+        <title>Prepare test data and fixtures</title>
+        <subtasks>
+          <subtask>Create test fixtures for 5+ algebra problem types</subtask>
+          <subtask>Linear equations: Create 3-5 test problems (simple, multi-step, fractions)</subtask>
+          <subtask>Quadratic equations: Create 3-5 test problems (factoring, quadratic formula, completing square)</subtask>
+          <subtask>Systems of equations: Create 3-5 test problems (2x2, substitution, elimination)</subtask>
+          <subtask>Factoring problems: Create 3-5 test problems (simple, difference of squares, trinomials)</subtask>
+          <subtask>Word problems: Create 3-5 test problems (converted to equations)</subtask>
+          <subtask>Store test fixtures in `socratica/__fixtures__/algebra-problems/`</subtask>
+          <subtask>Document test problem characteristics and expected outcomes</subtask>
+          <subtask>Add unit tests for test fixture loading</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="1,2,3,4,5">
+        <title>Create E2E test suite for algebra problems</title>
+        <subtasks>
+          <subtask>Set up E2E test framework (Playwright or similar) if not already configured</subtask>
+          <subtask>Create E2E test file: `tests/e2e/algebra-problems.test.ts`</subtask>
+          <subtask>Test Linear Equations: Submit problem → Verify Socratic questioning → Verify no direct answers → Verify math rendering</subtask>
+          <subtask>Test Quadratic Equations: Submit problem → Verify Socratic questioning → Verify no direct answers → Verify math rendering</subtask>
+          <subtask>Test Systems of Equations: Submit problem → Verify Socratic questioning → Verify no direct answers → Verify math rendering</subtask>
+          <subtask>Test Factoring Problems: Submit problem → Verify Socratic questioning → Verify no direct answers → Verify math rendering</subtask>
+          <subtask>Test Word Problems: Submit problem → Verify Socratic questioning → Verify no direct answers → Verify math rendering</subtask>
+          <subtask>Verify end-to-end workflow: Problem input → Chat interaction → Problem solved</subtask>
+          <subtask>Document test execution and results</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="2,3">
+        <title>Verify Socratic questioning</title>
+        <subtasks>
+          <subtask>For each problem type, verify AI asks guiding questions (not direct answers)</subtask>
+          <subtask>Verify questions are appropriate and pedagogically sound</subtask>
+          <subtask>Verify no direct answers provided in any test case</subtask>
+          <subtask>Verify questions adapt to student responses</subtask>
+          <subtask>Add assertions to check for question patterns (not answer patterns)</subtask>
+          <subtask>Document Socratic questioning validation approach</subtask>
+          <subtask>Add unit tests for Socratic question validation</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="4">
+        <title>Verify math rendering across problem types</title>
+        <subtasks>
+          <subtask>Test math rendering in problem input (TextInput, ImageUpload)</subtask>
+          <subtask>Test math rendering in chat messages (student and AI messages)</subtask>
+          <subtask>Verify LaTeX syntax renders correctly for all problem types</subtask>
+          <subtask>Verify inline math ($...$) renders correctly</subtask>
+          <subtask>Verify block math ($$...$$) renders correctly</subtask>
+          <subtask>Test complex math notation (fractions, exponents, roots, systems)</subtask>
+          <subtask>Add visual regression tests for math rendering</subtask>
+          <subtask>Document math rendering test results</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="5">
+        <title>Document end-to-end workflows</title>
+        <subtasks>
+          <subtask>Document complete workflow for each problem type</subtask>
+          <subtask>Include: Problem submission → Chat interaction → Problem solving steps → Completion</subtask>
+          <subtask>Document expected Socratic questioning patterns</subtask>
+          <subtask>Document math rendering verification</subtask>
+          <subtask>Create workflow diagrams or step-by-step guides</subtask>
+          <subtask>Document test execution steps and results</subtask>
+          <subtask>Create test report documenting all 5+ problem types</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="1-5">
+        <title>Integration testing and validation</title>
+        <subtasks>
+          <subtask>Run complete E2E test suite for all problem types</subtask>
+          <subtask>Verify all tests pass consistently</subtask>
+          <subtask>Test with real OpenAI API (if possible) or mock appropriately</subtask>
+          <subtask>Verify error handling works correctly in test scenarios</subtask>
+          <subtask>Verify loading states and feedback work correctly</subtask>
+          <subtask>Verify accessibility features work in test scenarios</subtask>
+          <subtask>Document test coverage and results</subtask>
+          <subtask>Create test execution report</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac="1-5">
+        <title>Test documentation and reporting</title>
+        <subtasks>
+          <subtask>Document test suite structure and organization</subtask>
+          <subtask>Document how to run tests (unit, integration, E2E)</subtask>
+          <subtask>Create test execution guide</subtask>
+          <subtask>Document test results and findings</subtask>
+          <subtask>Create test report summarizing all 5+ algebra problem types tested</subtask>
+          <subtask>Document any issues found and resolutions</subtask>
+          <subtask>Create checklist for future problem type testing</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Successfully guides through 5+ different algebra problem types: Linear equations, Quadratic equations, Systems of equations, Factoring problems, Word problems converted to equations</criterion>
+    <criterion id="2">No direct answers provided in any test case</criterion>
+    <criterion id="3">Socratic questioning maintained throughout</criterion>
+    <criterion id="4">Math rendering works correctly for all problem types</criterion>
+    <criterion id="5">Complete end-to-end workflows tested and documented</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="socratica - Epic Breakdown" section="Story 5.6: Testing Suite - 5+ Algebra Problems" snippet="As a student, I want the system to work correctly for various algebra problem types, So that I can trust it will help me with my homework. Acceptance Criteria: 1. Successfully guides through 5+ different algebra problem types: Linear equations, Quadratic equations, Systems of equations, Factoring problems, Word problems converted to equations 2. No direct answers provided in any test case 3. Socratic questioning maintained throughout 4. Math rendering works correctly for all problem types 5. Complete end-to-end workflows tested and documented Prerequisites: All Phase 1 stories complete" />
+      <doc path="docs/PRD.md" title="socratica - Product Requirements Document" section="MVP Success Criteria" snippet="Successfully guides students through 5+ Algebra problem types without giving direct answers. Maintains conversation context throughout multi-turn dialogues. Adapts to student understanding level. Math equations render correctly using LaTeX. Modern, polished UI that's intuitive to use. Free, accessible to all students." />
+      <doc path="docs/PRD.md" title="socratica - Product Requirements Document" section="Goalpost 5: UI Polish" snippet="Sleek, modern app interface. Clean chat UI with image upload capability. Tested on 5+ Algebra problems to validate end-to-end functionality." />
+      <doc path="docs/test-specifications.md" title="Socratica - Test Specifications" section="Test Strategy Overview" snippet="Test Pyramid: E2E (10%), Integration (20%), Component (30%), Unit (40%). Test Principles: Tests Verify Acceptance Criteria, Tests Are Meaningful, Tests Are Simple, Tests Are Fast, Tests Are Independent. Test Categories: Unit Tests, Component Tests, Integration Tests, E2E Tests." />
+      <doc path="docs/test-specifications.md" title="Socratica - Test Specifications" section="Test Execution Commands" snippet="Run all tests: pnpm test. Run unit tests only: pnpm test:unit. Run component tests: pnpm test:component. Run integration tests: pnpm test:integration. Run E2E tests: pnpm test:e2e. Run tests in watch mode: pnpm test:watch. Run tests with coverage: pnpm test:coverage." />
+      <doc path="docs/test-specifications.md" title="Socratica - Test Specifications" section="Test Data Strategy" snippet="Fixtures: Images: tests/fixtures/test-image.jpg, tests/fixtures/large-image.jpg. Math problems: tests/fixtures/problems.json. Mock API responses: tests/fixtures/api-responses.json. Mocks: OpenAI API: Use vi.mock('@/lib/api/openai'). Test Utilities: tests/utils/test-helpers.ts, tests/utils/mock-factories.ts, tests/utils/render-helpers.tsx" />
+      <doc path="docs/implementation-plan.md" title="Implementation Plan - Socratica" section="TDD Methodology" snippet="Red-Green-Refactor Cycle: Write failing test(s) that verify acceptance criteria, Write minimal code to make tests pass, Improve code while keeping tests green. Test Structure: Unit Tests (for functions, utilities, business logic), Component Tests (for React components, UI interactions), Integration Tests (for API routes, LLM interactions), E2E Tests (for user flows, acceptance criteria validation)." />
+      <doc path="docs/implementation-plan.md" title="Implementation Plan - Socratica" section="Why This Stack" snippet="Playwright: Modern E2E testing, better than Cypress for modern apps. Vitest: Fast unit tests, compatible with Jest patterns." />
+      <doc path="docs/stories/5-5-error-handling-and-user-guidance.md" title="Story 5.5: Error Handling and User Guidance" section="Learnings from Previous Story" snippet="Error Handling: Story 5.5 establishes error handling patterns and user-friendly error messages. E2E tests should verify error handling works correctly during problem solving workflows. User Guidance: Help text and tooltips established in Story 5.5 should be tested in E2E scenarios. Network Failure Handling: E2E tests should verify graceful degradation for network failures during problem solving." />
+      <doc path="docs/stories/5-1-responsive-layout-design.md" title="Story 5.1: Responsive Layout Design" section="Architecture Patterns" snippet="Responsive Design: Mobile-first CSS approach. Breakpoint Strategy: Mobile < 640px, Tablet 640px-1024px, Desktop > 1024px. Touch-Friendly Design: Minimum touch target size 44x44px. E2E tests should verify responsive layout works correctly on mobile, tablet, desktop viewports." />
+      <doc path="docs/stories/3-1-socratic-system-prompt-design.md" title="Story 3.1: Socratic System Prompt Design" section="Acceptance Criteria" snippet="System prompt instructs AI to NEVER give direct answers. System prompt emphasizes asking guiding questions. System prompt includes examples of Socratic questioning approach. System prompt defines when hints are appropriate (after 2+ stuck turns). System prompt maintains encouraging, patient tone. System prompt focuses on algebra problems for MVP." />
+    </docs>
+    <code>
+      <file path="socratica/lib/openai/prompts.ts" kind="library" symbol="SOCRATIC_MATH_TUTOR_PROMPT" reason="Socratic system prompt that instructs AI to NEVER give direct answers and emphasizes asking guiding questions. This is critical for validating AC 2 and AC 3 (no direct answers, Socratic questioning maintained)." lines="85-254" />
+      <file path="socratica/app/api/chat/route.ts" kind="api-route" symbol="POST" reason="Chat API route that handles LLM integration and Socratic questioning logic. Includes stuck state tracking, hint generation, and adaptive questioning. E2E tests need to verify this route works correctly with Socratic prompting for all algebra problem types." lines="74-364" />
+      <file path="socratica/app/api/ocr/route.ts" kind="api-route" symbol="POST" reason="OCR API route for extracting text from images. E2E tests should verify OCR works correctly for algebra problem images (if testing image upload flow)." lines="67-214" />
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" reason="Main chat interface component. E2E tests will interact with this component to submit problems and verify Socratic questioning. Includes error handling, loading states, and message display that need to be tested in E2E scenarios." lines="21-284" />
+      <file path="socratica/components/chat/MessageInput.tsx" kind="component" symbol="MessageInput" reason="Message input component for submitting problems and responses. E2E tests will use this component to submit algebra problems. Includes validation and error handling that need to be tested." />
+      <file path="socratica/components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" reason="Text input component for entering algebra problems. E2E tests will use this component to input problems. Math rendering preview should be tested." />
+      <file path="socratica/components/problem-input/ImageUpload.tsx" kind="component" symbol="ImageUpload" reason="Image upload component for uploading algebra problem images. E2E tests should verify OCR extraction and math rendering work correctly for image-based problems." />
+      <file path="socratica/components/math-renderer/MessageContent.tsx" kind="component" symbol="MessageContent" reason="Message content renderer that handles mixed text/math content. E2E tests need to verify math rendering works correctly for all algebra problem types (AC 4)." />
+      <file path="socratica/components/math-renderer/MathDisplay.tsx" kind="component" symbol="MathDisplay" reason="Inline math component rendering math expressions. E2E tests should verify inline math renders correctly for algebra problems." />
+      <file path="socratica/components/math-renderer/MathBlock.tsx" kind="component" symbol="MathBlock" reason="Block math component rendering block math expressions. E2E tests should verify block math renders correctly for algebra problems." />
+      <file path="socratica/__fixtures__/ocr/" kind="fixtures" symbol="OCR Fixtures" reason="Existing OCR test fixtures directory. Should be extended with algebra problem fixtures in `socratica/__fixtures__/algebra-problems/` for E2E testing. Current fixtures include quadratic.jpg, sys-nonlinear.png which may be useful as examples." />
+      <file path="socratica/vitest.config.ts" kind="config" symbol="Vitest Config" reason="Vitest configuration for unit/integration tests. E2E tests will require separate Playwright configuration (not yet created)." />
+      <file path="socratica/package.json" kind="config" symbol="Package.json" reason="Package.json shows Vitest is configured but Playwright is not yet installed. E2E test framework setup is needed (Task 2)." />
+    </code>
+    <dependencies>
+      <dependency ecosystem="npm">
+        <package name="next" version="16.0.1" />
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="firebase" version="12.5.0" />
+        <package name="katex" version="0.16.25" />
+        <package name="openai" version="6.7.0" />
+        <package name="react-katex" version="3.1.0" />
+      </dependency>
+      <dependency ecosystem="npm-dev">
+        <package name="@testing-library/jest-dom" version="6.1.5" />
+        <package name="@testing-library/react" version="15.0.0" />
+        <package name="@testing-library/user-event" version="14.5.1" />
+        <package name="vitest" version="1.1.0" />
+        <package name="jsdom" version="23.0.1" />
+        <package name="tailwindcss" version="4" />
+        <package name="typescript" version="5" />
+      </dependency>
+      <dependency ecosystem="npm-dev-needed">
+        <package name="@playwright/test" version="latest" reason="E2E testing framework (not yet installed, needs to be added)" />
+      </dependency>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="testing">E2E Testing Framework: Playwright recommended (as per architecture). Needs to be set up if not already configured. E2E tests should run in headless mode for CI/CD, headed mode for local debugging.</constraint>
+    <constraint type="testing">Test Data Management: Store test fixtures in `socratica/__fixtures__/algebra-problems/` as structured JSON/YAML files. Include problem definitions, expected Socratic questioning patterns, and expected math rendering outputs.</constraint>
+    <constraint type="testing">Socratic Questioning Validation: Verify AI asks questions (not provides answers). Use pattern matching to detect direct answers (should fail if found). Verify questions are pedagogically sound and adapt to student responses.</constraint>
+    <constraint type="testing">Math Rendering Validation: Verify LaTeX syntax renders correctly. Test inline math ($...$) and block math ($$...$$). Verify complex notation (fractions, exponents, roots, systems). Use visual regression testing for math rendering.</constraint>
+    <constraint type="testing">API Mocking: Mock OpenAI API responses for consistent testing OR use test API keys. E2E tests should verify API integration works correctly without flakiness.</constraint>
+    <constraint type="testing">Test Execution: E2E tests should run fast (< 30s per test as per test specifications). Use parallel execution where possible. Document test execution steps and results.</constraint>
+    <constraint type="testing">Test Coverage: E2E tests should cover all 5+ algebra problem types. Tests should verify complete workflows from problem submission to completion. Tests should verify Socratic questioning, math rendering, error handling, accessibility.</constraint>
+    <constraint type="dependencies">Prerequisites: All Phase 1 stories must be completed (Epic 1-5 complete). Problem input components (Epic 1), Chat interface components (Epic 2), Socratic dialogue logic (Epic 3), Math rendering components (Epic 4), UI polish components (Epic 5).</constraint>
+    <constraint type="integration">Integration Points: E2E tests integrate all components from Epic 1-5. Tests verify complete workflows from problem input to problem solving. Tests verify Socratic questioning maintains pedagogical approach. Tests verify math rendering works correctly throughout workflows.</constraint>
+    <constraint type="documentation">Test Documentation: Document test suite structure and organization. Document how to run tests (unit, integration, E2E). Create test execution guide. Document test results and findings. Create test report summarizing all 5+ algebra problem types tested.</constraint>
+    <constraint type="naming">Naming Patterns: Test files: `*.test.ts` or `*.spec.ts` for E2E tests. Test fixtures: `problem-{type}.json` (e.g., `problem-linear-equations.json`). Test helpers: camelCase function names (e.g., `submitProblem()`, `verifySocraticQuestioning()`). Constants: UPPER_SNAKE_CASE (e.g., `TEST_PROBLEMS_DIR`, `MAX_QUESTION_COUNT`).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Chat API Route" kind="api-route" signature="POST /api/chat" path="socratica/app/api/chat/route.ts" reason="Chat API route that handles LLM integration. Request body includes: message, conversationHistory, userId, stuckState, understandingState. Response includes: success, data (AI response), error. E2E tests will call this API to verify Socratic questioning and no direct answers." />
+    <interface name="OCR API Route" kind="api-route" signature="POST /api/ocr" path="socratica/app/api/ocr/route.ts" reason="OCR API route for extracting text from images. Request: FormData with image file. Response: text (extracted text) or error. E2E tests may use this for testing image-based problem input." />
+    <interface name="Socratic System Prompt" kind="function" signature="SOCRATIC_MATH_TUTOR_PROMPT: string" path="socratica/lib/openai/prompts.ts" reason="Socratic system prompt that instructs AI to NEVER give direct answers. Used by chat API route. E2E tests should verify this prompt is effective (no direct answers, Socratic questioning)." />
+    <interface name="ChatInterface Component" kind="component-props" signature="interface ChatInterfaceProps { initialMessages?: Message[]; ocrText?: string; onOcrTextChange?: (text: string) => void; }" path="socratica/components/chat/ChatInterface.tsx" reason="Main chat interface component. E2E tests will interact with this component to submit problems and verify responses. Includes error handling, loading states, and message display." />
+    <interface name="MessageInput Component" kind="component-props" signature="interface MessageInputProps { onMessageSubmit: (message: string) => void; placeholder?: string; disabled?: boolean; isInitialInput?: boolean; ocrText?: string; onOcrTextChange?: (text: string) => void; }" path="socratica/components/chat/MessageInput.tsx" reason="Message input component for submitting problems and responses. E2E tests will use this component to submit algebra problems. Includes validation and error handling." />
+    <interface name="TextInput Component" kind="component-props" signature="interface TextInputProps { onSubmit?: (text: string) => void; placeholder?: string; value?: string; onValueChange?: (text: string) => void; }" path="socratica/components/problem-input/TextInput.tsx" reason="Text input component for entering algebra problems. E2E tests will use this component to input problems. Math rendering preview should be tested." />
+    <interface name="E2E Test Helpers" kind="test-utilities" signature="function submitProblem(problem: string): Promise<void>; function verifySocraticQuestioning(messages: Message[]): boolean; function verifyNoDirectAnswers(messages: Message[]): boolean; function verifyMathRendering(element: HTMLElement): boolean;" path="tests/utils/e2e-helpers.ts" reason="E2E test helper utilities (to be created). Functions for submitting problems, verifying Socratic questioning, checking for direct answers, and validating math rendering. These helpers will be used across all E2E tests." />
+    <interface name="Test Fixture Structure" kind="data-structure" signature="interface AlgebraProblemFixture { type: 'linear' | 'quadratic' | 'systems' | 'factoring' | 'word'; problem: string; expectedQuestions: string[]; expectedMathNotation: string[]; }" path="socratica/__fixtures__/algebra-problems/" reason="Test fixture structure for algebra problems (to be created). Includes problem type, problem text, expected Socratic questioning patterns, and expected math notation. Used by E2E tests to load test data." />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing will use Playwright for E2E tests (needs to be set up) and Vitest for unit/integration tests (already configured). E2E tests should verify acceptance criteria explicitly: 5+ algebra problem types, no direct answers, Socratic questioning maintained, math rendering works correctly, complete end-to-end workflows. Tests should be meaningful, simple, fast (< 30s per test), and independent. E2E tests should use fixtures for test data, mock OpenAI API responses for consistency (or use test API keys), and verify complete workflows from problem submission to completion. Test execution should be documented with test reports summarizing all 5+ algebra problem types tested.
+    </standards>
+    <locations>
+      <location>tests/e2e/algebra-problems.test.ts</location>
+      <location>tests/utils/e2e-helpers.ts</location>
+      <location>socratica/__fixtures__/algebra-problems/</location>
+      <location>socratica/components/chat/__tests__/</location>
+      <location>socratica/components/problem-input/__tests__/</location>
+      <location>socratica/components/math-renderer/__tests__/</location>
+      <location>socratica/app/api/chat/__tests__/</location>
+      <location>socratica/app/api/ocr/__tests__/</location>
+    </locations>
+    <ideas>
+      <idea ac="1">E2E test: Submit linear equation problem (e.g., "solve for x: 2x + 5 = 13") → Verify AI asks guiding questions → Verify no direct answer provided → Verify math rendering works correctly → Verify problem-solving workflow completes.</idea>
+      <idea ac="1">E2E test: Submit quadratic equation problem (e.g., "solve: x^2 - 5x + 6 = 0") → Verify AI asks guiding questions → Verify no direct answer provided → Verify math rendering works correctly → Verify problem-solving workflow completes.</idea>
+      <idea ac="1">E2E test: Submit systems of equations problem (e.g., "solve: 2x + y = 7, x - y = 2") → Verify AI asks guiding questions → Verify no direct answer provided → Verify math rendering works correctly → Verify problem-solving workflow completes.</idea>
+      <idea ac="1">E2E test: Submit factoring problem (e.g., "factor: x^2 + 7x + 12") → Verify AI asks guiding questions → Verify no direct answer provided → Verify math rendering works correctly → Verify problem-solving workflow completes.</idea>
+      <idea ac="1">E2E test: Submit word problem converted to equation → Verify AI asks guiding questions → Verify no direct answer provided → Verify math rendering works correctly → Verify problem-solving workflow completes.</idea>
+      <idea ac="2">Unit test: Create function `verifyNoDirectAnswers(messages: Message[]): boolean` that checks for direct answer patterns (e.g., "x = 5", "the answer is", "solution is"). Use this function in E2E tests to assert no direct answers are provided.</idea>
+      <idea ac="3">E2E test: Verify AI asks questions (not provides answers) by checking response patterns. Responses should contain question marks (?), should not contain direct answer patterns, should guide student thinking.</idea>
+      <idea ac="3">Unit test: Create function `verifySocraticQuestioning(messages: Message[]): boolean` that checks for Socratic questioning patterns (questions, guiding language, no direct answers). Use this function in E2E tests.</idea>
+      <idea ac="4">E2E test: Verify math rendering works correctly for all problem types by checking rendered math elements (KaTeX) are present and correctly formatted. Test inline math ($...$) and block math ($$...$$).</idea>
+      <idea ac="4">Visual regression test: Capture screenshots of math rendering for each problem type and verify math notation renders correctly (fractions, exponents, roots, systems).</idea>
+      <idea ac="5">E2E test: Complete end-to-end workflow for each problem type: Problem input (text or image) → Chat interaction → Socratic questioning → Problem solved → Verify complete workflow.</idea>
+      <idea ac="1,2,3,4,5">Integration test: Run complete E2E test suite for all 5+ algebra problem types. Verify all tests pass consistently. Document test coverage and results. Create test execution report.</idea>
+    </ideas>
+  </tests>
+</story-context>
+

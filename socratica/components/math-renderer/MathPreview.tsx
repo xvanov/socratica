@@ -76,13 +76,17 @@ export default function MathPreview({
   }
 
   return (
-    <div
+    <section
       className={`rounded-lg border border-zinc-300 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900 ${className}`}
       role="region"
       aria-label="Math preview"
       aria-live="polite"
       aria-atomic="false"
+      aria-describedby="math-preview-description"
     >
+      <div id="math-preview-description" className="sr-only">
+        Live preview of mathematical notation rendered from your input.
+      </div>
       <div className="flex flex-col gap-2">
         {parsedSegments.map((segment, index) => {
           if (segment.type === "text") {
@@ -111,7 +115,7 @@ export default function MathPreview({
           return null;
         })}
       </div>
-    </div>
+    </section>
   );
 }
 

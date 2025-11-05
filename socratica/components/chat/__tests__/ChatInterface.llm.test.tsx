@@ -173,8 +173,8 @@ describe('ChatInterface LLM Integration Tests', () => {
       await waitFor(() => {
         const aiMessage = screen.getByText('AI response');
         expect(aiMessage).toBeInTheDocument();
-        // Message component uses role="article" on a div, not an article element
-        const messageContainer = aiMessage.closest('[role="article"]');
+        // Message component now uses semantic <article> element
+        const messageContainer = aiMessage.closest('article');
         expect(messageContainer).not.toBeNull();
         expect(messageContainer).toHaveClass('justify-start');
       }, { timeout: 3000 });

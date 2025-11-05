@@ -28,8 +28,10 @@ describe('Message Component', () => {
       render(<Message message={message} index={0} />);
       
       const messageArticle = screen.getByRole('article');
-      const messageBubble = messageArticle.querySelector('.bg-blue-600');
-      expect(messageBubble).toHaveClass('bg-blue-600');
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      // Check for design system primary color class
+      expect(messageBubble).toHaveClass('bg-[var(--primary-600)]');
     });
 
     it('should align student message content to right', () => {
@@ -56,8 +58,10 @@ describe('Message Component', () => {
       render(<Message message={message} index={0} />);
       
       const messageArticle = screen.getByRole('article');
-      const messageBubble = messageArticle.querySelector('.bg-zinc-100');
-      expect(messageBubble).toHaveClass('bg-zinc-100');
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      // Check for design system surface color class
+      expect(messageBubble).toHaveClass('bg-[var(--surface)]');
     });
 
     it('should align tutor message content to left', () => {

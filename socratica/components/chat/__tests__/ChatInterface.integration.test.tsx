@@ -154,7 +154,9 @@ describe('ChatInterface Integration Tests', () => {
       render(<ChatInterface initialMessages={messages} />);
 
       expect(screen.getByText('Solve for x: 2x + 5 = 13')).toBeInTheDocument();
-      expect(screen.getByText('x = 4')).toBeInTheDocument();
+      // Text might be wrapped in math renderer, so check for text content in article
+      const tutorArticle = screen.getByRole('article', { name: /tutor message/i });
+      expect(tutorArticle).toHaveTextContent('x = 4');
       expect(screen.getByText('How did you get that?')).toBeInTheDocument();
     });
   });

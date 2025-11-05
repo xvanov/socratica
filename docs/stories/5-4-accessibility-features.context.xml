@@ -1,0 +1,259 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>4</storyId>
+    <title>Accessibility Features</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/5-4-accessibility-features.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a student</asA>
+    <iWant>I want the interface to be accessible regardless of my abilities</iWant>
+    <soThat>So that all students can benefit from the tutoring platform</soThat>
+    <tasks>
+      <task id="1" ac="1,6">
+        <title>Implement ARIA labels for screen readers</title>
+        <subtasks>
+          <subtask>Audit all interactive components for missing ARIA labels</subtask>
+          <subtask>Add aria-label or aria-labelledby to buttons, inputs, and controls</subtask>
+          <subtask>Add aria-describedby for form inputs and error messages</subtask>
+          <subtask>Add role attributes where semantic HTML is insufficient</subtask>
+          <subtask>Add aria-live regions for dynamic content updates (chat messages, loading states)</subtask>
+          <subtask>Test with screen reader (NVDA, JAWS, VoiceOver)</subtask>
+          <subtask>Add unit tests for ARIA attributes</subtask>
+          <subtask>Document ARIA patterns for future components</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="2">
+        <title>Ensure keyboard navigation support</title>
+        <subtasks>
+          <subtask>Audit all interactive elements for keyboard accessibility</subtask>
+          <subtask>Ensure all buttons and links are keyboard accessible (Tab, Enter, Space)</subtask>
+          <subtask>Implement keyboard navigation for mobile menu (Navigation component)</subtask>
+          <subtask>Add keyboard shortcuts for common actions (if appropriate)</subtask>
+          <subtask>Ensure focus trap in modals/dialogs (if any)</subtask>
+          <subtask>Test keyboard navigation with Tab, Shift+Tab, Enter, Space, Arrow keys</subtask>
+          <subtask>Add unit tests for keyboard event handling</subtask>
+          <subtask>Document keyboard navigation patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="3">
+        <title>Verify color contrast ratios</title>
+        <subtasks>
+          <subtask>Audit all text colors against background colors</subtask>
+          <subtask>Verify text meets WCAG AA minimum (4.5:1 for normal text, 3:1 for large text)</subtask>
+          <subtask>Verify UI elements meet WCAG AA minimum (3:1 for interactive elements)</subtask>
+          <subtask>Fix any contrast violations found</subtask>
+          <subtask>Test with color contrast checker tools</subtask>
+          <subtask>Add visual regression tests for color contrast</subtask>
+          <subtask>Document color contrast requirements</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="4">
+        <title>Ensure visible focus indicators</title>
+        <subtasks>
+          <subtask>Audit all focusable elements for visible focus indicators</subtask>
+          <subtask>Add custom focus styles that meet WCAG standards (2px outline, sufficient contrast)</subtask>
+          <subtask>Ensure focus indicators are visible on all interactive elements</subtask>
+          <subtask>Test focus indicators on all browsers (Chrome, Firefox, Safari, Edge)</subtask>
+          <subtask>Add unit tests for focus indicator visibility</subtask>
+          <subtask>Document focus indicator patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="5">
+        <title>Add alt text for images and icons</title>
+        <subtasks>
+          <subtask>Audit all images and icons for missing alt text</subtask>
+          <subtask>Add descriptive alt text to all images (ImageUpload component, logo, etc.)</subtask>
+          <subtask>Add aria-label to icon-only buttons (decorative icons get aria-hidden="true")</subtask>
+          <subtask>Ensure alt text is descriptive and meaningful (not redundant)</subtask>
+          <subtask>Test with screen reader to verify alt text is announced correctly</subtask>
+          <subtask>Add unit tests for alt text presence</subtask>
+          <subtask>Document alt text guidelines</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="6">
+        <title>Ensure semantic HTML structure</title>
+        <subtasks>
+          <subtask>Audit all components for proper semantic HTML usage</subtask>
+          <subtask>Replace divs with semantic elements (nav, main, article, section, header, footer)</subtask>
+          <subtask>Ensure proper heading hierarchy (h1, h2, h3, etc.)</subtask>
+          <subtask>Use proper form elements (input, label, button, form)</subtask>
+          <subtask>Ensure proper landmark regions (nav, main, aside, etc.)</subtask>
+          <subtask>Test with screen reader to verify structure is announced correctly</subtask>
+          <subtask>Add unit tests for semantic HTML structure</subtask>
+          <subtask>Document semantic HTML patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac="1-6">
+        <title>Integration testing and accessibility audit</title>
+        <subtasks>
+          <subtask>Integration test: Verify chat interface is accessible</subtask>
+          <subtask>Integration test: Verify problem input interface is accessible</subtask>
+          <subtask>Integration test: Verify navigation is accessible</subtask>
+          <subtask>Integration test: Verify math rendering is accessible (alternative text for equations)</subtask>
+          <subtask>Run automated accessibility testing tools (axe-core, Lighthouse)</subtask>
+          <subtask>Manual testing with screen readers (NVDA, JAWS, VoiceOver)</subtask>
+          <subtask>Manual testing with keyboard-only navigation</subtask>
+          <subtask>Document accessibility patterns and best practices</subtask>
+          <subtask>Create accessibility testing checklist for future stories</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <ac id="1">Proper ARIA labels for screen readers</ac>
+    <ac id="2">Keyboard navigation support throughout interface</ac>
+    <ac id="3">Sufficient color contrast ratios (WCAG AA minimum)</ac>
+    <ac id="4">Focus indicators visible and clear</ac>
+    <ac id="5">Alt text for images and icons</ac>
+    <ac id="6">Semantic HTML structure</ac>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 5.4: Accessibility Features">
+        <snippet>Story 5.4 defines accessibility requirements: ARIA labels, keyboard navigation, color contrast (WCAG AA minimum), focus indicators, alt text, and semantic HTML structure. Prerequisites: Story 5.2 (design system exists).</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Accessibility Requirements">
+        <snippet>WCAG 2.1 Level AA compliance required for educational platforms. Screen reader support (NVDA, JAWS, VoiceOver), keyboard navigation, alternative text for mathematical content, color contrast minimum 4.5:1 for text, clear focus indicators.</snippet>
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Web Application Specific Requirements">
+        <snippet>WCAG 2.1 Level AA Compliance required. Screen reader compatibility, keyboard navigation support, alternative text for mathematical content, color contrast minimum 4.5:1, focus indicators visible and clear.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Epic 5: UI Polish">
+        <snippet>Epic 5 focuses on UI Polish including accessibility features. Components in components/ui/ directory handle UI polish functionality. Architecture patterns emphasize accessibility compliance.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        <snippet>Component structure follows patterns: components/chat/ for chat interface, components/problem-input/ for problem input, components/math-renderer/ for math rendering, components/ui/ for UI polish components including Navigation and ResponsiveLayout.</snippet>
+      </doc>
+      <doc path="docs/stories/5-1-responsive-layout-design.md" title="Story 5.1" section="Dev Agent Record">
+        <snippet>Navigation component created at components/ui/Navigation.tsx with comprehensive accessibility features (ARIA labels, keyboard navigation, screen reader support). ResponsiveLayout component created at components/ui/ResponsiveLayout.tsx. All interactive elements meet WCAG 2.1 Level AA touch target requirements (minimum 44x44px).</snippet>
+      </doc>
+      <doc path="docs/stories/5-4-accessibility-features.md" title="Story 5.4" section="Architecture Patterns">
+        <snippet>ARIA patterns: Use aria-label for icon-only buttons, aria-labelledby to reference visible labels, aria-describedby for help text, aria-live regions for dynamic content. Keyboard navigation: Tab/Shift+Tab for focus, Enter/Space for activation, Arrow keys for component navigation, Escape for modals. Color contrast: 4.5:1 for normal text, 3:1 for large text. Focus indicators: 2px outline with sufficient contrast. Semantic HTML: Use nav, main, article, section, header, footer elements.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="socratica/components/ui/Navigation.tsx" kind="component" symbol="Navigation" reason="Navigation component already includes comprehensive accessibility features (ARIA labels, keyboard navigation, screen reader support). Use as reference for accessibility patterns to extend to other components. Component demonstrates aria-label, aria-expanded, aria-controls, role attributes, focus management, and touch-friendly controls.">
+        <note>Navigation component serves as reference implementation for accessibility features. Extend these patterns to other components.</note>
+      </file>
+      <file path="socratica/components/ui/ResponsiveLayout.tsx" kind="component" symbol="ResponsiveLayout" reason="Responsive layout wrapper component. Should ensure semantic HTML structure (main, section, etc.) is used appropriately. Component may need semantic HTML updates to use proper landmark elements instead of divs.">
+        <note>ResponsiveLayout component should be reviewed for semantic HTML structure improvements.</note>
+      </file>
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface" reason="Main chat interface component. Already has some ARIA attributes (role='region', aria-label='Chat interface', aria-live='polite' for loading states). Needs comprehensive ARIA audit and keyboard navigation improvements. Component manages message state and integrates MessageList and MessageInput components.">
+        <note>ChatInterface already has some accessibility features but needs comprehensive audit and enhancement.</note>
+      </file>
+      <file path="socratica/components/chat/MessageList.tsx" kind="component" symbol="MessageList" reason="Message list container component. Already has ARIA attributes (role='log', aria-label='Chat messages', aria-live='polite', aria-atomic='false'). Component displays chat messages and handles scrolling. Accessibility features are present but should be verified and enhanced.">
+        <note>MessageList already has good ARIA support but should be verified for completeness.</note>
+      </file>
+      <file path="socratica/components/chat/Message.tsx" kind="component" symbol="Message" reason="Individual message component. Already has ARIA attributes (role='article', aria-label for message role). Component displays student and AI tutor messages. Should ensure semantic HTML structure (use article element instead of div with role='article') and verify all accessibility features.">
+        <note>Message component should use semantic article element instead of div with role attribute.</note>
+      </file>
+      <file path="socratica/components/chat/MessageInput.tsx" kind="component" symbol="MessageInput" reason="Message input component with textarea. Already has comprehensive ARIA attributes (aria-label, aria-describedby, aria-required, aria-invalid, aria-errormessage). Component handles message input and validation. Keyboard navigation should be verified. Focus management should be ensured.">
+        <note>MessageInput already has good ARIA support but keyboard navigation should be verified.</note>
+      </file>
+      <file path="socratica/components/chat/ClearChatButton.tsx" kind="component" symbol="ClearChatButton" reason="Button component for clearing chat. Already has aria-label attribute. Component should ensure keyboard accessibility and focus indicators. Touch targets already meet WCAG requirements (44x44px minimum).">
+        <note>ClearChatButton should verify keyboard accessibility and focus indicators.</note>
+      </file>
+      <file path="socratica/components/ui/ConfirmationDialog.tsx" kind="component" symbol="ConfirmationDialog" reason="Dialog component for confirmation dialogs. Already has comprehensive ARIA attributes (role='dialog', aria-modal='true', aria-labelledby, aria-describedby, aria-label on buttons). Component should ensure focus trap and keyboard navigation (Escape key to close).">
+        <note>ConfirmationDialog should verify focus trap and keyboard navigation (Escape key).</note>
+      </file>
+      <file path="socratica/components/problem-input/TextInput.tsx" kind="component" symbol="TextInput" reason="Text input component for math problems. Already has comprehensive ARIA attributes (aria-label, aria-describedby, aria-required, aria-invalid, aria-errormessage). Component handles problem input with math preview. Keyboard navigation should be verified. Focus management should be ensured.">
+        <note>TextInput already has good ARIA support but keyboard navigation should be verified.</note>
+      </file>
+      <file path="socratica/components/problem-input/ImageUpload.tsx" kind="component" symbol="ImageUpload" reason="Image upload component for mobile camera integration. Already has some ARIA attributes (aria-label, aria-describedby). Component has image preview with alt text. Should verify all images have descriptive alt text, keyboard navigation for file input, and focus indicators.">
+        <note>ImageUpload should verify alt text for all images, keyboard navigation, and focus indicators.</note>
+      </file>
+      <file path="socratica/components/math-renderer/MessageContent.tsx" kind="component" symbol="MessageContent" reason="Message content renderer handling mixed text/math content. Component parses LaTeX and renders math expressions. Should ensure accessible math rendering with alternative text or descriptions for equations. Component should maintain semantic HTML structure.">
+        <note>MessageContent should ensure accessible math rendering with alternative text for equations.</note>
+      </file>
+      <file path="socratica/components/math-renderer/MathDisplay.tsx" kind="component" symbol="MathDisplay" reason="Inline math display component. Already has aria-label attributes for math expressions. Component renders inline math using KaTeX. Should verify aria-label content is descriptive and meaningful for screen readers.">
+        <note>MathDisplay should verify aria-label content is descriptive and meaningful.</note>
+      </file>
+      <file path="socratica/components/math-renderer/MathBlock.tsx" kind="component" symbol="MathBlock" reason="Block math display component. Already has aria-label attributes for math expressions. Component renders block math using KaTeX. Should verify aria-label content is descriptive and meaningful for screen readers.">
+        <note>MathBlock should verify aria-label content is descriptive and meaningful.</note>
+      </file>
+      <file path="socratica/components/math-renderer/MathPreview.tsx" kind="component" symbol="MathPreview" reason="Math preview component for problem input. Already has ARIA attributes (role='region', aria-label='Math preview', aria-live='polite'). Component shows live preview of math notation. Accessibility features are present but should be verified.">
+        <note>MathPreview already has ARIA support but should be verified for completeness.</note>
+      </file>
+      <file path="socratica/app/page.tsx" kind="component" symbol="Home" reason="Main interface page that coordinates all components. Should ensure semantic HTML structure (use main, header, footer elements). Component integrates Navigation, problem input, and chat interface. Should verify proper heading hierarchy and landmark regions.">
+        <note>Home page should ensure semantic HTML structure and proper heading hierarchy.</note>
+      </file>
+      <file path="socratica/app/layout.tsx" kind="component" symbol="RootLayout" reason="Root layout component. Should ensure semantic HTML structure in HTML document. Component wraps entire application. Should verify proper document structure and landmark regions.">
+        <note>Root layout should ensure semantic HTML structure in HTML document.</note>
+      </file>
+      <file path="socratica/app/globals.css" kind="stylesheet" symbol="globals.css" reason="Global styles including base font size (16px) and overflow prevention. Should add focus indicator styles, color contrast utilities, and accessibility-related CSS. Styles should meet WCAG AA contrast requirements.">
+        <note>Global styles should include focus indicator styles and ensure color contrast compliance.</note>
+      </file>
+      <file path="socratica/components/chat/__tests__/accessibility.test.tsx" kind="test" symbol="accessibility.test.tsx" reason="Accessibility test suite for chat components. Tests verify ARIA attributes, aria-live regions, and accessibility patterns. Use as reference for accessibility testing patterns. Tests should be extended to cover all accessibility requirements.">
+        <note>Accessibility test suite exists and should be extended to cover all accessibility requirements.</note>
+      </file>
+    </code>
+    <dependencies>
+      <node>
+        <package name="next" version="16.0.1">Next.js framework with built-in accessibility features</package>
+        <package name="react" version="19.2.0">React library with accessibility support</package>
+        <package name="react-dom" version="19.2.0">React DOM for rendering</package>
+        <package name="tailwindcss" version="4">Tailwind CSS v4 with accessibility utilities (focus: utilities)</package>
+        <package name="@testing-library/react" version="15.0.0">Testing library with accessibility testing utilities</package>
+        <package name="@testing-library/jest-dom" version="6.1.5">Jest DOM matchers for accessibility testing</package>
+        <package name="vitest" version="1.1.0">Test runner for unit and integration tests</package>
+      </node>
+      <note>Additional accessibility testing tools may be needed: axe-core for automated accessibility testing, Lighthouse for accessibility audits. These can be added as dev dependencies if needed.</note>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>WCAG 2.1 Level AA compliance required for all accessibility features. Educational platform must meet accessibility standards.</constraint>
+    <constraint>Screen reader support required: Full compatibility with NVDA, JAWS, VoiceOver. All interactive elements must be accessible via screen readers.</constraint>
+    <constraint>Keyboard navigation required: All functionality must be accessible via keyboard. Tab, Shift+Tab, Enter, Space, Arrow keys, Escape must work correctly.</constraint>
+    <constraint>Color contrast requirements: Minimum 4.5:1 contrast ratio for normal text, 3:1 for large text (18pt+ or 14pt+ bold), 3:1 for UI components and focus indicators.</constraint>
+    <constraint>Focus indicators required: All interactive elements must have visible focus indicators (2px outline with sufficient contrast). Use Tailwind focus utilities (focus:outline-none focus:ring-2 focus:ring-offset-2).</constraint>
+    <constraint>Semantic HTML required: Use semantic elements (nav, main, article, section, header, footer, aside) instead of divs where appropriate. Proper heading hierarchy (h1 → h2 → h3, no skipping levels).</constraint>
+    <constraint>ARIA patterns: Use aria-label for icon-only buttons, aria-labelledby to reference visible labels, aria-describedby for help text and error messages, aria-live regions for dynamic content updates, role attributes only when semantic HTML is insufficient.</constraint>
+    <constraint>Alternative text required: All images must have descriptive alt text. Decorative images use empty alt="" or aria-hidden="true". Icon buttons use aria-label. Math equations need alternative text or descriptions.</constraint>
+    <constraint>Touch targets: All interactive elements must meet WCAG 2.1 Level AA minimum touch target size (44x44px). Already implemented in Story 5.1 but must be maintained.</constraint>
+    <constraint>Component patterns: Follow existing component patterns from Navigation component (comprehensive accessibility features). Extend accessibility patterns consistently across all components.</constraint>
+    <constraint>Testing requirements: Unit tests for ARIA attributes, keyboard event handling, focus indicator visibility, alt text presence, semantic HTML structure. Integration tests for accessibility across all interfaces. Automated accessibility testing with axe-core and Lighthouse.</constraint>
+    <constraint>Naming patterns: Components use PascalCase matching file name. Functions use camelCase (e.g., handleKeyDown). Constants use UPPER_SNAKE_CASE (e.g., WCAG_AA_CONTRAST_RATIO). Types/Interfaces use PascalCase (e.g., AccessibilityProps).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Component Props" kind="TypeScript Interface">
+      <signature>Components accept props interfaces defining accessibility-related props (ariaLabel, ariaDescribedBy, ariaInvalid, etc.)</signature>
+      <path>socratica/components/**/*.tsx</path>
+      <note>All components should accept and properly use accessibility-related props. Navigation component demonstrates proper prop usage for accessibility.</note>
+    </interface>
+    <interface name="Keyboard Event Handlers" kind="React Event Handler">
+      <signature>Components handle keyboard events (onKeyDown, onKeyPress, onKeyUp) for keyboard navigation support</signature>
+      <path>socratica/components/**/*.tsx</path>
+      <note>All interactive components should handle keyboard events for accessibility. Navigation component demonstrates keyboard event handling patterns.</note>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      <p>Testing uses Vitest test runner with @testing-library/react for component testing. Accessibility testing follows @testing-library best practices: query by accessible roles and labels, verify ARIA attributes, test keyboard navigation, verify focus management. Unit tests verify ARIA attributes, keyboard event handling, focus indicator visibility, alt text presence, semantic HTML structure. Integration tests verify accessibility across chat interface, problem input interface, navigation, and math rendering. Automated accessibility testing uses axe-core and Lighthouse for comprehensive audits. Manual testing with screen readers (NVDA, JAWS, VoiceOver) and keyboard-only navigation required for validation. Test files located in components/**/__tests__/ directories co-located with components.</p>
+    </standards>
+    <locations>
+      <location>socratica/components/**/__tests__/*.test.tsx</location>
+      <location>socratica/components/__tests__/*.test.tsx</location>
+      <location>socratica/components/chat/__tests__/accessibility.test.tsx (existing accessibility test suite)</location>
+    </locations>
+    <ideas>
+      <test idea="AC1" description="Test all interactive components have proper ARIA labels (aria-label, aria-labelledby, aria-describedby, role attributes). Verify aria-live regions for dynamic content (chat messages, loading states). Test with screen reader simulation." />
+      <test idea="AC2" description="Test keyboard navigation: Tab/Shift+Tab moves focus correctly, Enter/Space activates buttons/links, Arrow keys navigate within components, Escape closes modals. Test focus trap in dialogs. Verify all interactive elements are keyboard accessible." />
+      <test idea="AC3" description="Test color contrast ratios: Verify text meets 4.5:1 for normal text, 3:1 for large text. Verify UI elements meet 3:1. Use color contrast checker tools (WebAIM, axe DevTools). Visual regression tests for color contrast." />
+      <test idea="AC4" description="Test focus indicators: Verify all focusable elements have visible focus indicators (2px outline, sufficient contrast). Test focus indicators on all browsers (Chrome, Firefox, Safari, Edge). Verify focus styles use Tailwind focus utilities correctly." />
+      <test idea="AC5" description="Test alt text: Verify all images have descriptive alt text (not empty unless decorative). Verify icon-only buttons have aria-label. Verify decorative icons have aria-hidden='true'. Test with screen reader to verify alt text is announced correctly." />
+      <test idea="AC6" description="Test semantic HTML: Verify components use semantic elements (nav, main, article, section, header, footer) instead of divs where appropriate. Verify proper heading hierarchy (h1 → h2 → h3, no skipping). Verify proper form elements (input, label, button, form). Test with screen reader to verify structure is announced correctly." />
+      <test idea="Integration" description="Integration tests: Verify chat interface is accessible (ARIA, keyboard nav, focus), problem input interface is accessible, navigation is accessible, math rendering is accessible (alternative text for equations). Run automated accessibility testing tools (axe-core, Lighthouse)." />
+    </ideas>
+  </tests>
+</story-context>
+

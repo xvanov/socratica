@@ -87,8 +87,10 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
       render(<ChatInterface initialMessages={messages} />);
 
       const messageArticle = screen.getByRole('article', { name: /student message/i });
-      const messageBubble = messageArticle.querySelector('.bg-blue-600');
-      expect(messageBubble).toHaveClass('bg-blue-600');
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      // Check for design system primary color class
+      expect(messageBubble).toHaveClass('bg-[var(--primary-600)]');
     });
 
     it('should align student message content to right', () => {
@@ -113,13 +115,16 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
 
       const studentArticle = screen.getByRole('article', { name: /student message/i });
       const tutorArticle = screen.getByRole('article', { name: /tutor message/i });
-      const studentBubble = studentArticle.querySelector('.bg-blue-600');
-      const tutorBubble = tutorArticle.querySelector('.bg-zinc-100');
+      const studentBubble = studentArticle.querySelector('.rounded-lg');
+      const tutorBubble = tutorArticle.querySelector('.rounded-lg');
 
-      expect(studentBubble).toHaveClass('bg-blue-600');
-      expect(tutorBubble).toHaveClass('bg-zinc-100');
-      expect(studentBubble).not.toHaveClass('bg-zinc-100');
-      expect(tutorBubble).not.toHaveClass('bg-blue-600');
+      expect(studentBubble).toBeTruthy();
+      expect(tutorBubble).toBeTruthy();
+      // Check for design system classes
+      expect(studentBubble).toHaveClass('bg-[var(--primary-600)]');
+      expect(tutorBubble).toHaveClass('bg-[var(--surface)]');
+      expect(studentBubble).not.toHaveClass('bg-[var(--surface)]');
+      expect(tutorBubble).not.toHaveClass('bg-[var(--primary-600)]');
     });
   });
 
@@ -143,8 +148,10 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
       render(<ChatInterface initialMessages={messages} />);
 
       const messageArticle = screen.getByRole('article', { name: /tutor message/i });
-      const messageBubble = messageArticle.querySelector('.bg-zinc-100');
-      expect(messageBubble).toHaveClass('bg-zinc-100');
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      // Check for design system surface color class
+      expect(messageBubble).toHaveClass('bg-[var(--surface)]');
     });
 
     it('should align tutor message content to left', () => {
@@ -169,13 +176,16 @@ describe('Story 2.1: Acceptance Criteria Tests', () => {
 
       const tutorArticle = screen.getByRole('article', { name: /tutor message/i });
       const studentArticle = screen.getByRole('article', { name: /student message/i });
-      const tutorBubble = tutorArticle.querySelector('.bg-zinc-100');
-      const studentBubble = studentArticle.querySelector('.bg-blue-600');
+      const tutorBubble = tutorArticle.querySelector('.rounded-lg');
+      const studentBubble = studentArticle.querySelector('.rounded-lg');
 
-      expect(tutorBubble).toHaveClass('bg-zinc-100');
-      expect(studentBubble).toHaveClass('bg-blue-600');
-      expect(tutorBubble).not.toHaveClass('bg-blue-600');
-      expect(studentBubble).not.toHaveClass('bg-zinc-100');
+      expect(tutorBubble).toBeTruthy();
+      expect(studentBubble).toBeTruthy();
+      // Check for design system classes
+      expect(tutorBubble).toHaveClass('bg-[var(--surface)]');
+      expect(studentBubble).toHaveClass('bg-[var(--primary-600)]');
+      expect(tutorBubble).not.toHaveClass('bg-[var(--primary-600)]');
+      expect(studentBubble).not.toHaveClass('bg-[var(--surface)]');
     });
   });
 

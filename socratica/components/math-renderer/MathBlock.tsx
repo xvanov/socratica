@@ -43,10 +43,12 @@ export default function MathBlock({
   try {
     return (
       <div
-        className={className}
+        className={`overflow-x-auto ${className}`}
         aria-label={`Mathematical expression: ${expression}`}
       >
-        <BlockMath math={expression} errorColor={KATEX_CONFIG.errorColor} />
+        <div className="min-w-0">
+          <BlockMath math={expression} errorColor={KATEX_CONFIG.errorColor} />
+        </div>
       </div>
     );
   } catch (error) {

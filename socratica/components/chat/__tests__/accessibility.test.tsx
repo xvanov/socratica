@@ -180,8 +180,10 @@ describe('Accessibility Tests', () => {
       render(<Message message={message} index={0} />);
 
       const messageArticle = screen.getByRole('article');
-      const messageBubble = messageArticle.querySelector('.bg-blue-600');
-      expect(messageBubble).toHaveClass('bg-blue-600');
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      // Check for design system primary color class
+      expect(messageBubble).toHaveClass('bg-[var(--primary-600)]');
     });
 
     it('Tutor messages should have distinct styling', () => {
@@ -189,8 +191,10 @@ describe('Accessibility Tests', () => {
       render(<Message message={message} index={0} />);
 
       const messageArticle = screen.getByRole('article');
-      const messageBubble = messageArticle.querySelector('.bg-zinc-100');
-      expect(messageBubble).toHaveClass('bg-zinc-100');
+      const messageBubble = messageArticle.querySelector('.rounded-lg');
+      expect(messageBubble).toBeTruthy();
+      // Check for design system surface color class
+      expect(messageBubble).toHaveClass('bg-[var(--surface)]');
     });
 
     it('Messages should have proper text contrast', () => {
@@ -200,14 +204,18 @@ describe('Accessibility Tests', () => {
       const { rerender } = render(<Message message={studentMessage} index={0} />);
       
       const studentArticle = screen.getByRole('article');
-      const studentBubble = studentArticle.querySelector('.bg-blue-600');
+      const studentBubble = studentArticle.querySelector('.rounded-lg');
+      expect(studentBubble).toBeTruthy();
+      // Check for design system white text on student messages
       expect(studentBubble).toHaveClass('text-white');
 
       rerender(<Message message={tutorMessage} index={0} />);
       
       const tutorArticle = screen.getByRole('article');
-      const tutorBubble = tutorArticle.querySelector('.bg-zinc-100');
-      expect(tutorBubble).toHaveClass('text-zinc-950');
+      const tutorBubble = tutorArticle.querySelector('.rounded-lg');
+      expect(tutorBubble).toBeTruthy();
+      // Check for design system foreground text on tutor messages
+      expect(tutorBubble).toHaveClass('text-[var(--foreground)]');
     });
   });
 
@@ -217,8 +225,8 @@ describe('Accessibility Tests', () => {
       render(<Message message={message} index={0} />);
 
       const article = screen.getByRole('article');
-      expect(article.tagName).toBe('DIV'); // React renders as div, but role is article
-      expect(article).toHaveAttribute('role', 'article');
+      expect(article.tagName).toBe('ARTICLE'); // Should use semantic article element
+      expect(article).not.toHaveAttribute('role'); // No role attribute needed on semantic element
     });
 
     it('MessageList component should use semantic log element', () => {

@@ -51,6 +51,43 @@ export default function ConfirmationDialog({
     }
   }, [isOpen]);
 
+  // Focus trap: keep focus within dialog when open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const dialogElement = dialogRef.current;
+    if (!dialogElement) return;
+
+    const focusableElements = dialogElement.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements[focusableElements.length - 1];
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        // Shift + Tab
+        if (document.activeElement === firstFocusable) {
+          e.preventDefault();
+          lastFocusable?.focus();
+        }
+      } else {
+        // Tab
+        if (document.activeElement === lastFocusable) {
+          e.preventDefault();
+          firstFocusable?.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+    return () => {
+      document.removeEventListener('keydown', handleTabKey);
+    };
+  }, [isOpen]);
+
   // Handle click outside to dismiss (optional)
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Check if click is on the overlay itself (not on the inner dialog)
@@ -76,19 +113,19 @@ export default function ConfirmationDialog({
     >
       <div
         ref={dialogRef}
-        className="w-full max-w-md rounded-lg border border-zinc-300 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+        className="w-full max-w-md rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] shadow-lg dark:bg-[var(--surface)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
           <h2
             id="confirmation-dialog-title"
-            className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+            className="mb-4 text-lg font-semibold text-[var(--foreground)]"
           >
             {title}
           </h2>
           <p
             id="confirmation-dialog-message"
-            className="mb-6 text-sm text-zinc-600 dark:text-zinc-400"
+            className="mb-6 text-sm text-[var(--neutral-600)]"
           >
             {message}
           </p>
@@ -97,7 +134,7 @@ export default function ConfirmationDialog({
               ref={cancelButtonRef}
               type="button"
               onClick={onCancel}
-              className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:focus:ring-zinc-50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-2 text-sm font-medium text-[var(--neutral-700)] transition-colors hover:bg-[var(--surface)] focus:outline-none focus:ring-2 focus:ring-[var(--foreground)] focus:ring-offset-2 dark:bg-[var(--surface)] dark:text-[var(--neutral-300)] dark:hover:bg-[var(--neutral-800)] dark:focus:ring-[var(--neutral-100)] shadow-sm"
               aria-label={cancelLabel}
             >
               {cancelLabel}
@@ -106,7 +143,7 @@ export default function ConfirmationDialog({
               ref={confirmButtonRef}
               type="button"
               onClick={onConfirm}
-              className="rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-100 dark:focus:ring-zinc-50"
+              className="rounded-lg bg-[var(--primary-600)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--primary-700)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-600)] focus:ring-offset-2 dark:bg-[var(--primary-500)] dark:hover:bg-[var(--primary-400)] dark:focus:ring-[var(--primary-500)] shadow-sm"
               aria-label={confirmLabel}
             >
               {confirmLabel}

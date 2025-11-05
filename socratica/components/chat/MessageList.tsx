@@ -35,7 +35,11 @@ export default function MessageList({ messages }: MessageListProps) {
       aria-label="Chat messages"
       aria-live="polite"
       aria-atomic="false"
+      aria-describedby="message-list-description"
     >
+      <div id="message-list-description" className="sr-only">
+        Chat messages displayed in chronological order. New messages are automatically announced.
+      </div>
       <div className="flex flex-col gap-4 p-4">
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center">

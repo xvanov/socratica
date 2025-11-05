@@ -5,6 +5,8 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ClearChatButton from "./ClearChatButton";
 import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import ErrorMessage from "@/components/ui/ErrorMessage";
 import { ChatInterfaceProps, Message, StuckState } from "@/types/chat";
 import { resetStuckState } from "@/lib/openai/stuck-detection";
 
@@ -182,87 +184,45 @@ export default function ChatInterface({
 
   return (
     <div
-      className="flex flex-col rounded-lg border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900"
+      className="flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] dark:bg-[var(--surface)] overflow-x-hidden shadow-sm"
       role="region"
       aria-label="Chat interface"
+      aria-describedby="chat-interface-description"
     >
+      <div id="chat-interface-description" className="sr-only">
+        Interactive chat interface for communicating with AI tutor. Messages appear in chronological order.
+      </div>
       <div className="flex min-h-[400px] max-h-[600px] flex-1 flex-col overflow-hidden sm:min-h-[500px] sm:max-h-[700px]">
         {/* Header with Clear Chat button */}
-        <div className="flex items-center justify-between border-b border-zinc-300 px-4 py-3 dark:border-zinc-700">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <header className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
+          <h2 className="text-lg font-semibold text-[var(--foreground)]">
             Chat with Tutor
           </h2>
           <ClearChatButton
             onClick={handleClearChatClick}
             disabled={isAIResponding || messages.length === 0}
           />
-        </div>
+        </header>
         <MessageList messages={messages} />
         {/* Loading indicator */}
         {isAIResponding && (
           <div
-            className="border-t border-zinc-300 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-800"
+            className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-3 transition-opacity duration-200"
             role="status"
             aria-live="polite"
             aria-label="AI tutor is responding"
           >
-            <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-              <svg
-                className="h-4 w-4 animate-spin"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-              <span>AI tutor is thinking...</span>
-            </div>
+            <LoadingSpinner size="sm" label="AI tutor is thinking..." />
           </div>
         )}
         {/* Error display with retry button */}
         {error && !isAIResponding && (
-          <div
-            className="border-t border-red-300 bg-red-50 px-4 py-3 dark:border-red-700 dark:bg-red-900/20"
-            role="alert"
-            aria-live="assertive"
-          >
-            <div className="flex items-start gap-3">
-              <svg
-                className="h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-red-800 dark:text-red-200">
-                  {error}
-                </p>
-                {retryMessage && (
-                  <button
-                    type="button"
-                    onClick={handleRetry}
-                    className="mt-2 text-sm font-medium text-red-600 underline transition-colors hover:text-red-800 dark:text-red-400 dark:hover:text-red-200"
-                    aria-label="Retry sending message"
-                  >
-                    Retry
-                  </button>
-                )}
-              </div>
-            </div>
+          <div className="border-t border-[var(--border)] px-4 py-3 transition-opacity duration-200">
+            <ErrorMessage
+              message={error}
+              onRetry={retryMessage ? handleRetry : undefined}
+              retryLabel="Retry"
+            />
           </div>
         )}
         <MessageInput

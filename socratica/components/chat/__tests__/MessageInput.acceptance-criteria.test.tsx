@@ -159,8 +159,8 @@ describe('MessageInput - Acceptance Criteria Tests', () => {
         const studentMessage = screen.getByText(messageText);
         expect(studentMessage).toBeInTheDocument();
         
-        // Message component uses role="article" on a div, not an article element
-        const messageContainer = studentMessage.closest('[role="article"]');
+        // Message component now uses semantic <article> element
+        const messageContainer = studentMessage.closest('article');
         expect(messageContainer).not.toBeNull();
         expect(messageContainer).toHaveClass('justify-end');
       }, { timeout: 3000 });

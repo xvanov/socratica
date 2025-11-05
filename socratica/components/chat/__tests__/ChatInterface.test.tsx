@@ -123,7 +123,9 @@ describe('ChatInterface Component', () => {
       render(<ChatInterface />);
 
       const chatInterface = screen.getByRole('region', { name: /chat interface/i });
-      expect(chatInterface).toHaveClass('bg-white', 'dark:bg-zinc-900');
+      // Check for design system background classes
+      expect(chatInterface).toHaveClass('bg-[var(--surface-elevated)]');
+      expect(chatInterface).toHaveClass('dark:bg-[var(--surface)]');
     });
   });
 
@@ -161,7 +163,9 @@ describe('ChatInterface Component', () => {
       render(<ChatInterface />);
 
       const chatInterface = screen.getByRole('region', { name: /chat interface/i });
-      expect(chatInterface).toHaveClass('border', 'border-zinc-300');
+      // Check for design system border classes
+      expect(chatInterface).toHaveClass('border');
+      expect(chatInterface).toHaveClass('border-[var(--border)]');
     });
   });
 });
