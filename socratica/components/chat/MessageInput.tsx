@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { validateMessage } from "@/lib/utils/validation";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import HelpText from "@/components/ui/HelpText";
 
 interface MessageInputProps {
   onMessageSubmit: (message: string) => void;
@@ -136,7 +137,7 @@ export default function MessageInput({
                 : "border-[var(--border)] bg-[var(--surface-elevated)] focus:border-[var(--foreground)] focus:ring-[var(--foreground)] dark:bg-[var(--surface)] dark:focus:border-[var(--neutral-100)] dark:focus:ring-[var(--neutral-100)]"
             }`}
             aria-label="Message input field"
-            aria-describedby="message-input-description"
+            aria-describedby="message-input-description message-input-help"
             aria-required="true"
             aria-invalid={validationError ? "true" : "false"}
             aria-errormessage={validationError ? "message-input-error" : undefined}
@@ -193,6 +194,12 @@ export default function MessageInput({
             ? "Enter your math problem. Press Enter to submit or Shift+Enter for a new line."
             : "Enter your message. Press Enter to send or Shift+Enter for a new line."}
         </p>
+        {isInitialInput && (
+          <HelpText
+            id="message-input-help"
+            text="Type your math problem here. You can use LaTeX notation for advanced math expressions (e.g., \frac{1}{2} for fractions, x^2 for exponents)."
+          />
+        )}
 
         {/* Validation error display */}
         {validationError && (

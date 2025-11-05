@@ -9,6 +9,9 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import { ChatInterfaceProps, Message, StuckState } from "@/types/chat";
 import { resetStuckState } from "@/lib/openai/stuck-detection";
+import { formatError, ErrorType, ERROR_MESSAGES } from "@/lib/utils/error-handling";
+import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
+import { calculateRetryDelay, waitForRetry, DEFAULT_RETRY_CONFIG, formatRetryMessage } from "@/lib/utils/retry";
 
 // Stable empty array to avoid creating new references on each render
 const EMPTY_MESSAGES: Message[] = [];
@@ -29,9 +32,12 @@ export default function ChatInterface({
   const [isAIResponding, setIsAIResponding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryMessage, setRetryMessage] = useState<string | null>(null);
+  const [retryAttempt, setRetryAttempt] = useState<number>(0);
+  const [isRetrying, setIsRetrying] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [stuckState, setStuckState] = useState<StuckState>(resetStuckState());
   const prevInitialMessagesRef = useRef<Message[]>(stableInitialMessages);
+  const isOnline = useNetworkStatus();
   
   // Determine if this is the initial input (no messages yet)
   const isInitialInput = messages.length === 0;
@@ -69,6 +75,13 @@ export default function ChatInterface({
     messageText: string,
     conversationHistory: Message[]
   ) => {
+    // Check if offline before attempting request
+    if (!isOnline) {
+      setError(ERROR_MESSAGES.NETWORK.OFFLINE);
+      setRetryMessage(messageText); // Store message for retry when online
+      return;
+    }
+
     try {
       setIsAIResponding(true);
       setError(null);
@@ -90,10 +103,14 @@ export default function ChatInterface({
 
       // Handle API response
       if (!response.ok || !data.success) {
-        const errorMessage =
-          data.error || "Unable to get tutor response. Please try again.";
+        // Format error message using error handling utilities
+        const errorMessage = formatError(
+          data.error || "Unable to get tutor response. Please try again.",
+          ErrorType.API_ERROR
+        );
         setError(errorMessage);
         setRetryMessage(messageText); // Store message for retry
+        setRetryAttempt(0); // Reset retry attempt on new error
         return;
       }
 
@@ -114,12 +131,18 @@ export default function ChatInterface({
 
         addMessage(aiMessage);
         setRetryMessage(null); // Clear retry message on success
+        setRetryAttempt(0); // Reset retry attempt on success
       }
     } catch (error) {
       // Handle network errors
       console.error("Error sending message to AI:", error);
-      setError("Network error. Please check your connection and try again.");
+      // Check if error is due to offline status
+      const errorMessage = !isOnline
+        ? ERROR_MESSAGES.NETWORK.OFFLINE
+        : formatError(error, ErrorType.NETWORK_ERROR);
+      setError(errorMessage);
       setRetryMessage(messageText); // Store message for retry
+      setRetryAttempt(0); // Reset retry attempt on new error
     } finally {
       setIsAIResponding(false);
     }
@@ -144,11 +167,49 @@ export default function ChatInterface({
     await sendMessageToAI(messageText, conversationHistory);
   };
 
-  // Handle retry for failed requests
+  // Handle retry for failed requests with exponential backoff
   const handleRetry = async () => {
-    if (retryMessage) {
-      // Use current messages state for retry (includes all previous messages)
+    if (!retryMessage) return;
+
+    setIsRetrying(true);
+    const currentAttempt = retryAttempt + 1;
+
+    // If we've exceeded max attempts, show helpful message
+    if (currentAttempt >= DEFAULT_RETRY_CONFIG.maxAttempts) {
+      setError(
+        `${error || ERROR_MESSAGES.NETWORK.GENERIC} Maximum retry attempts reached. Please check your connection and try again later.`
+      );
+      setIsRetrying(false);
+      return;
+    }
+
+    // Calculate delay and wait before retry
+    const delay = calculateRetryDelay(currentAttempt, DEFAULT_RETRY_CONFIG);
+    setRetryAttempt(currentAttempt);
+    
+    // Show retry status
+    setError(
+      `${error || ERROR_MESSAGES.NETWORK.GENERIC} ${formatRetryMessage(currentAttempt, DEFAULT_RETRY_CONFIG.maxAttempts)}`
+    );
+
+    await waitForRetry(delay);
+
+    // Retry the request
+    try {
       await sendMessageToAI(retryMessage, messages);
+      // Reset retry attempt on success
+      setRetryAttempt(0);
+    } catch (err) {
+      // Error handling is done in sendMessageToAI
+      // If we've hit max attempts, update error message
+      if (currentAttempt >= DEFAULT_RETRY_CONFIG.maxAttempts) {
+        setError(
+          `${formatError(err, ErrorType.NETWORK_ERROR)} Maximum retry attempts reached. Please check your connection and try again later.`
+        );
+        setRetryAttempt(0);
+      }
+    } finally {
+      setIsRetrying(false);
     }
   };
 
@@ -159,6 +220,8 @@ export default function ChatInterface({
     // Clear error state and retry message state
     setError(null);
     setRetryMessage(null);
+    setRetryAttempt(0);
+    setIsRetrying(false);
     // Clear loading state
     setIsAIResponding(false);
     // Reset stuck state (starting new problem session)
@@ -220,14 +283,17 @@ export default function ChatInterface({
           <div className="border-t border-[var(--border)] px-4 py-3 transition-opacity duration-200">
             <ErrorMessage
               message={error}
-              onRetry={retryMessage ? handleRetry : undefined}
+              onRetry={retryMessage && !isRetrying && retryAttempt < DEFAULT_RETRY_CONFIG.maxAttempts ? handleRetry : undefined}
               retryLabel="Retry"
+              retryAttempt={retryAttempt}
+              maxRetryAttempts={DEFAULT_RETRY_CONFIG.maxAttempts}
+              isRetrying={isRetrying}
             />
           </div>
         )}
         <MessageInput
           onMessageSubmit={handleMessageSubmit}
-          disabled={isAIResponding}
+          disabled={isAIResponding || !isOnline}
           isInitialInput={isInitialInput}
           ocrText={ocrText}
           onOcrTextChange={onOcrTextChange}

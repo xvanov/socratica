@@ -21,7 +21,7 @@ export function validateProblemText(text: string): ValidationResult {
   if (!text || text.length === 0) {
     return {
       isValid: false,
-      error: "Please enter a math problem. The input cannot be empty.",
+      error: "Please enter your math problem.",
     };
   }
 
@@ -29,7 +29,7 @@ export function validateProblemText(text: string): ValidationResult {
   if (!text.trim()) {
     return {
       isValid: false,
-      error: "Please enter a math problem. The input cannot be only spaces.",
+      error: "Please enter some text (not just spaces).",
     };
   }
 
@@ -37,7 +37,7 @@ export function validateProblemText(text: string): ValidationResult {
   if (text.trim().length < MIN_TEXT_LENGTH) {
     return {
       isValid: false,
-      error: `Please enter a complete math problem. The input must be at least ${MIN_TEXT_LENGTH} characters long.`,
+      error: `Please enter a complete math problem (at least ${MIN_TEXT_LENGTH} characters).`,
     };
   }
 
@@ -57,7 +57,7 @@ export function validateMessage(text: string): ValidationResult {
   if (!text || text.length === 0) {
     return {
       isValid: false,
-      error: "Please enter a message. The input cannot be empty.",
+      error: "Please enter your message.",
     };
   }
 
@@ -65,7 +65,7 @@ export function validateMessage(text: string): ValidationResult {
   if (!text.trim()) {
     return {
       isValid: false,
-      error: "Please enter a message. The input cannot be only spaces.",
+      error: "Please enter some text (not just spaces).",
     };
   }
 
@@ -73,7 +73,7 @@ export function validateMessage(text: string): ValidationResult {
   if (text.trim().length < MIN_MESSAGE_LENGTH) {
     return {
       isValid: false,
-      error: `Please enter a message. The input must be at least ${MIN_MESSAGE_LENGTH} character long.`,
+      error: `Please enter a complete message (at least ${MIN_MESSAGE_LENGTH} character).`,
     };
   }
 
@@ -108,19 +108,19 @@ export function meetsMinLength(text: string, minLength: number = MIN_TEXT_LENGTH
  * Generates error message for empty text
  */
 export function getEmptyTextError(): string {
-  return "Please enter a math problem. The input cannot be empty.";
+  return "Please enter your math problem.";
 }
 
 /**
  * Generates error message for whitespace-only text
  */
 export function getWhitespaceOnlyError(): string {
-  return "Please enter a math problem. The input cannot be only spaces.";
+  return "Please enter some text (not just spaces).";
 }
 
 /**
  * Generates error message for minimum length validation
  */
 export function getMinLengthError(minLength: number = MIN_TEXT_LENGTH): string {
-  return `Please enter a complete math problem. The input must be at least ${minLength} characters long.`;
+  return `Please enter a complete math problem (at least ${minLength} characters).`;
 }

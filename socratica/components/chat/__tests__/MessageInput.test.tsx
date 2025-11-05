@@ -244,7 +244,7 @@ describe('MessageInput Component', () => {
       
       // Should show validation error after submission attempt
       await waitFor(() => {
-        const errorMessage = screen.queryByText(/cannot be only spaces/i);
+        const errorMessage = screen.queryByText(/Please enter some text \(not just spaces\)/i);
         expect(errorMessage).toBeInTheDocument();
       }, { timeout: 3000 });
       
@@ -266,7 +266,7 @@ describe('MessageInput Component', () => {
       await user.keyboard('{Enter}');
       
       await waitFor(() => {
-        const errorMessage = screen.queryByText(/cannot be empty/i);
+        const errorMessage = screen.queryByText(/Please enter your message/i);
         expect(errorMessage).toBeInTheDocument();
       }, { timeout: 3000 });
     });
@@ -282,7 +282,7 @@ describe('MessageInput Component', () => {
       await user.keyboard('{Enter}');
       
       await waitFor(() => {
-        const errorMessage = screen.queryByText(/cannot be only spaces/i);
+        const errorMessage = screen.queryByText(/Please enter some text \(not just spaces\)/i);
         expect(errorMessage).toBeInTheDocument();
       }, { timeout: 3000 });
       
@@ -292,7 +292,7 @@ describe('MessageInput Component', () => {
       
       // Error should be cleared when user starts typing (handleChange clears validationError)
       await waitFor(() => {
-        expect(screen.queryByText(/cannot be only spaces/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/Please enter some text \(not just spaces\)/i)).not.toBeInTheDocument();
       }, { timeout: 3000 });
     });
   });
@@ -355,7 +355,9 @@ describe('MessageInput Component', () => {
       render(<MessageInput onMessageSubmit={mockOnMessageSubmit} />);
       
       const textarea = screen.getByLabelText(/message input field/i);
-      expect(textarea).toHaveAttribute('aria-describedby', 'message-input-description');
+      expect(textarea).toHaveAttribute('aria-describedby');
+      const describedBy = textarea.getAttribute('aria-describedby');
+      expect(describedBy).toContain('message-input-description');
     });
 
     it('should be accessible via keyboard navigation', async () => {

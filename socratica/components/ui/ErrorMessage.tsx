@@ -6,6 +6,9 @@ interface ErrorMessageProps {
   retryLabel?: string;
   className?: string;
   "aria-label"?: string;
+  retryAttempt?: number; // Current retry attempt number
+  maxRetryAttempts?: number; // Maximum retry attempts
+  isRetrying?: boolean; // Whether retry is in progress
 }
 
 /**
@@ -23,6 +26,9 @@ export default function ErrorMessage({
   retryLabel = "Retry",
   className = "",
   "aria-label": ariaLabel,
+  retryAttempt,
+  maxRetryAttempts,
+  isRetrying = false,
 }: ErrorMessageProps) {
   return (
     <div
@@ -50,16 +56,36 @@ export default function ErrorMessage({
           <p className="text-sm font-medium text-[var(--error-800)] dark:text-[var(--error-200)]">
             {message}
           </p>
-          {onRetry && (
-            <button
-              type="button"
-              onClick={onRetry}
-              className="mt-2 text-sm font-medium text-[var(--error-600)] underline transition-colors hover:text-[var(--error-800)] dark:text-[var(--error-400)] dark:hover:text-[var(--error-200)] min-h-[44px] px-2"
-              aria-label={`${retryLabel} sending message`}
-            >
-              {retryLabel}
-            </button>
+          {/* Show retry status if retrying */}
+          {isRetrying && retryAttempt && maxRetryAttempts && (
+            <p className="mt-1 text-xs text-[var(--error-700)] dark:text-[var(--error-300)]">
+              {retryAttempt < maxRetryAttempts
+                ? `Retrying... (attempt ${retryAttempt} of ${maxRetryAttempts})`
+                : `Final attempt (${maxRetryAttempts} of ${maxRetryAttempts})`}
+            </p>
           )}
+          {/* Show retry button if available and not at max attempts */}
+          {onRetry &&
+            (!maxRetryAttempts || !retryAttempt || retryAttempt < maxRetryAttempts) && (
+              <button
+                type="button"
+                onClick={onRetry}
+                disabled={isRetrying}
+                className="mt-2 text-sm font-medium text-[var(--error-600)] underline transition-colors hover:text-[var(--error-800)] disabled:cursor-not-allowed disabled:opacity-50 dark:text-[var(--error-400)] dark:hover:text-[var(--error-200)] min-h-[44px] px-2"
+                aria-label={`${retryLabel} sending message`}
+              >
+                {isRetrying ? "Retrying..." : retryLabel}
+              </button>
+            )}
+          {/* Show message when max retries reached */}
+          {maxRetryAttempts &&
+            retryAttempt &&
+            retryAttempt >= maxRetryAttempts &&
+            !isRetrying && (
+              <p className="mt-2 text-xs text-[var(--error-700)] dark:text-[var(--error-300)]">
+                Maximum retry attempts reached. Please check your connection and try again later.
+              </p>
+            )}
         </div>
       </div>
     </div>

@@ -4,6 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import SuccessMessage from "@/components/ui/SuccessMessage";
+import { formatError, ErrorType, ERROR_MESSAGES } from "@/lib/utils/error-handling";
+import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
+import HelpText from "@/components/ui/HelpText";
 
 interface ImageUploadProps {
   onImageSelect?: (file: File) => void;
@@ -31,6 +34,7 @@ export default function ImageUpload({
   const [error, setError] = useState<string | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isOnline = useNetworkStatus();
 
   // Clean up preview URL on unmount or when image is removed
   useEffect(() => {
@@ -44,13 +48,13 @@ export default function ImageUpload({
   const validateFile = (file: File): string | null => {
     // Validate file type
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-      return `Invalid file type. Please upload a JPG, PNG, or WebP image.`;
+      return ERROR_MESSAGES.FILE.INVALID_TYPE;
     }
 
     // Validate file size
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      return `File size exceeds the maximum limit of ${maxSizeMB}MB. Please choose a smaller image.`;
+      return ERROR_MESSAGES.FILE.TOO_LARGE;
     }
 
     // Check file extension as additional validation
@@ -59,7 +63,7 @@ export default function ImageUpload({
       fileName.endsWith(ext)
     );
     if (!hasValidExtension) {
-      return `Invalid file type. Please upload a JPG, PNG, or WebP image.`;
+      return ERROR_MESSAGES.FILE.INVALID_TYPE;
     }
 
     return null;
@@ -122,10 +126,7 @@ export default function ImageUpload({
       await performOCR(file);
     } catch (err) {
       setIsUploading(false);
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "Failed to load image. The file may be corrupted.";
+      const errorMessage = formatError(err, ErrorType.FILE_ERROR);
       setError(errorMessage);
       // Reset file input
       if (fileInputRef.current) {
@@ -135,6 +136,16 @@ export default function ImageUpload({
   };
 
   const performOCR = async (file: File) => {
+    // Check if offline before attempting OCR
+    if (!isOnline) {
+      const errorMessage = ERROR_MESSAGES.NETWORK.OFFLINE;
+      setOcrError(errorMessage);
+      if (onOCRError) {
+        onOCRError(errorMessage);
+      }
+      return;
+    }
+
     try {
       setIsOCRLoading(true);
       setOcrError(null);
@@ -156,9 +167,10 @@ export default function ImageUpload({
 
         // Handle rate limit errors
         if (response.status === 429) {
-          const errorMessage =
-            errorData.error ||
-            "Rate limit exceeded. Please try again in a moment.";
+          const errorMessage = formatError(
+            errorData.error || ERROR_MESSAGES.OCR.RATE_LIMIT,
+            ErrorType.OCR_ERROR
+          );
           setOcrError(errorMessage);
           if (onOCRError) {
             onOCRError(errorMessage);
@@ -167,9 +179,10 @@ export default function ImageUpload({
         }
 
         // Handle other errors
-        const errorMessage =
-          errorData.error ||
-          "Unable to read image. Please try a clearer photo or use text input.";
+        const errorMessage = formatError(
+          errorData.error || ERROR_MESSAGES.OCR.GENERIC,
+          ErrorType.OCR_ERROR
+        );
         setOcrError(errorMessage);
         if (onOCRError) {
           onOCRError(errorMessage);
@@ -180,9 +193,10 @@ export default function ImageUpload({
       const data = await response.json();
 
       if (data.error) {
-        const errorMessage =
-          data.error ||
-          "Unable to read image. Please try a clearer photo or use text input.";
+        const errorMessage = formatError(
+          data.error || ERROR_MESSAGES.OCR.GENERIC,
+          ErrorType.OCR_ERROR
+        );
         setOcrError(errorMessage);
         if (onOCRError) {
           onOCRError(errorMessage);
@@ -195,8 +209,7 @@ export default function ImageUpload({
         // Validate extracted text (handle empty/whitespace-only text)
         const trimmedText = data.text.trim();
         if (trimmedText.length === 0) {
-          const errorMessage =
-            "Unable to read image. No text was found in the image. Please try a clearer photo or use text input.";
+          const errorMessage = ERROR_MESSAGES.OCR.NO_TEXT;
           setOcrError(errorMessage);
           if (onOCRError) {
             onOCRError(errorMessage);
@@ -209,8 +222,7 @@ export default function ImageUpload({
         }
       } else {
         // No text in response
-        const errorMessage =
-          "Unable to read image. No text was found in the image. Please try a clearer photo or use text input.";
+        const errorMessage = ERROR_MESSAGES.OCR.NO_TEXT;
         setOcrError(errorMessage);
         if (onOCRError) {
           onOCRError(errorMessage);
@@ -218,12 +230,13 @@ export default function ImageUpload({
       }
     } catch (err) {
       // Handle network errors
-      const errorMessage =
-        err instanceof Error
-          ? err.message.includes("timeout") || err.message.includes("network")
-            ? "Network error. Please check your connection and try again."
-            : "Unable to read image. Please try a clearer photo or use text input."
-          : "Unable to read image. Please try a clearer photo or use text input.";
+      const errorType = !isOnline
+        ? ErrorType.NETWORK_ERROR
+        : err instanceof Error &&
+          (err.message.includes("timeout") || err.message.includes("network"))
+        ? ErrorType.NETWORK_ERROR
+        : ErrorType.OCR_ERROR;
+      const errorMessage = formatError(err, errorType);
       setOcrError(errorMessage);
       if (onOCRError) {
         onOCRError(errorMessage);
@@ -286,22 +299,26 @@ export default function ImageUpload({
         type="file"
         accept="image/jpeg,image/jpg,image/png,image/webp"
         onChange={handleFileChange}
-        disabled={isUploading}
+        disabled={isUploading || !isOnline}
         className="hidden"
         aria-label="Upload image of math problem"
-        aria-describedby="image-upload-description"
+        aria-describedby="image-upload-description image-upload-help"
       />
       
       <p id="image-upload-description" className="sr-only">
         Upload a screenshot or photo of your math problem. Supported formats: JPG, PNG, WebP. Maximum file size: {maxSizeMB}MB.
       </p>
+      <HelpText
+        id="image-upload-help"
+        text={`Upload a clear photo of your math problem. Supported formats: JPG, PNG, WebP (max ${maxSizeMB}MB). The app will extract text from your image automatically.`}
+      />
 
       {/* Upload button or preview */}
       {!previewUrl && !isUploading && !isOCRLoading && (
         <button
           type="button"
           onClick={handleButtonClick}
-          disabled={isUploading || isOCRLoading}
+          disabled={isUploading || isOCRLoading || !isOnline}
           className="flex h-12 min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-base font-medium text-[var(--neutral-700)] transition-all duration-200 hover:border-[var(--neutral-400)] hover:bg-[var(--surface)] focus:outline-none focus:ring-2 focus:ring-[var(--foreground)] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[var(--surface)] dark:text-[var(--neutral-300)] dark:hover:border-[var(--neutral-600)] dark:hover:bg-[var(--neutral-800)] dark:focus:ring-[var(--neutral-100)] shadow-sm"
           aria-label="Upload image"
           aria-disabled={isUploading || isOCRLoading}

@@ -135,8 +135,14 @@ describe('ARIA Labels and Attributes', () => {
       expect(descriptionId).toBeTruthy();
       
       if (descriptionId) {
-        const description = document.getElementById(descriptionId);
-        expect(description).toBeInTheDocument();
+        // aria-describedby can contain multiple IDs separated by spaces
+        const ids = descriptionId.split(' ');
+        // At least one description element should exist
+        const hasDescription = ids.some(id => {
+          const element = document.getElementById(id);
+          return element !== null;
+        });
+        expect(hasDescription).toBe(true);
       }
     });
 

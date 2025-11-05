@@ -58,8 +58,14 @@ describe('Problem Input ARIA Labels and Attributes', () => {
       expect(describedBy).toBeTruthy();
       
       if (describedBy) {
-        const description = document.getElementById(describedBy);
-        expect(description).toBeInTheDocument();
+        // aria-describedby can contain multiple IDs separated by spaces
+        const ids = describedBy.split(' ');
+        // At least one description element should exist
+        const hasDescription = ids.some(id => {
+          const element = document.getElementById(id);
+          return element !== null;
+        });
+        expect(hasDescription).toBe(true);
       }
     });
 

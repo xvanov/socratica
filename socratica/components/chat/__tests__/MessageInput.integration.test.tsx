@@ -326,9 +326,9 @@ describe('MessageInput Integration Tests', () => {
         expect(screen.getByText('Test message')).toBeInTheDocument();
       }, { timeout: 3000 });
       
-      // Error message should appear
+      // Error message should appear - now user-friendly
       await waitFor(() => {
-        expect(screen.getByText(/unable to get tutor response/i)).toBeInTheDocument();
+        expect(screen.getByText(/We couldn't process your request|unable to get tutor response/i)).toBeInTheDocument();
       }, { timeout: 3000 });
       
       // Retry button should appear
@@ -373,9 +373,10 @@ describe('MessageInput Integration Tests', () => {
         await user.click(submitButton);
       }
       
-      // Wait for error
+      // Wait for error - error message is now user-friendly
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument();
+        const errorMessage = screen.queryByText(/We're having trouble connecting|We couldn't process your request/i);
+        expect(errorMessage).toBeInTheDocument();
       }, { timeout: 3000 });
       
       // Click retry

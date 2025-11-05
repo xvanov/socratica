@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { validateProblemText } from "@/lib/utils/validation";
 import MathPreview from "@/components/math-renderer/MathPreview";
+import HelpText from "@/components/ui/HelpText";
 
 interface TextInputProps {
   onSubmit?: (value: string) => void;
@@ -116,7 +117,7 @@ export default function TextInput({
                   : "border-zinc-300 bg-white focus:border-zinc-950 focus:ring-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-zinc-50 dark:focus:ring-zinc-50"
               }`}
               aria-label="Math problem input field"
-              aria-describedby="problem-input-description problem-input-preview"
+              aria-describedby="problem-input-description problem-input-preview problem-input-help"
               aria-required="true"
               aria-invalid={validationError ? "true" : "false"}
               aria-errormessage={validationError ? "problem-input-error" : undefined}
@@ -127,6 +128,10 @@ export default function TextInput({
             <p id="problem-input-preview" className="sr-only">
               Math preview updates automatically as you type.
             </p>
+            <HelpText
+              id="problem-input-help"
+              text="Enter your math problem using numbers, variables (like x or y), and operators. You can use LaTeX notation for advanced math (e.g., \frac{1}{2} for fractions)."
+            />
           </div>
           {/* Math preview - below on mobile, beside on desktop */}
           <div className="sm:w-80 sm:flex-shrink-0">

@@ -4,6 +4,8 @@ import { useState } from "react";
 import ImageUpload from "@/components/problem-input/ImageUpload";
 import ChatInterface from "@/components/chat/ChatInterface";
 import Navigation from "@/components/ui/Navigation";
+import { NetworkStatusIndicator } from "@/components/ui/NetworkStatusIndicator";
+import FeatureInstructions from "@/components/ui/FeatureInstructions";
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -38,6 +40,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--surface)] font-sans dark:bg-[var(--background)] overflow-x-hidden">
+      <NetworkStatusIndicator />
       <div className="flex flex-col w-full min-h-screen">
         <Navigation />
         <main className="flex flex-1 w-full max-w-4xl mx-auto flex-col py-8 px-4 bg-[var(--surface-elevated)] dark:bg-[var(--background)] sm:px-8 sm:py-16 overflow-x-hidden">
@@ -55,6 +58,16 @@ export default function Home() {
                 <ChatInterface
                   ocrText={extractedText}
                   onOcrTextChange={handleOcrTextChange}
+                />
+                <FeatureInstructions
+                  title="How to use the chat interface"
+                  instructions={[
+                    "Type your math problem or question in the text field",
+                    "Press Enter to send your message (Shift+Enter for a new line)",
+                    "The AI tutor will respond with step-by-step guidance",
+                    "Use the 'New Problem' button to start a fresh conversation",
+                  ]}
+                  className="mt-4"
                 />
               </div>
               <div className="relative">
@@ -74,6 +87,16 @@ export default function Home() {
                   onOCRComplete={handleOCRComplete}
                   onOCRError={handleOCRError}
                   maxSizeMB={10}
+                />
+                <FeatureInstructions
+                  title="How to upload an image"
+                  instructions={[
+                    "Click the 'Upload Image' button or drag and drop an image",
+                    "Supported formats: JPG, PNG, WebP (max 10MB)",
+                    "Make sure your math problem is clearly visible in the photo",
+                    "The app will automatically extract text from your image",
+                  ]}
+                  className="mt-4"
                 />
                 {/* Fallback option to switch to text input if OCR fails */}
                 {ocrError && (
