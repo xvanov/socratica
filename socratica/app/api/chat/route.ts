@@ -15,6 +15,7 @@ import {
   type UnderstandingState,
 } from "@/lib/openai/adaptive-questioning";
 import { Message } from "@/types/chat";
+import { WhiteboardState } from "@/types/whiteboard";
 import OpenAI from "openai";
 
 // Maximum retry attempts
@@ -75,15 +76,45 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    const { message, conversationHistory = [], userId, stuckState, understandingState } = body;
+    const { message, conversationHistory = [], userId, stuckState, understandingState, whiteboardState, whiteboardImage, whiteboardOCRText } = body;
+
+    // Debug logging for whiteboard content detection
+    if (process.env.NODE_ENV === "development") {
+      console.log("Chat API: Received request:", {
+        messageLength: message?.length || 0,
+        messageTrimmed: message?.trim() || "",
+        hasWhiteboardImage: !!whiteboardImage,
+        whiteboardImageLength: whiteboardImage?.length || 0,
+        hasWhiteboardOCRText: !!whiteboardOCRText,
+        whiteboardOCRTextLength: whiteboardOCRText?.length || 0,
+        hasWhiteboardState: !!whiteboardState,
+        whiteboardStateType: typeof whiteboardState,
+        whiteboardStateElements: whiteboardState?.elements,
+        whiteboardStateElementsLength: whiteboardState?.elements?.length || 0,
+        whiteboardStateIsArray: Array.isArray(whiteboardState?.elements),
+      });
+    }
 
     // Validate request
-    if (!message || typeof message !== "string") {
+    // Allow empty message only if whiteboard content is provided
+    const hasWhiteboardContent = !!(whiteboardImage || whiteboardOCRText || (whiteboardState && whiteboardState.elements && Array.isArray(whiteboardState.elements) && whiteboardState.elements.length > 0));
+    
+    // Normalize message - treat undefined/null as empty string
+    const normalizedMessage = message || "";
+    
+    if (typeof normalizedMessage !== "string") {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Chat API: Message validation failed - not a string:", {
+          messageType: typeof message,
+          messageValue: message,
+          hasWhiteboardContent,
+        });
+      }
       return NextResponse.json(
         {
           success: false,
           data: null,
-          error: "Message is required and must be a string.",
+          error: "Message must be a string.",
         },
         { status: 400 }
       );
@@ -101,12 +132,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate message is not empty after trimming
-    if (!message.trim()) {
+    // Exception: allow empty message if whiteboard content is provided
+    if (!normalizedMessage.trim() && !hasWhiteboardContent) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Chat API: Validation failed - empty message without whiteboard content:", {
+          message: normalizedMessage,
+          messageTrimmed: normalizedMessage.trim(),
+          hasWhiteboardContent,
+          whiteboardImage: !!whiteboardImage,
+          whiteboardImageLength: whiteboardImage?.length || 0,
+          whiteboardOCRText: !!whiteboardOCRText,
+          whiteboardOCRTextLength: whiteboardOCRText?.length || 0,
+          whiteboardState: !!whiteboardState,
+          whiteboardStateElements: whiteboardState?.elements?.length || 0,
+          whiteboardStateIsArray: Array.isArray(whiteboardState?.elements),
+        });
+      }
       return NextResponse.json(
         {
           success: false,
           data: null,
-          error: "Message cannot be empty.",
+          error: "Message cannot be empty unless whiteboard content is provided.",
         },
         { status: 400 }
       );
@@ -130,8 +176,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Analyze current message for confusion and update stuck state
+    // Use OCR text or a default message if message is empty but whiteboard content exists
+    const messageForAnalysis = normalizedMessage.trim() || whiteboardOCRText || "Student shared whiteboard content";
     const updatedStuckState = trackStuckState(
-      message,
+      messageForAnalysis,
       conversationHistory,
       currentStuckState
     );
@@ -140,13 +188,15 @@ export async function POST(request: NextRequest) {
     const hintLevel = calculateHintLevel(updatedStuckState.consecutiveConfused);
 
     // Validate mathematical expressions and evaluate correctness if message contains math content
+    // Use OCR text if message is empty but whiteboard content exists
+    const messageForValidation = normalizedMessage.trim() || whiteboardOCRText || "";
     const mathExpressionPattern = /[a-zA-Z0-9+\-*/^=()]/;
-    const hasMathContent = mathExpressionPattern.test(message);
+    const hasMathContent = mathExpressionPattern.test(messageForValidation);
     
     let correctnessLevel: "correct" | "incorrect" | "partial" = "partial"; // Default
     
     if (hasMathContent) {
-      const expressionValidation = validateMathematicalExpression(message);
+      const expressionValidation = validateMathematicalExpression(messageForValidation);
       
       // If expression is invalid, still send to OpenAI but let it handle the response
       // The enhanced prompt will guide the student to correct format using Socratic questions
@@ -156,7 +206,7 @@ export async function POST(request: NextRequest) {
       } else {
         // Evaluate response correctness (semantic evaluation done by LLM via prompt)
         // For now, we use a simple heuristic - actual correctness determined by LLM
-        const validationResult = evaluateResponseCorrectness(message);
+        const validationResult = evaluateResponseCorrectness(messageForValidation);
         correctnessLevel = validationResult.correctnessLevel;
       }
     }
@@ -186,23 +236,47 @@ export async function POST(request: NextRequest) {
     );
 
     // Convert messages to OpenAI format and manage context window
-    // Pass stuck state, hint level, and understanding level to context preparation
-    const openAIMessages = prepareConversationContext(
-      conversationHistory,
-      message,
-      undefined, // Use default maxTokens
-      updatedStuckState.isStuck,
-      updatedStuckState.consecutiveConfused,
-      hintLevel,
-      updatedUnderstandingState.level
-    );
+    // Pass stuck state, hint level, understanding level, whiteboard state, and whiteboard image to context preparation
+    // Use a default message if message is empty but whiteboard content exists
+    const messageForContext = normalizedMessage.trim() || (hasWhiteboardContent ? "Please help me with this problem." : "");
+    
+    let openAIMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
+    try {
+      openAIMessages = prepareConversationContext(
+        conversationHistory,
+        messageForContext,
+        undefined, // Use default maxTokens
+        updatedStuckState.isStuck,
+        updatedStuckState.consecutiveConfused,
+        hintLevel,
+        updatedUnderstandingState.level,
+        whiteboardState as WhiteboardState | null | undefined,
+        whiteboardImage as string | null | undefined,
+        whiteboardOCRText as string | null | undefined
+      );
+    } catch (contextError) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Chat API: Error preparing conversation context:", contextError);
+      }
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: `Failed to prepare conversation context: ${contextError instanceof Error ? contextError.message : "Unknown error"}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Determine model - use vision model if whiteboard image is provided
+    const model = whiteboardImage ? "gpt-4-turbo" : "gpt-4-turbo"; // GPT-4 Turbo supports vision
 
     // Call OpenAI API with retry logic
     let aiResponse: OpenAI.Chat.Completions.ChatCompletion;
     try {
       aiResponse = await retryWithBackoff(async () => {
         return await openai.chat.completions.create({
-          model: "gpt-4-turbo",
+          model: model,
           messages: openAIMessages,
           max_tokens: 1000,
           temperature: 0.7,
@@ -212,6 +286,15 @@ export async function POST(request: NextRequest) {
       // Log error (dev only, or Firebase Analytics in prod)
       if (process.env.NODE_ENV === "development") {
         console.error("Chat API error after retries:", error);
+        if (error instanceof OpenAI.APIError) {
+          console.error("Chat API: OpenAI API Error details:", {
+            status: error.status,
+            message: error.message,
+            code: error.code,
+            type: error.type,
+            param: error.param,
+          });
+        }
       }
       // TODO: Log to Firebase Analytics in production
 
@@ -249,6 +332,18 @@ export async function POST(request: NextRequest) {
               data: null,
               error:
                 "Conversation is too long. Please start a new conversation.",
+            },
+            { status: 400 }
+          );
+        }
+
+        // Other 400 errors from OpenAI (e.g., invalid image format, content array issues)
+        if (error.status === 400) {
+          return NextResponse.json(
+            {
+              success: false,
+              data: null,
+              error: `OpenAI API error: ${error.message || "Invalid request format. Please check your whiteboard content."}`,
             },
             { status: 400 }
           );
@@ -294,6 +389,13 @@ export async function POST(request: NextRequest) {
       aiResponse.choices[0]?.message?.content?.trim() || "";
 
     if (!aiMessage) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Chat API: Empty AI response:", {
+          choices: aiResponse.choices,
+          finishReason: aiResponse.choices[0]?.finish_reason,
+          message: aiResponse.choices[0]?.message,
+        });
+      }
       return NextResponse.json(
         {
           success: false,

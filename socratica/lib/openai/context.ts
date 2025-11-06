@@ -7,6 +7,8 @@ import { Message } from "@/types/chat";
 import OpenAI from "openai";
 import { SOCRATIC_MATH_TUTOR_PROMPT, buildEnhancedPromptWithHints, buildEnhancedPromptWithAdaptiveQuestioning, type HintLevel } from "./prompts";
 import type { UnderstandingLevel } from "./adaptive-questioning";
+import { buildWhiteboardContext } from "./whiteboard-context";
+import { WhiteboardState } from "@/types/whiteboard";
 
 /**
  * Maximum context window size in tokens for GPT-4 Turbo
@@ -41,20 +43,23 @@ export function calculateTotalTokens(
 }
 
 /**
- * Build system prompt with optional stuck state, hint generation, and adaptive questioning
+ * Build system prompt with optional stuck state, hint generation, adaptive questioning, and whiteboard context
  * Combines hint generation (if stuck) and adaptive questioning (always) based on understanding level
  * 
  * @param isStuck - Whether student is currently stuck
  * @param consecutiveConfused - Number of consecutive confused responses
  * @param hintLevel - Hint level (0-3, optional, calculated if not provided)
  * @param understandingLevel - Understanding level for adaptive questioning (optional, defaults to progressing)
- * @returns System prompt string with hint generation and adaptive questioning instructions
+ * @param whiteboardState - Current whiteboard state (optional)
+ * @returns System prompt string with hint generation, adaptive questioning, and whiteboard context
  */
 function buildSystemPrompt(
   isStuck: boolean = false,
   consecutiveConfused: number = 0,
   hintLevel?: HintLevel,
-  understandingLevel: UnderstandingLevel = "progressing"
+  understandingLevel: UnderstandingLevel = "progressing",
+  whiteboardState?: WhiteboardState | null,
+  whiteboardOCRText?: string | null
 ): string {
   // Start with base prompt enhanced with adaptive questioning
   let prompt = buildEnhancedPromptWithAdaptiveQuestioning(
@@ -72,6 +77,24 @@ function buildSystemPrompt(
     );
   }
 
+  // Add whiteboard context if available
+  if (whiteboardState) {
+    const whiteboardContext = buildWhiteboardContext(whiteboardState);
+    prompt = prompt + whiteboardContext;
+  }
+  
+  // Add OCR text if available (helps AI understand handwritten equations)
+  if (whiteboardOCRText && whiteboardOCRText.trim()) {
+    prompt = prompt + `
+
+**WHITEBOARD OCR TEXT:**
+The following text was extracted from the whiteboard image using OCR:
+${whiteboardOCRText}
+
+**IMPORTANT:** Use this OCR text to help understand what the student has written on the whiteboard. The OCR may not be perfect, so also use your vision capabilities to analyze the image. If the OCR text doesn't match what you see in the image, prioritize what you see in the image, but use the OCR text as additional context.
+`;
+  }
+
   return prompt;
 }
 
@@ -79,6 +102,7 @@ function buildSystemPrompt(
  * Convert Message[] from chat format to OpenAI API format
  * Maps: student -> user, tutor -> assistant
  * Includes system prompt as first message
+ * Supports images in user messages (GPT-4 Vision)
  * 
  * @param messages - Conversation history
  * @param currentMessage - Current student message
@@ -86,6 +110,9 @@ function buildSystemPrompt(
  * @param consecutiveConfused - Number of consecutive confused responses (optional)
  * @param hintLevel - Hint level (0-3, optional, calculated if not provided)
  * @param understandingLevel - Understanding level for adaptive questioning (optional, defaults to progressing)
+ * @param whiteboardState - Current whiteboard state (optional)
+ * @param whiteboardImage - Whiteboard image as base64 data URL (optional)
+ * @param whiteboardOCRText - OCR text extracted from whiteboard image (optional)
  */
 export function convertMessagesToOpenAIFormat(
   messages: Message[],
@@ -93,9 +120,12 @@ export function convertMessagesToOpenAIFormat(
   isStuck: boolean = false,
   consecutiveConfused: number = 0,
   hintLevel?: HintLevel,
-  understandingLevel: UnderstandingLevel = "progressing"
+  understandingLevel: UnderstandingLevel = "progressing",
+  whiteboardState?: WhiteboardState | null,
+  whiteboardImage?: string | null,
+  whiteboardOCRText?: string | null
 ): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
-  const systemPrompt = buildSystemPrompt(isStuck, consecutiveConfused, hintLevel, understandingLevel);
+  const systemPrompt = buildSystemPrompt(isStuck, consecutiveConfused, hintLevel, understandingLevel, whiteboardState, whiteboardOCRText);
   
   const openAIMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     {
@@ -112,10 +142,48 @@ export function convertMessagesToOpenAIFormat(
     });
   }
 
-  // Add current message
+  // Add current message with optional image
+  const userMessageContent: OpenAI.Chat.Completions.ChatCompletionContentPart[] = [];
+  
+  // Add text content - if empty but we have whiteboard content, add a default message
+  const textToSend = currentMessage.trim() || (whiteboardImage || whiteboardOCRText ? "Please help me with this problem." : "");
+  if (textToSend) {
+    userMessageContent.push({
+      type: "text",
+      text: textToSend,
+    });
+  }
+
+  // Add whiteboard image if provided
+  if (whiteboardImage) {
+    // Remove data URL prefix if present (data:image/png;base64,)
+    const base64Data = whiteboardImage.includes(",") 
+      ? whiteboardImage.split(",")[1] 
+      : whiteboardImage;
+    
+    userMessageContent.push({
+      type: "image_url",
+      image_url: {
+        url: `data:image/png;base64,${base64Data}`,
+      },
+    });
+  }
+
+  // Add user message with content array (supports text + image)
+  // OpenAI requires at least one content part, so ensure we have content
+  if (userMessageContent.length === 0) {
+    // Fallback: if somehow we have no content, add a default message
+    userMessageContent.push({
+      type: "text",
+      text: currentMessage || "Please help me.",
+    });
+  }
+
   openAIMessages.push({
     role: "user",
-    content: currentMessage,
+    content: userMessageContent.length === 1 && userMessageContent[0].type === "text"
+      ? userMessageContent[0].text 
+      : userMessageContent,
   });
 
   return openAIMessages;
@@ -205,6 +273,9 @@ export function truncateContextWindow(
  * @param consecutiveConfused - Number of consecutive confused responses (optional)
  * @param hintLevel - Hint level (0-3, optional, calculated if not provided)
  * @param understandingLevel - Understanding level for adaptive questioning (optional, defaults to progressing)
+ * @param whiteboardState - Current whiteboard state (optional)
+ * @param whiteboardImage - Whiteboard image as base64 data URL (optional)
+ * @param whiteboardOCRText - OCR text extracted from whiteboard image (optional)
  */
 export function prepareConversationContext(
   messages: Message[],
@@ -213,7 +284,10 @@ export function prepareConversationContext(
   isStuck: boolean = false,
   consecutiveConfused: number = 0,
   hintLevel?: HintLevel,
-  understandingLevel: UnderstandingLevel = "progressing"
+  understandingLevel: UnderstandingLevel = "progressing",
+  whiteboardState?: WhiteboardState | null,
+  whiteboardImage?: string | null,
+  whiteboardOCRText?: string | null
 ): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
   // Convert to OpenAI format
   const openAIMessages = convertMessagesToOpenAIFormat(
@@ -222,7 +296,10 @@ export function prepareConversationContext(
     isStuck,
     consecutiveConfused,
     hintLevel,
-    understandingLevel
+    understandingLevel,
+    whiteboardState,
+    whiteboardImage,
+    whiteboardOCRText
   );
 
   // Truncate if needed

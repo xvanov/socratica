@@ -4,6 +4,7 @@
  */
 
 import { Message, StuckState } from "./chat";
+import { WhiteboardState } from "./whiteboard";
 
 /**
  * Completion status for a problem session
@@ -33,6 +34,8 @@ export interface Session {
   updatedAt: string;
   /** Optional stuck detection state */
   stuckState?: StuckState;
+  /** Optional whiteboard state with drawings and settings */
+  whiteboardState?: WhiteboardState;
 }
 
 /**

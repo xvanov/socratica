@@ -20,15 +20,17 @@ export const openai = new OpenAI({
 });
 
 // OCR prompt for math problem extraction
-const OCR_PROMPT = `Extract the text from this image. This is a math problem, so please:
-1. Extract all text exactly as it appears
-2. Preserve mathematical notation (operators, symbols, equations)
-3. Keep equations on single lines - do not break equations across multiple lines
-4. If an equation appears on multiple lines visually, join it into a single line (e.g., "2x = 6" not "2\\nx\\n=\\n6")
-5. If the image contains math equations, extract them as LaTeX where possible
-6. Maintain structure between different problems/questions (use line breaks between problems, not within equations)
-7. Return only the extracted text as plain text - do NOT use markdown formatting, code blocks, or triple backticks
-8. Do not include any markdown code fences or formatting symbols`;
+const OCR_PROMPT = `Extract ONLY the text and mathematical notation that you can actually see in this image. 
+
+CRITICAL RULES:
+1. Extract text EXACTLY as written - do NOT convert to LaTeX or any other format
+2. If you see handwritten text, extract it as plain text (e.g., "5x + 2 = 3" not LaTeX)
+3. If you see printed text, extract it exactly as shown
+4. Preserve mathematical symbols as they appear (+, -, =, etc.)
+5. DO NOT invent or convert anything to LaTeX format
+6. DO NOT add formatting that isn't in the image
+7. If the image is blank, dark, or unclear, say "I cannot extract text from this image since it doesn't contain recognizable content."
+8. Return ONLY the extracted text - no markdown, no code blocks, no formatting symbols`;
 
 export interface OCRResponse {
   text: string;

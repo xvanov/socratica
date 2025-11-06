@@ -1,0 +1,413 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>2</storyId>
+    <title>Whiteboard Foundation & Drawing Tools</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/6-2-whiteboard-foundation-and-drawing-tools.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a student</asA>
+    <iWant>I want a shared drawing canvas with comprehensive drawing tools and mathematical diagram support</iWant>
+    <soThat>so that I can visually represent geometric problems and graphs</soThat>
+    <tasks>- Task 1: Research and select canvas/drawing library (AC: 1, 2, 3, 13)
+- Task 2: Create Whiteboard component foundation (AC: 1, 2, 3)
+- Task 3: Implement basic drawing tools (AC: 4)
+- Task 4: Implement advanced drawing tools (AC: 5, 8)
+- Task 5: Implement color picker and styling (AC: 6)
+- Task 6: Create intuitive tool selection UI (AC: 7)
+- Task 7: Implement coordinate grid for graphing (AC: 9)
+- Task 8: Implement axis labels and annotations (AC: 10)
+- Task 9: Integrate equation rendering on canvas (AC: 11)
+- Task 10: Implement angle and measurement tools (AC: 12)
+- Task 11: Integrate whiteboard into chat interface (AC: 1)
+- Task 12: Ensure real-time visibility (AC: 13)
+- Task 13: Testing and verification (AC: 1-13)</tasks>
+  </story>
+
+  <acceptanceCriteria>1. Canvas element is available in chat interface
+2. Canvas supports drawing with mouse/touch input
+3. Canvas dimensions are responsive to screen size
+4. Basic drawing tools: pen tool for freehand drawing, eraser tool for corrections
+5. Advanced drawing tools: line tool for straight lines, shape tools (circle, rectangle, polygon)
+6. Color picker for drawing elements
+7. Tool selection UI is intuitive
+8. Supports geometric shapes (triangles, circles, polygons)
+9. Supports coordinate grid for graphing
+10. Supports axis labels and annotations
+11. Supports equation rendering on canvas
+12. Supports angle and measurement tools
+13. Drawings are visible in real-time</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic 6: Interactive Whiteboard</title>
+        <section>Story 6.2: Whiteboard Foundation &amp; Drawing Tools</section>
+        <snippet>Goal: Shared visual canvas for diagrams, graphs, and geometric problem solving. Value: Enables visual learning for geometry and graphing concepts. Acceptance criteria cover canvas integration, drawing tools, geometric shapes, coordinate grid, axis labels, equation rendering, and measurement tools.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Epic 6: Interactive Whiteboard</section>
+        <snippet>Epic 6 focuses on providing a shared visual canvas for diagrams, graphs, and geometric problem solving. This enables visual learning for geometry and graphing concepts, expanding the platform's capabilities beyond text-based interactions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Project Structure</section>
+        <snippet>Components follow Next.js 15 App Router patterns with TypeScript strict mode. Uses Tailwind CSS for styling. Component structure: components/whiteboard/ for whiteboard components, integration with ChatInterface component, and reuse of math rendering patterns from Epic 4.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Decision Summary</section>
+        <snippet>Next.js 15 with App Router, TypeScript strict mode, Tailwind CSS for styling, KaTeX for math rendering (already installed from Epic 4). LaTeX rendering library: KaTeX - fast rendering, lightweight, sufficient for algebra.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/6-2-whiteboard-foundation-and-drawing-tools.md</path>
+        <title>Story 6.2: Whiteboard Foundation &amp; Drawing Tools</title>
+        <section>Architecture Patterns</section>
+        <snippet>Canvas Library Selection: Evaluate libraries (Fabric.js, Konva.js, Paper.js, React-Canvas-Draw). Recommended: Konva.js or Fabric.js for comprehensive feature set and good mobile performance. Whiteboard Component Structure: components/whiteboard/ with Whiteboard.tsx, WhiteboardToolbar.tsx, WhiteboardCanvas.tsx, tools/, overlays/, utils/ directories.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/6-2-whiteboard-foundation-and-drawing-tools.md</path>
+        <title>Story 6.2: Whiteboard Foundation &amp; Drawing Tools</title>
+        <section>Dev Notes - Learnings from Previous Story</section>
+        <snippet>Session Management Integration: SessionHistory component exists at components/sessions/SessionHistory.tsx. Whiteboard state should be saved as part of session data (next story will handle persistence). Firestore Service Patterns: Session service functions demonstrate patterns for saving/loading state. Component Architecture: Session components follow established patterns: PascalCase matching file name, Tailwind CSS styling, accessibility features.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/6-2-whiteboard-foundation-and-drawing-tools.md</path>
+        <title>Story 6.2: Whiteboard Foundation &amp; Drawing Tools</title>
+        <section>Dev Notes - Learnings from Previous Story</section>
+        <snippet>KaTeX Integration: KaTeX library is integrated for math rendering (components/math-renderer/). Whiteboard equation rendering (AC 11) should reuse KaTeX integration patterns from Epic 4. Consider rendering equations as SVG or images that can be positioned on canvas.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/6-2-whiteboard-foundation-and-drawing-tools.md</path>
+        <title>Story 6.2: Whiteboard Foundation &amp; Drawing Tools</title>
+        <section>Dev Notes - Accessibility Patterns</section>
+        <snippet>Components follow WCAG AA accessibility standards with ARIA labels, keyboard navigation, and screen reader support. Whiteboard components must maintain accessibility despite being a visual/interactive canvas. Consider keyboard shortcuts for tools, screen reader descriptions of drawings, and high contrast mode support.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/6-1-session-history-tracking.md</path>
+        <title>Story 6.1: Session History Tracking</title>
+        <section>Session Management</section>
+        <snippet>SessionHistory component integrates with ChatInterface. Session structure supports storing additional state - consider adding whiteboardState field to Session interface for future integration (Story 6.3).</snippet>
+      </doc>
+      <doc>
+        <path>docs/test-specifications.md</path>
+        <title>Test Specifications</title>
+        <section>Test Strategy Overview</section>
+        <snippet>Test Pyramid: E2E (10%), Integration (20%), Component (30%), Unit (40%). Tests verify acceptance criteria, are meaningful, simple, fast, and independent. Test categories: Unit Tests (fast, isolated), Component Tests (React components), Integration Tests (API routes), E2E Tests (complete user flows).</snippet>
+      </doc>
+      <doc>
+        <path>docs/implementation-plan.md</path>
+        <title>Implementation Plan</title>
+        <section>TDD Methodology</section>
+        <snippet>Red-Green-Refactor cycle: Write failing tests, write minimal code to pass, refactor. Each story must include: Unit Tests (functions, utilities, business logic), Component Tests (React components, UI interactions), Integration Tests (API routes, LLM interactions), E2E Tests (user flows, acceptance criteria validation).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>socratica/components/chat/ChatInterface.tsx</path>
+        <kind>component</kind>
+        <symbol>ChatInterface</symbol>
+        <lines>43-655</lines>
+        <reason>Main chat interface component where whiteboard will be integrated. Shows component structure patterns, props interface, state management patterns, and integration points for new features. Header section (lines 582-602) shows where whiteboard toggle button should be added.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/components/math-renderer/MathDisplay.tsx</path>
+        <kind>component</kind>
+        <symbol>MathDisplay</symbol>
+        <lines>1-67</lines>
+        <reason>KaTeX integration for inline math rendering. Whiteboard equation rendering (AC 11) should reuse these patterns. Shows how to render LaTeX expressions with error handling and accessibility support.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/components/math-renderer/MathBlock.tsx</path>
+        <kind>component</kind>
+        <symbol>MathBlock</symbol>
+        <lines>1-72</lines>
+        <reason>KaTeX integration for block math rendering. Reference for rendering equations on canvas (AC 11). Shows centered block math display patterns and error handling.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/components/math-renderer/MessageContent.tsx</path>
+        <kind>component</kind>
+        <symbol>MessageContent</symbol>
+        <lines>32-139</lines>
+        <reason>Message content parser that handles mixed text and math. Shows LaTeX parsing patterns and segment rendering. Useful reference for rendering equations on canvas with proper parsing.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/components/sessions/SessionHistory.tsx</path>
+        <kind>component</kind>
+        <symbol>SessionHistory</symbol>
+        <lines>reference</lines>
+        <reason>Session history component demonstrates component patterns, Tailwind CSS styling, and accessibility features. Whiteboard components should follow same patterns. Shows integration with ChatInterface.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/lib/firebase/sessions.ts</path>
+        <kind>service</kind>
+        <symbol>saveSession</symbol>
+        <lines>108-155</lines>
+        <reason>Firestore service patterns for saving/loading state. When implementing whiteboard persistence in Story 6.3, follow similar patterns for saving whiteboard state to Firestore. Shows session data structure and serialization patterns.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/types/session.ts</path>
+        <kind>type</kind>
+        <symbol>Session</symbol>
+        <lines>11-41</lines>
+        <reason>Session data model interface. Reference for adding whiteboardState field in future (Story 6.3). Shows data structure patterns and TypeScript interface definitions.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/components/ui/</path>
+        <kind>component-library</kind>
+        <symbol>UI Components</symbol>
+        <lines>reference</lines>
+        <reason>UI components with accessibility patterns (ConfirmationDialog, LoadingSpinner, ErrorMessage, Tooltip, etc.). Reference for whiteboard UI accessibility. Components follow WCAG AA standards with ARIA labels and keyboard navigation.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/app/page.tsx</path>
+        <kind>page</kind>
+        <symbol>HomeContent</symbol>
+        <lines>11-122</lines>
+        <reason>Main page component that integrates ChatInterface. Shows how components are composed and integrated. Reference for whiteboard integration into main interface layout.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/lib/math-renderer/katex-config.ts</path>
+        <kind>config</kind>
+        <symbol>KATEX_CONFIG</symbol>
+        <lines>reference</lines>
+        <reason>KaTeX configuration file. Reference for configuring KaTeX rendering for equations on canvas. Shows configuration patterns and error handling settings.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/tests/e2e/algebra-problems.test.ts</path>
+        <kind>test</kind>
+        <symbol>E2E Test Patterns</symbol>
+        <lines>reference</lines>
+        <reason>E2E test patterns using Playwright. Whiteboard E2E tests should follow these patterns to verify drawing functionality, tool selection, and canvas interactions. Shows test structure and helper utilities.</reason>
+      </artifact>
+      <artifact>
+        <path>socratica/tests/utils/e2e-helpers.ts</path>
+        <kind>utility</kind>
+        <symbol>E2E Helper Utilities</symbol>
+        <lines>126-246</lines>
+        <reason>E2E helper utilities for reusable test patterns. Reference for creating whiteboard test helpers. Shows verification functions and test utilities.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>next</package>
+        <version>16.0.1</version>
+      </node>
+      <node>
+        <package>react</package>
+        <version>19.2.0</version>
+      </node>
+      <node>
+        <package>react-dom</package>
+        <version>19.2.0</version>
+      </node>
+      <node>
+        <package>katex</package>
+        <version>^0.16.25</version>
+      </node>
+      <node>
+        <package>react-katex</package>
+        <version>^3.1.0</version>
+      </node>
+      <node>
+        <package>firebase</package>
+        <version>^12.5.0</version>
+      </node>
+      <node>
+        <package>tailwindcss</package>
+        <version>^4</version>
+      </node>
+      <node>
+        <package>typescript</package>
+        <version>^5</version>
+      </node>
+      <node>
+        <package>@playwright/test</package>
+        <version>^1.40.0</version>
+      </node>
+      <node>
+        <package>vitest</package>
+        <version>^1.1.0</version>
+      </node>
+      <node>
+        <package>@testing-library/react</package>
+        <version>^15.0.0</version>
+      </node>
+      <node>
+        <package>@testing-library/user-event</package>
+        <version>^14.5.1</version>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>Component Architecture</type>
+      <description>Components must follow PascalCase matching file name (e.g., Whiteboard.tsx contains Whiteboard component). Files match component name exactly. Functions use camelCase, constants use UPPER_SNAKE_CASE, types/interfaces use PascalCase.</description>
+    </constraint>
+    <constraint>
+      <type>Styling</type>
+      <description>Use Tailwind CSS for styling following Epic 5 design system patterns. Components should be responsive (mobile, tablet, desktop). Follow established design system patterns from existing UI components.</description>
+    </constraint>
+    <constraint>
+      <type>TypeScript</type>
+      <description>TypeScript strict mode required. All components, functions, and types must be properly typed. Follow existing type patterns from session.ts and chat.ts interfaces.</description>
+    </constraint>
+    <constraint>
+      <type>Accessibility</type>
+      <description>WCAG AA compliance required. All interactive elements must have ARIA labels. Keyboard shortcuts for tool selection (e.g., P for pen, E for eraser). Screen reader descriptions of canvas content. Focus management for tool selection. High contrast mode support for drawings.</description>
+    </constraint>
+    <constraint>
+      <type>Integration</type>
+      <description>Whiteboard will be integrated into ChatInterface component. Whiteboard state should be isolated from chat state initially (persistence in Story 6.3). Responsive layout: whiteboard on desktop sidebar, modal on mobile. Reuse KaTeX integration from Epic 4 for equation rendering.</description>
+    </constraint>
+    <constraint>
+      <type>Performance</type>
+      <description>Canvas rendering must be optimized for smooth drawing. Consider using requestAnimationFrame for drawing updates. Optimize redraw operations (only redraw changed elements). Test performance with many elements on canvas. Consider virtualization for very large drawings.</description>
+    </constraint>
+    <constraint>
+      <type>Testing</type>
+      <description>Follow TDD methodology: Red-Green-Refactor cycle. Write failing tests first, then implement code. Tests must verify acceptance criteria. Use Vitest for unit tests, @testing-library/react for component tests, Playwright for E2E tests. Test across browsers (Chrome, Firefox, Safari, Edge). Test responsive design and touch input.</description>
+    </constraint>
+    <constraint>
+      <type>Canvas Library Selection</type>
+      <description>Evaluate libraries: Fabric.js (rich features, complex), Konva.js (performance-focused, 2D), Paper.js (vector graphics), React-Canvas-Draw (simple, React-friendly). Consider: Performance on mobile devices, touch support, TypeScript support, React integration, bundle size. Recommended: Konva.js or Fabric.js. Document library selection decision in Dev Notes with rationale.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ChatInterfaceProps</name>
+      <kind>React Component Props</kind>
+      <signature>interface ChatInterfaceProps {
+  initialMessages?: Message[];
+  ocrText?: string;
+  onOcrTextChange?: (text: string) => void;
+  problemText?: string;
+  problemImageUrl?: string;
+  onSessionResumed?: () => void;
+  sessionToResume?: Session;
+}</signature>
+      <path>socratica/types/chat.ts</path>
+      <reason>ChatInterface props interface shows how to integrate whiteboard component. Whiteboard toggle button should be added to ChatInterface header section.</reason>
+    </interface>
+    <interface>
+      <name>Session</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface Session {
+  sessionId: string;
+  userId: string;
+  problemText?: string;
+  problemImageUrl?: string;
+  messages: Message[];
+  completionStatus: CompletionStatus;
+  createdAt: string;
+  updatedAt: string;
+  stuckState?: StuckState;
+}</signature>
+      <path>socratica/types/session.ts</path>
+      <reason>Session interface will be extended in Story 6.3 to include whiteboardState field. Reference for data structure patterns.</reason>
+    </interface>
+    <interface>
+      <name>saveSession</name>
+      <kind>Firestore Service Function</kind>
+      <signature>async function saveSession(session: Partial&lt;Session&gt; &amp; { userId: string }): Promise&lt;Session&gt;</signature>
+      <path>socratica/lib/firebase/sessions.ts</path>
+      <reason>Session save function pattern to follow for whiteboard state persistence in Story 6.3. Shows Firestore integration patterns.</reason>
+    </interface>
+    <interface>
+      <name>MathDisplay Component</name>
+      <kind>React Component</kind>
+      <signature>interface MathDisplayProps {
+  expression: string;
+  className?: string;
+}
+
+export default function MathDisplay({ expression, className = "" }: MathDisplayProps)</signature>
+      <path>socratica/components/math-renderer/MathDisplay.tsx</path>
+      <reason>Math rendering component interface. Reference for rendering equations on canvas (AC 11). Shows LaTeX expression handling and error handling patterns.</reason>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Testing follows TDD methodology with Red-Green-Refactor cycle. Test pyramid: Unit (40%), Component (30%), Integration (20%), E2E (10%). Frameworks: Vitest for unit tests, @testing-library/react for component tests, Playwright for E2E tests. Tests verify acceptance criteria explicitly, are simple and maintainable, run fast, and are independent. Tests must not test implementation details or third-party library internals. Testing standards include: browser compatibility testing (Chrome, Firefox, Safari, Edge), responsive design testing (mobile, tablet, desktop), touch input testing on mobile devices, accessibility testing (keyboard navigation, screen reader), and performance testing with complex drawings.</standards>
+    <locations>
+      <location>socratica/components/whiteboard/__tests__/</location>
+      <location>socratica/tests/e2e/whiteboard/</location>
+      <location>socratica/tests/utils/e2e-helpers.ts</location>
+      <location>socratica/__fixtures__/whiteboard/</location>
+    </locations>
+    <ideas>
+      <test ac="1">
+        <type>E2E</type>
+        <description>Verify canvas element is available in chat interface. Test whiteboard toggle button appears in ChatInterface header. Test whiteboard panel/modal opens when toggle is clicked. Test whiteboard is visible and accessible.</description>
+      </test>
+      <test ac="2">
+        <type>E2E</type>
+        <description>Verify canvas supports drawing with mouse/touch input. Test mouse drawing on desktop. Test touch drawing on mobile device. Test drawing works smoothly without lag.</description>
+      </test>
+      <test ac="3">
+        <type>Component</type>
+        <description>Verify canvas dimensions are responsive to screen size. Test canvas resizes correctly on mobile, tablet, desktop viewports. Test canvas maintains aspect ratio or fills available space appropriately.</description>
+      </test>
+      <test ac="4">
+        <type>Component</type>
+        <description>Verify basic drawing tools: pen tool for freehand drawing, eraser tool for corrections. Test pen tool draws freehand strokes. Test eraser tool removes drawn elements. Test tool switching works correctly.</description>
+      </test>
+      <test ac="5">
+        <type>Component</type>
+        <description>Verify advanced drawing tools: line tool for straight lines, shape tools (circle, rectangle, polygon). Test line tool draws straight lines. Test circle tool draws circles. Test rectangle tool draws rectangles. Test polygon tool draws polygons.</description>
+      </test>
+      <test ac="6">
+        <type>Component</type>
+        <description>Verify color picker for drawing elements. Test color picker opens/closes correctly. Test selected color applies to pen, shapes, and lines. Test color selection persists across tool switches.</description>
+      </test>
+      <test ac="7">
+        <type>Component</type>
+        <description>Verify tool selection UI is intuitive. Test tool buttons are clearly labeled or have icons. Test active tool is highlighted. Test tooltips appear on hover. Test responsive design for mobile-friendly toolbar.</description>
+      </test>
+      <test ac="8">
+        <type>Component</type>
+        <description>Verify supports geometric shapes (triangles, circles, polygons). Test triangle tool draws triangles. Test circle tool draws circles. Test polygon tool draws polygons with multiple vertices.</description>
+      </test>
+      <test ac="9">
+        <type>Component</type>
+        <description>Verify supports coordinate grid for graphing. Test grid overlay appears on canvas. Test grid spacing is appropriate. Test grid scales with canvas size. Test grid toggle show/hide works.</description>
+      </test>
+      <test ac="10">
+        <type>Component</type>
+        <description>Verify supports axis labels and annotations. Test x-axis and y-axis labels appear. Test axis numbering/tick marks display correctly. Test text annotation tool allows adding labels. Test labels scale with canvas size.</description>
+      </test>
+      <test ac="11">
+        <type>Integration</type>
+        <description>Verify supports equation rendering on canvas. Test equation rendering integrates KaTeX. Test LaTeX syntax renders correctly. Test equations can be positioned on canvas. Test equation rendering maintains quality when zoomed.</description>
+      </test>
+      <test ac="12">
+        <type>Component</type>
+        <description>Verify supports angle and measurement tools. Test angle measurement tool displays angle measurements. Test distance measurement tool displays distance measurements. Test measurements update when shapes are modified.</description>
+      </test>
+      <test ac="13">
+        <type>E2E</type>
+        <description>Verify drawings are visible in real-time. Test drawings appear immediately as user draws. Test rendering performance is smooth. Test drawing responsiveness on different devices. Test performance with many elements on canvas.</description>
+      </test>
+      <test ac="accessibility">
+        <type>E2E</type>
+        <description>Verify accessibility features. Test keyboard shortcuts for tool selection (P for pen, E for eraser). Test screen reader describes canvas content. Test ARIA labels on all interactive elements. Test focus management for tool selection. Test high contrast mode support.</description>
+      </test>
+      <test ac="integration">
+        <type>Integration</type>
+        <description>Verify whiteboard integration with ChatInterface. Test whiteboard toggle button in chat header. Test whiteboard panel/modal integration. Test whiteboard and chat can coexist in UI. Test responsive layout (desktop sidebar, mobile modal).</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

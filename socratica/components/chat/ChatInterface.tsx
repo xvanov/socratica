@@ -9,6 +9,10 @@ import CompleteButton from "./CompleteButton";
 import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
+import Tooltip from "@/components/ui/Tooltip";
+import Whiteboard from "@/components/whiteboard/Whiteboard";
+import WhiteboardDebugWindow from "@/components/debug/WhiteboardDebugWindow";
+import { extractTextFromWhiteboard } from "@/lib/ocr/whiteboard-ocr";
 import { ChatInterfaceProps, Message, StuckState } from "@/types/chat";
 import { resetStuckState } from "@/lib/openai/stuck-detection";
 import { formatError, ErrorType, ERROR_MESSAGES } from "@/lib/utils/error-handling";
@@ -17,6 +21,7 @@ import { calculateRetryDelay, waitForRetry, DEFAULT_RETRY_CONFIG, formatRetryMes
 import { saveSession, getSessionById, updateSessionCompletionStatus } from "@/lib/firebase/sessions";
 import { CompletionStatus, Session } from "@/types/session";
 import { useAuth } from "@/hooks/useAuth";
+import { WhiteboardState } from "@/types/whiteboard";
 
 // Check if Firebase is configured (client-side check)
 const isFirebaseConfigured = () => {
@@ -68,6 +73,29 @@ export default function ChatInterface({
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const saveCurrentSessionRef = useRef<(() => Promise<void>) | null>(null);
+  const [showWhiteboard, setShowWhiteboard] = useState(false);
+  const [whiteboardState, setWhiteboardState] = useState<WhiteboardState | null>(null);
+  const whiteboardStateRef = useRef<WhiteboardState | null>(null);
+  const captureWhiteboardImageRef = useRef<(() => Promise<string | null>) | null>(null);
+  const [whiteboardOCRText, setWhiteboardOCRText] = useState<string | null>(null);
+  const [whiteboardOCRError, setWhiteboardOCRError] = useState<string | null>(null);
+  const [capturedWhiteboardImage, setCapturedWhiteboardImage] = useState<string | null>(null);
+  
+  // Handle whiteboard state changes
+  const handleWhiteboardStateChange = useCallback((state: WhiteboardState) => {
+    console.log("ChatInterface: Whiteboard state updated:", { 
+      elementCount: state.elements.length, 
+      elements: state.elements.map(e => ({ type: e.type, id: e.id })),
+      timestamp: new Date().toISOString()
+    });
+    whiteboardStateRef.current = state;
+    setWhiteboardState(state);
+  }, []);
+
+  // Handle whiteboard capture function ready
+  const handleWhiteboardCaptureReady = useCallback((capture: () => Promise<string | null>) => {
+    captureWhiteboardImageRef.current = capture;
+  }, []);
   
   // Determine if this is the initial input (no messages yet)
   const isInitialInput = messages.length === 0;
@@ -337,7 +365,7 @@ export default function ChatInterface({
   };
 
   // Send message to chat API and get AI response
-  const sendMessageToAI = async (
+  const sendMessageToAI = useCallback(async (
     messageText: string,
     conversationHistory: Message[]
   ) => {
@@ -352,25 +380,153 @@ export default function ChatInterface({
       setIsAIResponding(true);
       setError(null);
 
+      // Capture whiteboard image if available
+      // IMPORTANT: Capture from visible whiteboard instance if open, otherwise from hidden one
+      let whiteboardImage: string | null = null;
+      let ocrText: string | null = null;
+      let ocrError: string | null = null;
+      
+      if (captureWhiteboardImageRef.current) {
+        try {
+          console.log("ChatInterface: Attempting to capture whiteboard image...", {
+            showWhiteboard,
+            hasCaptureFunction: !!captureWhiteboardImageRef.current,
+            hasWhiteboardState: !!(whiteboardStateRef.current || whiteboardState),
+            elementCount: (whiteboardStateRef.current || whiteboardState)?.elements?.length || 0
+          });
+          
+          // Only capture if there are elements - use ref for latest state
+          const currentWhiteboardStateForCapture = whiteboardStateRef.current || whiteboardState;
+          if (currentWhiteboardStateForCapture && currentWhiteboardStateForCapture.elements && currentWhiteboardStateForCapture.elements.length > 0) {
+            whiteboardImage = await captureWhiteboardImageRef.current();
+            setCapturedWhiteboardImage(whiteboardImage);
+            
+            if (whiteboardImage) {
+              console.log("ChatInterface: Successfully captured whiteboard image:", { 
+                hasImage: true,
+                dataURLLength: whiteboardImage.length,
+                elementCount: currentWhiteboardStateForCapture.elements.length,
+                preview: whiteboardImage.substring(0, 100) + "..."
+              });
+              
+              // Run OCR on the captured image
+              console.log("ChatInterface: Running OCR on whiteboard image...");
+              const ocrResult = await extractTextFromWhiteboard(whiteboardImage);
+              
+              if (ocrResult.error) {
+                console.warn("ChatInterface: OCR error:", ocrResult.error);
+                ocrError = ocrResult.error;
+                setWhiteboardOCRError(ocrResult.error);
+                setWhiteboardOCRText(null);
+              } else {
+                ocrText = ocrResult.text;
+                setWhiteboardOCRText(ocrResult.text);
+                setWhiteboardOCRError(null);
+                console.log("ChatInterface: OCR successful:", { 
+                  text: ocrResult.text,
+                  textLength: ocrResult.text.length
+                });
+              }
+            } else {
+              console.warn("ChatInterface: Whiteboard image capture returned null");
+              setCapturedWhiteboardImage(null);
+            }
+          } else {
+            console.log("ChatInterface: Skipping capture - no elements to capture");
+            setCapturedWhiteboardImage(null);
+            setWhiteboardOCRText(null);
+            setWhiteboardOCRError(null);
+          }
+        } catch (error) {
+          console.error("Failed to capture whiteboard image or run OCR:", error);
+          setWhiteboardOCRError(error instanceof Error ? error.message : "Unknown error");
+          // Continue without image if capture fails
+        }
+      } else {
+        console.log("ChatInterface: No capture function available (whiteboard may not be mounted)");
+        setCapturedWhiteboardImage(null);
+        setWhiteboardOCRText(null);
+        setWhiteboardOCRError(null);
+      }
+
+      // Log request details before sending
+      const requestBody = {
+        message: messageText,
+        conversationHistory,
+        stuckState,
+        whiteboardState: whiteboardStateRef.current || whiteboardState,
+        whiteboardImage,
+        whiteboardOCRText: ocrText,
+        userId: user?.uid,
+      };
+      
+      console.log("ChatInterface: Sending request to API:", {
+        messageLength: messageText.length,
+        conversationHistoryLength: conversationHistory.length,
+        hasWhiteboardState: !!requestBody.whiteboardState,
+        whiteboardElementCount: requestBody.whiteboardState?.elements?.length || 0,
+        hasWhiteboardImage: !!requestBody.whiteboardImage,
+        whiteboardImageLength: requestBody.whiteboardImage?.length || 0,
+        hasWhiteboardOCRText: !!requestBody.whiteboardOCRText,
+        whiteboardOCRTextLength: requestBody.whiteboardOCRText?.length || 0,
+        hasUserId: !!requestBody.userId,
+      });
+
       // Call chat API route
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          message: messageText,
-          conversationHistory,
-          stuckState, // Send current stuck state
-        }),
+        body: JSON.stringify(requestBody),
+      });
+      
+      console.log("ChatInterface: Sent message to API with whiteboard state:", {
+        hasWhiteboardState: !!(whiteboardStateRef.current || whiteboardState),
+        hasWhiteboardImage: !!whiteboardImage,
+        elementCount: (whiteboardStateRef.current || whiteboardState)?.elements?.length || 0,
+        whiteboardStateFromRef: !!whiteboardStateRef.current,
+        whiteboardStateFromState: !!whiteboardState,
       });
 
       // Parse response JSON (can only be read once)
       let data;
       try {
-        data = await response.json();
+        const responseText = await response.text();
+        console.log("ChatInterface: Raw API response:", {
+          status: response.status,
+          statusText: response.statusText,
+          responseText: responseText.substring(0, 1000), // First 1000 chars for debugging
+          responseTextFull: responseText, // Full response for debugging
+        });
+        
+        try {
+          data = JSON.parse(responseText);
+          console.log("ChatInterface: Parsed response data:", {
+            success: data.success,
+            hasError: !!data.error,
+            error: data.error,
+            hasData: !!data.data,
+            dataKeys: data.data ? Object.keys(data.data) : [],
+          });
+        } catch (parseError) {
+          console.error("ChatInterface: Failed to parse JSON response:", parseError, {
+            responseText: responseText.substring(0, 500),
+          });
+          data = {
+            success: false,
+            error: response.status === 429
+              ? "Too many requests. Please wait a moment and try again."
+              : response.status >= 500
+              ? "The service is temporarily unavailable. Please try again in a moment."
+              : response.status === 401 || response.status === 403
+              ? "There was an authentication issue. Please refresh the page and try again."
+              : `Server error (${response.status}): ${responseText.substring(0, 200)}`,
+          };
+        }
       } catch (jsonError) {
-        // If JSON parsing fails, create a basic error response
+        // If reading response fails, create a basic error response
+        console.error("ChatInterface: Failed to read response:", jsonError);
         data = {
           success: false,
           error: response.status === 429
@@ -385,6 +541,18 @@ export default function ChatInterface({
 
       // Handle API response errors
       if (!response.ok || !data.success) {
+        // Log detailed error info for debugging
+        console.error("ChatInterface: API error response:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: data.error,
+          hasWhiteboardImage: !!whiteboardImage,
+          hasWhiteboardOCRText: !!ocrText,
+          hasWhiteboardState: !!(whiteboardStateRef.current || whiteboardState),
+          whiteboardElementCount: (whiteboardStateRef.current || whiteboardState)?.elements?.length || 0,
+          messageText: messageText.substring(0, 50),
+        });
+        
         // Format error message using error handling utilities
         const errorMessage = formatError(
           data.error || "Unable to get tutor response. Please try again.",
@@ -428,7 +596,33 @@ export default function ChatInterface({
     } finally {
       setIsAIResponding(false);
     }
-  };
+  }, [isOnline, whiteboardState, whiteboardStateRef, captureWhiteboardImageRef, user?.uid, stuckState, addMessage]);
+
+  // Handle whiteboard submit (send whiteboard content without text message)
+  const handleWhiteboardSubmit = useCallback(async () => {
+    // Check if whiteboard has content - use ref for latest state
+    const currentWhiteboardState = whiteboardStateRef.current || whiteboardState;
+    if (!currentWhiteboardState || !currentWhiteboardState.elements || currentWhiteboardState.elements.length === 0) {
+      setError("Please draw something on the whiteboard before sending.");
+      return;
+    }
+
+    // Add a placeholder student message to indicate whiteboard content was shared
+    const whiteboardMessage: Message = {
+      role: "student",
+      content: "[Whiteboard content shared]",
+      timestamp: new Date(),
+    };
+
+    // Add student message to state immediately
+    addMessage(whiteboardMessage);
+
+    // Build conversation history with new message included
+    const conversationHistory = [...messages, whiteboardMessage];
+
+    // Use empty string for the actual message text - the whiteboard image and state will be sent
+    await sendMessageToAI("", conversationHistory);
+  }, [messages, sendMessageToAI, whiteboardState, whiteboardStateRef, addMessage]);
 
   // Handle message submission from MessageInput
   const handleMessageSubmit = async (messageText: string) => {
@@ -568,22 +762,48 @@ export default function ChatInterface({
   };
 
   return (
-    <div
-      className="flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] dark:bg-[var(--surface)] overflow-x-hidden shadow-sm"
-      role="region"
-      aria-label="Chat interface"
-      aria-describedby="chat-interface-description"
-    >
+    <div className="flex flex-col">
+      {/* Chat Panel - Full width when whiteboard is closed, overlay on side when whiteboard is open */}
+      <div
+        className={`flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] dark:bg-[var(--surface)] overflow-x-hidden shadow-sm ${
+          showWhiteboard ? 'lg:fixed lg:right-0 lg:top-16 lg:bottom-0 lg:w-[30%] lg:z-50 lg:shadow-xl lg:rounded-none lg:border-l' : 'flex-1'
+        }`}
+        role="region"
+        aria-label="Chat interface"
+        aria-describedby="chat-interface-description"
+      >
       <div id="chat-interface-description" className="sr-only">
         Interactive chat interface for communicating with AI tutor. Messages appear in chronological order.
       </div>
       <div className="flex min-h-[400px] max-h-[600px] flex-1 flex-col overflow-hidden sm:min-h-[500px] sm:max-h-[700px]">
         {/* Header with Clear Chat button */}
         <header className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
-          <h2 className="text-lg font-semibold text-[var(--foreground)]">
-            Chat with Tutor
-          </h2>
           <div className="flex items-center gap-2">
+            <Tooltip content={showWhiteboard ? "Switch to chat mode" : "Open whiteboard"}>
+              <button
+                type="button"
+                onClick={() => setShowWhiteboard(!showWhiteboard)}
+                className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] px-3 py-2 text-sm font-medium text-[var(--neutral-700)] transition-colors hover:border-[var(--neutral-400)] hover:bg-[var(--surface)] focus:outline-none focus:ring-2 focus:ring-[var(--foreground)] focus:ring-offset-2 dark:bg-[var(--surface)] dark:text-[var(--neutral-300)] dark:hover:border-[var(--neutral-600)] dark:hover:bg-[var(--neutral-800)] dark:focus:ring-[var(--neutral-100)] min-h-[44px] min-w-[44px] shadow-sm"
+                aria-label={showWhiteboard ? "Hide whiteboard" : "Show whiteboard"}
+                aria-pressed={showWhiteboard}
+              >
+                {showWhiteboard ? (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span className="sr-only sm:not-sr-only">Chat</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    <span className="sr-only sm:not-sr-only">Whiteboard</span>
+                  </>
+                )}
+              </button>
+            </Tooltip>
             <CompleteButton
               onClick={handleComplete}
               disabled={messages.length === 0 || !user?.uid || !currentSessionId}
@@ -643,12 +863,99 @@ export default function ChatInterface({
           ocrText={ocrText}
           onOcrTextChange={onOcrTextChange}
         />
+        {/* Confirmation Dialog */}
+        <ConfirmationDialog
+          isOpen={showConfirmDialog}
+          onConfirm={handleConfirmClear}
+          onCancel={handleCancelClear}
+        />
       </div>
-      {/* Confirmation Dialog */}
-      <ConfirmationDialog
-        isOpen={showConfirmDialog}
-        onConfirm={handleConfirmClear}
-        onCancel={handleCancelClear}
+      </div>
+      {/* Whiteboard Panel - Single component instance always mounted */}
+      {/* Mobile: Full-screen modal overlay */}
+      {showWhiteboard && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowWhiteboard(false)} aria-hidden="true" />
+          <div className="absolute inset-0 flex flex-col bg-white">
+            <div className="flex items-center justify-between border-b border-gray-200 p-4">
+              <h3 className="text-lg font-semibold">Whiteboard</h3>
+              <button
+                type="button"
+                onClick={() => setShowWhiteboard(false)}
+                className="rounded-md p-2 hover:bg-gray-100"
+                aria-label="Close whiteboard"
+              >
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <Whiteboard
+                key="whiteboard-main"
+                initialState={whiteboardState || undefined}
+                onStateChange={handleWhiteboardStateChange}
+                onCaptureReady={handleWhiteboardCaptureReady}
+                onSubmit={handleWhiteboardSubmit}
+                visible={showWhiteboard}
+                sessionId={currentSessionId || undefined}
+                userId={user?.uid || undefined}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Desktop: Full-screen whiteboard when open */}
+      {showWhiteboard && (
+        <div className="hidden lg:block fixed inset-0 z-40 bg-[var(--surface)]">
+          <div className="flex h-full w-full flex-col">
+            <div className="flex items-center justify-between border-b border-[var(--border)] p-4">
+              <h3 className="text-lg font-semibold text-[var(--foreground)]">Whiteboard</h3>
+              <button
+                type="button"
+                onClick={() => setShowWhiteboard(false)}
+                className="rounded-md p-2 hover:bg-[var(--surface-elevated)]"
+                aria-label="Close whiteboard"
+              >
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <Whiteboard
+                key="whiteboard-main"
+                initialState={whiteboardState || undefined}
+                onStateChange={handleWhiteboardStateChange}
+                onCaptureReady={handleWhiteboardCaptureReady}
+                onSubmit={handleWhiteboardSubmit}
+                visible={showWhiteboard}
+                sessionId={currentSessionId || undefined}
+                userId={user?.uid || undefined}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Always mount whiteboard component (hidden) to preserve state when closed */}
+      {!showWhiteboard && (
+        <div className="hidden">
+          <Whiteboard
+            key="whiteboard-main"
+            initialState={whiteboardState || undefined}
+            onStateChange={handleWhiteboardStateChange}
+            visible={false}
+            sessionId={currentSessionId || undefined}
+            userId={user?.uid || undefined}
+          />
+        </div>
+      )}
+      {/* Debug window for whiteboard OCR */}
+      <WhiteboardDebugWindow
+        capturedImage={capturedWhiteboardImage}
+        ocrText={whiteboardOCRText}
+        ocrError={whiteboardOCRError}
+        whiteboardState={whiteboardState}
       />
     </div>
   );

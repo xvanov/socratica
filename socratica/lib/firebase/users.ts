@@ -158,7 +158,7 @@ export async function createUserProfile(user: {
     }
 
     // Don't overwrite existing profile
-    if (userSnap.exists()) {
+    if (userSnap && userSnap.exists()) {
       return;
     }
 

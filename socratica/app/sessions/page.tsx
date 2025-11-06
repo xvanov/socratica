@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import SessionHistory from "@/components/sessions/SessionHistory";
-import Navigation from "@/components/ui/Navigation";
 import { Session } from "@/types/session";
 
 /**
@@ -19,7 +18,6 @@ export default function SessionsPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--surface)] font-sans dark:bg-[var(--background)] overflow-x-hidden">
       <div className="flex flex-col w-full min-h-screen">
-        <Navigation />
         <main className="flex flex-1 w-full max-w-4xl mx-auto flex-col py-8 px-4 bg-[var(--surface-elevated)] dark:bg-[var(--background)] sm:px-8 sm:py-16 overflow-x-hidden">
           <div className="w-full space-y-6">
             <div className="text-center space-y-4">

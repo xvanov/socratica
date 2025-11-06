@@ -26,6 +26,7 @@ import {
   CompletionStatus,
   SESSION_COLLECTION_NAME,
 } from "@/types/session";
+import { WhiteboardState } from "@/types/whiteboard";
 
 /**
  * Converts Firestore document to Session object
@@ -54,6 +55,7 @@ function firestoreDocToSession(
           ? data.updatedAt
           : new Date().toISOString(),
     stuckState: data.stuckState || undefined,
+    whiteboardState: data.whiteboardState || undefined,
   };
 }
 
@@ -75,6 +77,9 @@ function sessionToFirestoreData(session: Partial<Session>): Record<string, unkno
   }
   if (session.stuckState !== undefined) {
     data.stuckState = session.stuckState;
+  }
+  if (session.whiteboardState !== undefined) {
+    data.whiteboardState = session.whiteboardState;
   }
 
   // Handle timestamps
@@ -123,6 +128,17 @@ export async function saveSession(session: Partial<Session> & { userId: string }
       const existingData = existingDoc.data();
       if (existingData.userId !== session.userId) {
         throw new Error("You don't have permission to update this session");
+      }
+
+      // IMPORTANT: Preserve whiteboardState if it exists and we're not explicitly updating it
+      // This prevents conflicts with the whiteboard's real-time listener
+      if (session.whiteboardState === undefined && existingData.whiteboardState !== undefined) {
+        // Don't include whiteboardState in the update - preserve existing value
+        // The whiteboard component manages its own state separately
+        delete sessionData.whiteboardState;
+      } else if (session.whiteboardState !== undefined) {
+        // Explicitly updating whiteboardState - include it
+        sessionData.whiteboardState = session.whiteboardState;
       }
       
       await updateDoc(sessionRef, sessionData);

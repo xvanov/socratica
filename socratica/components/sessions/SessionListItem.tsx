@@ -80,6 +80,38 @@ function truncateText(text: string, maxLength: number = 100): string {
 }
 
 /**
+ * Extract preview text from session messages
+ * Returns the first student message or first message that looks like a problem
+ */
+function extractPreviewFromMessages(messages: Array<{ role: string; content: string }>): string | null {
+  if (!messages || messages.length === 0) {
+    return null;
+  }
+
+  // First, try to find the first student message
+  const firstStudentMessage = messages.find(msg => msg.role === "student" && msg.content && msg.content.trim().length > 0);
+  if (firstStudentMessage) {
+    // Skip placeholder messages like "[Whiteboard content shared]"
+    const content = firstStudentMessage.content.trim();
+    if (content && !content.startsWith("[") && content.length > 3) {
+      return content;
+    }
+  }
+
+  // If no good student message, try the first message regardless of role
+  const firstMessage = messages.find(msg => msg.content && msg.content.trim().length > 0);
+  if (firstMessage) {
+    const content = firstMessage.content.trim();
+    // Skip placeholder messages and very short messages
+    if (content && !content.startsWith("[") && content.length > 3) {
+      return content;
+    }
+  }
+
+  return null;
+}
+
+/**
  * SessionListItem component - Displays individual session in history list
  * 
  * Features:
@@ -97,6 +129,9 @@ export default function SessionListItem({
 }: SessionListItemProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const statusInfo = formatCompletionStatus(session.completionStatus);
+
+  // Extract preview text - use problemText/problemImageUrl first, then fallback to messages
+  const previewText = session.problemText || extractPreviewFromMessages(session.messages || []) || null;
 
   const handleResume = () => {
     onResume(session);
@@ -140,9 +175,9 @@ export default function SessionListItem({
                   Image problem
                 </span>
               </div>
-            ) : session.problemText ? (
+            ) : previewText ? (
               <p className="text-sm text-[var(--neutral-900)] dark:text-[var(--neutral-100)]">
-                {truncateText(session.problemText)}
+                {truncateText(previewText)}
               </p>
             ) : (
               <p className="text-sm italic text-[var(--neutral-500)] dark:text-[var(--neutral-500)]">

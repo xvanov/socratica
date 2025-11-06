@@ -1,0 +1,152 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>3</storyId>
+    <title>Real-Time Synchronization & Persistence</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/6-3-real-time-synchronization-and-persistence.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>student</asA>
+    <iWant>to collaborate with the AI tutor on the whiteboard and have my drawings persist</iWant>
+    <soThat>we can work together visually and I don't lose my work while solving a problem</soThat>
+    <tasks>
+      <task id="1">Design whiteboard state synchronization architecture (AC: 4, 8)</task>
+      <task id="2">Extend Session data model to include whiteboard state (AC: 6)</task>
+      <task id="3">Create Firestore real-time listener for whiteboard state (AC: 2, 4, 8)</task>
+      <task id="4">Implement whiteboard state persistence to Firestore (AC: 3, 6)</task>
+      <task id="5">Implement whiteboard state restoration from Firestore (AC: 7)</task>
+      <task id="6">Create API endpoint for AI tutor drawings (AC: 1, 2)</task>
+      <task id="7">Integrate AI drawing API into OpenAI chat flow (AC: 1, 2)</task>
+      <task id="8">Implement bidirectional synchronization (AC: 2, 4)</task>
+      <task id="9">Implement network latency handling (AC: 5)</task>
+      <task id="10">Handle session timeout gracefully (AC: 9)</task>
+      <task id="11">Implement export/import whiteboard state (AC: 10)</task>
+      <task id="12">Update whiteboard component to use real-time sync (AC: 2, 3, 4, 8)</task>
+      <task id="13">Testing and verification (AC: 1-10)</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">AI tutor can draw on whiteboard through API</criterion>
+    <criterion id="2">AI drawings appear instantly on student's canvas</criterion>
+    <criterion id="3">Student drawings are sent to backend</criterion>
+    <criterion id="4">Bidirectional synchronization works correctly</criterion>
+    <criterion id="5">Handles network latency gracefully</criterion>
+    <criterion id="6">Drawings saved to session state</criterion>
+    <criterion id="7">Drawings restored when returning to session</criterion>
+    <criterion id="8">Whiteboard state synchronized across client/server</criterion>
+    <criterion id="9">Handles session timeout gracefully</criterion>
+    <criterion id="10">Export/import whiteboard state</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" section="Story 6.3: Real-Time Synchronization &amp; Persistence" snippet="As a student, I want to collaborate with the AI tutor on the whiteboard and have my drawings persist, so that we can work together visually and I don't lose my work while solving a problem." />
+      <doc path="docs/architecture.md" section="Real-time Updates" snippet="Use Firestore real-time listeners for chat messages (future). Use React Context for immediate UI updates." />
+      <doc path="docs/architecture.md" section="Data Architecture" snippet="Sessions collection with userId, messages, completionStatus, createdAt, updatedAt fields. Whiteboard state should extend session document structure." />
+      <doc path="docs/architecture.md" section="Epic to Architecture Mapping" snippet="Epic 6: Interactive Whiteboard (Future) - Whiteboard components, real-time sync using Firestore real-time." />
+      <doc path="docs/stories/6-2-whiteboard-foundation-and-drawing-tools.md" section="Dev Agent Record" snippet="Whiteboard foundation implemented with Konva.js/react-konva. WhiteboardState interface defined in types/whiteboard.ts. Components follow established patterns." />
+    </docs>
+    <code>
+      <file path="socratica/lib/firebase/sessions.ts" kind="service" symbol="saveSession, getSessionById, firestoreDocToSession, sessionToFirestoreData" lines="33-247" reason="Patterns for Firestore CRUD operations. Whiteboard state persistence should follow similar patterns for saving/loading state." />
+      <file path="socratica/lib/firebase/firestore.ts" kind="utility" symbol="waitForFirestoreReady, enableNetwork" lines="1-40" reason="Firestore utilities for handling offline scenarios. Whiteboard persistence should use similar offline handling patterns." />
+      <file path="socratica/types/session.ts" kind="type" symbol="Session interface" lines="17-36" reason="Session data model. Need to extend with whiteboardState field for storing whiteboard state." />
+      <file path="socratica/types/whiteboard.ts" kind="type" symbol="WhiteboardState, WhiteboardElement, ElementData" lines="20-98" reason="Whiteboard state structure definitions. Use these types for Firestore persistence schema." />
+      <file path="socratica/components/whiteboard/Whiteboard.tsx" kind="component" symbol="Whiteboard component" lines="38-423" reason="Main whiteboard component. Need to modify to subscribe to Firestore updates and save state changes." />
+      <file path="socratica/components/whiteboard/WhiteboardCanvas.tsx" kind="component" symbol="WhiteboardCanvas component" reason="Canvas drawing component. Need to modify to handle remote updates from Firestore." />
+      <file path="socratica/components/chat/ChatInterface.tsx" kind="component" symbol="ChatInterface component" lines="590-604,672-719" reason="Chat interface with whiteboard integration. Need to connect whiteboard to session context for real-time sync." />
+      <file path="socratica/app/api/chat/route.ts" kind="api" symbol="POST /api/chat" lines="74-367" reason="Chat API endpoint. Need to integrate whiteboard drawing capability when AI tutor wants to draw." />
+      <file path="socratica/lib/firebase/auth.ts" kind="service" symbol="onAuthStateChanged" lines="102-106" reason="Auth state observer pattern. Real-time listeners should follow similar observer pattern with unsubscribe cleanup." />
+      <file path="socratica/components/sessions/SessionHistory.tsx" kind="component" symbol="SessionHistory component" lines="34-88" reason="Session fetching pattern with error handling. Whiteboard state loading should follow similar patterns." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="firebase" version="^12.5.0" />
+        <package name="konva" version="^10.0.8" />
+        <package name="react-konva" version="^19.2.0" />
+        <package name="next" version="16.0.1" />
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="openai" version="^6.7.0" />
+      </ecosystem>
+      <ecosystem name="dev">
+        <package name="typescript" version="^5" />
+        <package name="vitest" version="^1.1.0" />
+        <package name="@playwright/test" version="^1.40.0" />
+        <package name="@testing-library/react" version="^15.0.0" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Use Firestore real-time listeners (onSnapshot) for bidirectional synchronization - no separate WebSocket server needed</constraint>
+    <constraint>Store whiteboard state in Session document structure (whiteboardState field) - keeps state with session context</constraint>
+    <constraint>Follow existing Firestore patterns from sessions.ts: retry logic with exponential backoff for offline errors</constraint>
+    <constraint>Debounce rapid drawing updates (500ms for pen tool) to reduce Firestore writes and costs</constraint>
+    <constraint>Implement optimistic UI updates - show drawings immediately, Firestore listener provides confirmation</constraint>
+    <constraint>Use version numbering for conflict resolution - last-write-wins strategy acceptable for whiteboard use case</constraint>
+    <constraint>Follow component patterns: PascalCase naming, Tailwind CSS styling, TypeScript strict mode</constraint>
+    <constraint>API endpoints follow /app/api/{feature}/route.ts pattern</constraint>
+    <constraint>Maintain backward compatibility - existing sessions without whiteboardState should work gracefully</constraint>
+    <constraint>Limit whiteboard elements (max 1000 elements) to prevent performance issues</constraint>
+    <constraint>Use project-relative paths only in documentation and code references</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="POST /api/whiteboard/draw" kind="REST endpoint" signature="POST /api/whiteboard/draw
+Request Body: { sessionId: string, element: WhiteboardElement }
+Response: { success: boolean, data: { elementId: string } | null, error: string | null }" path="socratica/app/api/whiteboard/draw/route.ts" />
+    <interface name="subscribeToWhiteboardState" kind="function signature" signature="function subscribeToWhiteboardState(sessionId: string, callback: (state: WhiteboardState) => void): Unsubscribe" path="socratica/lib/firebase/whiteboard.ts" />
+    <interface name="saveWhiteboardState" kind="function signature" signature="function saveWhiteboardState(sessionId: string, userId: string, state: WhiteboardState): Promise&lt;void&gt;" path="socratica/lib/firebase/whiteboard.ts" />
+    <interface name="loadWhiteboardState" kind="function signature" signature="function loadWhiteboardState(sessionId: string): Promise&lt;WhiteboardState | null&gt;" path="socratica/lib/firebase/whiteboard.ts" />
+    <interface name="Session interface" kind="TypeScript interface" signature="interface Session {
+  sessionId: string;
+  userId: string;
+  messages: Message[];
+  completionStatus: CompletionStatus;
+  createdAt: string;
+  updatedAt: string;
+  whiteboardState?: WhiteboardState; // NEW FIELD
+  // ... other fields
+}" path="socratica/types/session.ts" />
+    <interface name="WhiteboardState interface" kind="TypeScript interface" signature="interface WhiteboardState {
+  elements: WhiteboardElement[];
+  currentTool: ToolType;
+  currentColor: string;
+  strokeWidth: number;
+  gridVisible: boolean;
+  gridSpacing: number;
+}" path="socratica/types/whiteboard.ts" />
+  </interfaces>
+
+  <tests>
+    <standards>Testing uses Vitest for unit tests, Playwright for E2E tests, and React Testing Library for component tests. Tests should be co-located with components (e.g., Component.test.tsx next to Component.tsx). Follow TDD approach: write tests before implementation. Test scenarios include multiple concurrent users, offline/online transitions, network latency simulation, session timeout handling, and export/import functionality.</standards>
+    <locations>
+      <location>socratica/components/**/__tests__/</location>
+      <location>socratica/lib/**/__tests__/</location>
+      <location>socratica/tests/e2e/</location>
+    </locations>
+    <ideas>
+      <test ac="1">Unit test: API endpoint validates sessionId and userId authorization</test>
+      <test ac="1">Unit test: API endpoint accepts WhiteboardElement and saves to Firestore</test>
+      <test ac="2">Integration test: AI tutor drawing appears on student canvas via Firestore listener</test>
+      <test ac="3">Unit test: saveWhiteboardState() saves state to correct session document</test>
+      <test ac="4">E2E test: Multiple clients drawing simultaneously without conflicts</test>
+      <test ac="4">Integration test: Bidirectional sync - student and AI drawings appear on both sides</test>
+      <test ac="5">Unit test: Optimistic UI updates show drawing immediately</test>
+      <test ac="5">Integration test: Network latency handled gracefully with sync status indicator</test>
+      <test ac="6">Unit test: Whiteboard state saved to session document whiteboardState field</test>
+      <test ac="7">Integration test: Loading session restores whiteboard elements to canvas</test>
+      <test ac="8">E2E test: Real-time synchronization across client/server using Firestore listeners</test>
+      <test ac="9">Integration test: Session timeout detected and handled gracefully</test>
+      <test ac="10">Unit test: Export whiteboard state generates valid JSON</test>
+      <test ac="10">Unit test: Import whiteboard state validates and restores elements</test>
+    </ideas>
+  </tests>
+</story-context>
+
+

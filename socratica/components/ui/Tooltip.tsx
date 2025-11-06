@@ -21,7 +21,7 @@ interface TooltipProps {
 export default function Tooltip({
   content,
   children,
-  position = "top",
+  position = "bottom",
   className = "",
 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -78,10 +78,10 @@ export default function Tooltip({
   };
 
   const arrowClasses = {
-    top: "top-full left-1/2 -translate-x-1/2 border-t-[var(--neutral-800)] border-l-transparent border-r-transparent border-b-transparent",
-    bottom: "bottom-full left-1/2 -translate-x-1/2 border-b-[var(--neutral-800)] border-l-transparent border-r-transparent border-t-transparent",
-    left: "left-full top-1/2 -translate-y-1/2 border-l-[var(--neutral-800)] border-t-transparent border-b-transparent border-r-transparent",
-    right: "right-full top-1/2 -translate-y-1/2 border-r-[var(--neutral-800)] border-t-transparent border-b-transparent border-l-transparent",
+    top: "top-full left-1/2 -translate-x-1/2 border-t-gray-800 border-l-transparent border-r-transparent border-b-transparent dark:border-t-gray-200",
+    bottom: "bottom-full left-1/2 -translate-x-1/2 border-b-gray-800 border-l-transparent border-r-transparent border-t-transparent dark:border-b-gray-200",
+    left: "left-full top-1/2 -translate-y-1/2 border-l-gray-800 border-t-transparent border-b-transparent border-r-transparent dark:border-l-gray-200",
+    right: "right-full top-1/2 -translate-y-1/2 border-r-gray-800 border-t-transparent border-b-transparent border-l-transparent dark:border-r-gray-200",
   };
 
   return (
@@ -101,7 +101,7 @@ export default function Tooltip({
           className={`absolute z-50 ${positionClasses[tooltipPosition]} pointer-events-none`}
           aria-hidden={!isVisible}
         >
-          <div className="relative rounded-lg bg-[var(--neutral-800)] px-3 py-2 text-xs font-medium text-white shadow-lg dark:bg-[var(--neutral-900)]">
+          <div className="relative rounded-lg bg-gray-800 px-3 py-2 text-xs font-medium text-white shadow-lg dark:bg-gray-200 dark:text-gray-900">
             {content}
             <div
               className={`absolute h-0 w-0 border-4 ${arrowClasses[tooltipPosition]}`}
@@ -112,5 +112,6 @@ export default function Tooltip({
     </div>
   );
 }
+
 
 

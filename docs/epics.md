@@ -41,16 +41,16 @@ This document breaks down Phase 1 and Phase 2 goalposts into implementable epics
 4. Epic 4: Math Rendering (4 stories)
 5. Epic 5: UI Polish (6 stories)
 
-**Phase 2 (Post-MVP) - 7 Epics, 15 Stories:**
+**Phase 2 (Post-MVP) - 7 Epics, 9 Stories:**
 6. Epic 6: Interactive Whiteboard (3 stories)
-7. Epic 7: Step Visualization (2 stories)
-8. Epic 8: Voice Interface (3 stories)
-9. Epic 9: Animated Avatar (3 stories)
-10. Epic 10: Difficulty Modes (2 stories)
-11. Epic 11: Problem Generation (2 stories)
+7. Epic 7: Step Visualization (1 story)
+8. Epic 8: Voice Interface (1 story)
+9. Epic 9: Animated Avatar (1 story)
+10. Epic 10: Difficulty Modes (1 story)
+11. Epic 11: Problem Generation (1 story)
 12. Epic 12: Authentication & Account Management (1 story)
 
-**Total: Foundation (2 stories) + 12 Epics, 43 Stories**
+**Total: Foundation (2 stories) + 12 Epics, 39 Stories**
 
 **Estimated Timeline:**
 - Phase 1 (MVP): 5-6 weeks
@@ -724,13 +724,15 @@ So that we can work together visually and I don't lose my work while solving a p
 **Goal:** Animated breakdown of solution steps with progressive reveal.
 **Value:** Helps students understand logical flow of problem-solving.
 
-#### Story 7.1: Step Breakdown & Progressive Reveal
+#### Story 7.1: Complete Step Visualization System
 
 As a student,
-I want to see solution steps broken down and revealed progressively as I understand each one,
-So that I can learn step-by-step at my own pace without being overwhelmed.
+I want to see solution steps broken down and revealed progressively with clear visualizations, animations, and explanations,
+So that I can learn step-by-step at my own pace without being overwhelmed and understand the mathematical transformations and reasoning behind them.
 
 **Acceptance Criteria:**
+
+**Step Breakdown & Progressive Reveal:**
 1. Solution steps are identified and parsed
 2. Steps are numbered sequentially
 3. Each step shows one logical transformation
@@ -742,32 +744,26 @@ So that I can learn step-by-step at my own pace without being overwhelmed.
 9. Progress indicator shows step position
 10. Student can go back to previous steps
 
-**Prerequisites:** Epic 3 complete (Socratic logic exists)
+**Visual Representation & Animations:**
+11. Each step shows before/after equation state
+12. Highlighted portions show what changed
+13. Mathematical notation renders correctly in steps
+14. Visual indicators show transformation type
+15. Steps are formatted for readability
+16. Animated transitions between step states
+17. Highlighting draws attention to changes
+18. Smooth fade/slide animations
+19. Animation speed is configurable
+20. Animations don't interfere with readability
 
-#### Story 7.2: Visual Representation, Animations & Insights
+**Explanations & Insights:**
+21. Each step includes brief explanation
+22. Insights highlight key decision points
+23. Explanations use student-friendly language
+24. Links steps together logically
+25. Socratic questions accompany insights
 
-As a student,
-I want to see each step visualized clearly with smooth animations and explanations,
-So that I can understand the mathematical transformations and the reasoning behind them.
-
-**Acceptance Criteria:**
-1. Each step shows before/after equation state
-2. Highlighted portions show what changed
-3. Mathematical notation renders correctly in steps
-4. Visual indicators show transformation type
-5. Steps are formatted for readability
-6. Animated transitions between step states
-7. Highlighting draws attention to changes
-8. Smooth fade/slide animations
-9. Animation speed is configurable
-10. Animations don't interfere with readability
-11. Each step includes brief explanation
-12. Insights highlight key decision points
-13. Explanations use student-friendly language
-14. Links steps together logically
-15. Socratic questions accompany insights
-
-**Prerequisites:** Story 7.1 (step breakdown exists), Epic 4 complete (math rendering exists)
+**Prerequisites:** Epic 3 complete (Socratic logic exists), Epic 4 complete (math rendering exists)
 
 ---
 
@@ -776,13 +772,15 @@ So that I can understand the mathematical transformations and the reasoning behi
 **Goal:** Speech-to-text input and text-to-speech output for hands-free learning.
 **Value:** Accessibility and convenience for different learning preferences.
 
-#### Story 8.1: Voice Input & Natural Language Processing
+#### Story 8.1: Complete Voice Interface System
 
 As a student,
-I want to speak my responses and math expressions naturally instead of typing,
-So that I can interact hands-free and more naturally without learning special syntax.
+I want to interact with the AI tutor using voice input and output, with customizable settings,
+So that I can learn hands-free and more naturally without learning special syntax, and control the app through voice commands.
 
 **Acceptance Criteria:**
+
+**Voice Input & Natural Language Processing:**
 1. Microphone button available in chat interface
 2. Browser speech recognition API integrated
 3. Speech converted to text accurately
@@ -794,42 +792,26 @@ So that I can interact hands-free and more naturally without learning special sy
 9. Corrects common speech recognition errors
 10. Supports algebraic expressions
 
+**Voice Output & Commands:**
+11. Text-to-speech API integrated
+12. AI responses are spoken automatically (optional)
+13. Play/pause controls for speech output
+14. Natural-sounding voice synthesis
+15. Handles math notation in speech (reads equations naturally)
+16. Recognizes navigation commands ("new problem", "clear chat")
+17. Recognizes interaction commands ("show next step", "read again")
+18. Commands are executed reliably
+19. Provides feedback for recognized commands
+20. Handles misrecognitions gracefully
+
+**Voice Settings and Preferences:**
+21. Enable/disable voice input and output
+22. Adjust speech rate and volume
+23. Choose voice gender/accent (if available)
+24. Set default voice input/output behavior
+25. Settings persist across sessions
+
 **Prerequisites:** Epic 2 complete (chat interface exists)
-
-#### Story 8.2: Voice Output & Commands
-
-As a student,
-I want to hear the AI tutor's responses spoken aloud and use voice commands,
-So that I can learn through audio and control the app hands-free.
-
-**Acceptance Criteria:**
-1. Text-to-speech API integrated
-2. AI responses are spoken automatically (optional)
-3. Play/pause controls for speech output
-4. Natural-sounding voice synthesis
-5. Handles math notation in speech (reads equations naturally)
-6. Recognizes navigation commands ("new problem", "clear chat")
-7. Recognizes interaction commands ("show next step", "read again")
-8. Commands are executed reliably
-9. Provides feedback for recognized commands
-10. Handles misrecognitions gracefully
-
-**Prerequisites:** Story 8.1 (voice input exists), Epic 2 complete (chat interface exists)
-
-#### Story 8.3: Voice Settings and Preferences
-
-As a student,
-I want to configure voice settings to my preferences,
-So that I can customize the voice interface experience.
-
-**Acceptance Criteria:**
-1. Enable/disable voice input and output
-2. Adjust speech rate and volume
-3. Choose voice gender/accent (if available)
-4. Set default voice input/output behavior
-5. Settings persist across sessions
-
-**Prerequisites:** Stories 8.1, 8.2 (voice input/output exist)
 
 ---
 
@@ -838,13 +820,15 @@ So that I can customize the voice interface experience.
 **Goal:** 2D/3D tutor character with emotional expressions and gestures.
 **Value:** Makes AI tutor more engaging and approachable.
 
-#### Story 9.1: Avatar Character & Expression System
+#### Story 9.1: Complete Animated Avatar System
 
 As a student,
-I want to see a friendly tutor character with facial expressions,
-So that the AI tutor feels more human and approachable, and I can see the tutor's emotional engagement.
+I want to see a friendly tutor character with facial expressions, gestures, animations, and customizable appearance,
+So that the AI tutor feels more human and approachable, provides visual cues that help me understand mathematical concepts, and feels personal to me.
 
 **Acceptance Criteria:**
+
+**Avatar Character & Expression System:**
 1. 2D or 3D avatar character displayed in interface
 2. Character design is friendly and educational
 3. Character appearance is consistent
@@ -856,42 +840,26 @@ So that the AI tutor feels more human and approachable, and I can see the tutor'
 9. Smooth transitions between expressions
 10. Expressions enhance (not distract from) learning
 
-**Prerequisites:** Epic 5 complete (UI foundation exists)
+**Animations & Voice Synchronization:**
+11. Gestures accompany verbal explanations
+12. Gestures highlight key points
+13. Animated gestures for math concepts (pointing, counting, indicating)
+14. Gestures are synchronized with dialogue
+15. Gestures enhance comprehension
+16. Avatar mouth movements sync with text-to-speech (if Epic 8 is complete)
+17. Lip-sync is accurate and natural
+18. Eye contact with student (avatar looks at camera)
+19. Subtle idle animations when not speaking
+20. Synchronization doesn't cause performance issues
 
-#### Story 9.2: Animations & Voice Synchronization
+**Avatar Customization:**
+21. Avatar appearance options (style, colors, features)
+22. Options are age-appropriate
+23. Customizations persist across sessions
+24. Options don't impact functionality
+25. Default avatar if no customization chosen
 
-As a student,
-I want the avatar to use gestures and have its mouth move when speaking,
-So that visual cues help me understand mathematical concepts and the character feels more realistic and engaging.
-
-**Acceptance Criteria:**
-1. Gestures accompany verbal explanations
-2. Gestures highlight key points
-3. Animated gestures for math concepts (pointing, counting, indicating)
-4. Gestures are synchronized with dialogue
-5. Gestures enhance comprehension
-6. Avatar mouth movements sync with text-to-speech
-7. Lip-sync is accurate and natural
-8. Eye contact with student (avatar looks at camera)
-9. Subtle idle animations when not speaking
-10. Synchronization doesn't cause performance issues
-
-**Prerequisites:** Story 9.1 (avatar character exists), Epic 8 Story 8.2 (TTS exists)
-
-#### Story 9.3: Avatar Customization
-
-As a student,
-I want to customize the avatar appearance,
-So that I can have a tutor that feels personal to me.
-
-**Acceptance Criteria:**
-1. Avatar appearance options (style, colors, features)
-2. Options are age-appropriate
-3. Customizations persist across sessions
-4. Options don't impact functionality
-5. Default avatar if no customization chosen
-
-**Prerequisites:** Story 9.1 (avatar character exists)
+**Prerequisites:** Epic 5 complete (UI foundation exists), Epic 8 Story 8.1 complete (voice interface exists for lip-sync)
 
 ---
 
@@ -900,13 +868,15 @@ So that I can have a tutor that feels personal to me.
 **Goal:** Grade-level adaptive questioning and scaffolding.
 **Value:** Personalized difficulty appropriate to student's academic level.
 
-#### Story 10.1: Difficulty Level Selection & Adaptation
+#### Story 10.1: Complete Difficulty Modes System
 
 As a student,
-I want to select my grade level and have the AI tutor adjust question complexity accordingly,
-So that I'm challenged but not overwhelmed with questions appropriate to my level.
+I want to select my grade level, have the AI tutor adjust question complexity accordingly, and receive adaptive guidance based on my performance,
+So that I'm challenged but not overwhelmed with questions appropriate to my level, get the right amount of support, and continue to be challenged and grow.
 
 **Acceptance Criteria:**
+
+**Difficulty Level Selection & Adaptation:**
 1. Grade level selector on initial setup or settings
 2. Options: Middle School, High School, College
 3. Selection persists across sessions
@@ -918,32 +888,24 @@ So that I'm challenged but not overwhelmed with questions appropriate to my leve
 9. Concepts align with grade curriculum
 10. Difficulty is adjustable mid-session
 
+**Adaptive Scaffolding & Progressive Adjustment:**
+11. Tracks student performance within grade level
+12. Increases scaffolding for struggling students
+13. Decreases scaffolding for excelling students
+14. Adjusts hint frequency based on performance
+15. Maintains learning objectives while adapting
+16. Tracks improvement over multiple sessions
+17. Suggests moving to higher grade level when ready
+18. Progress indicators show advancement
+19. Smooth transitions between difficulty levels
+20. Validates readiness before advancement
+21. Current difficulty level displayed in UI
+22. Visual indicator of progress within level
+23. Clear labeling of difficulty mode
+24. Progress toward next level is visible
+25. Indicators don't distract from learning
+
 **Prerequisites:** Epic 5 complete (UI foundation exists), Epic 3 complete (Socratic logic exists)
-
-#### Story 10.2: Adaptive Scaffolding & Progressive Adjustment
-
-As a student,
-I want the tutor to provide guidance based on my performance and increase difficulty as I improve,
-So that I get the right amount of support and continue to be challenged and grow.
-
-**Acceptance Criteria:**
-1. Tracks student performance within grade level
-2. Increases scaffolding for struggling students
-3. Decreases scaffolding for excelling students
-4. Adjusts hint frequency based on performance
-5. Maintains learning objectives while adapting
-6. Tracks improvement over multiple sessions
-7. Suggests moving to higher grade level when ready
-8. Progress indicators show advancement
-9. Smooth transitions between difficulty levels
-10. Validates readiness before advancement
-11. Current difficulty level displayed in UI
-12. Visual indicator of progress within level
-13. Clear labeling of difficulty mode
-14. Progress toward next level is visible
-15. Indicators don't distract from learning
-
-**Prerequisites:** Story 10.1 (difficulty selection and adaptation exist)
 
 ---
 
@@ -952,13 +914,15 @@ So that I get the right amount of support and continue to be challenged and grow
 **Goal:** Generate practice problems based on student's current work.
 **Value:** Enables independent practice and mastery building.
 
-#### Story 11.1: Problem Analysis & Generation Algorithm
+#### Story 11.1: Complete Problem Generation System
 
 As a student,
-I want the system to understand the type of problem I'm working on and generate similar practice problems,
-So that I can reinforce my understanding with problems that match my difficulty level.
+I want the system to understand the type of problem I'm working on, generate similar practice problems, and provide an interface that adapts to my skill level,
+So that I can reinforce my understanding with problems that match my difficulty level and practice independently to build mastery with appropriately challenging problems.
 
 **Acceptance Criteria:**
+
+**Problem Analysis & Generation Algorithm:**
 1. Analyzes current problem to identify type (linear, quadratic, etc.)
 2. Extracts key concepts and patterns
 3. Categorizes problem by difficulty and topic
@@ -970,32 +934,24 @@ So that I can reinforce my understanding with problems that match my difficulty 
 9. Generated problems are solvable and valid
 10. Problems test same concepts but with different numbers
 
-**Prerequisites:** Epic 3 complete (Socratic logic exists)
+**Practice Problem Interface & Adaptive Generation:**
+11. "Generate Practice Problem" button after solving
+12. Generated problem displayed clearly
+13. Can work on practice problem in same interface
+14. Can generate multiple practice problems
+15. Practice problems are clearly distinguished from original
+16. "Generate Problem Set" option available
+17. Creates 3-5 related practice problems
+18. Problems progress in difficulty within set
+19. Set maintains focus on same concept
+20. Can navigate through problem set sequentially
+21. Tracks student performance on practice problems
+22. Adjusts difficulty based on success rate
+23. Generates easier problems if student struggles
+24. Generates harder problems if student excels
+25. Maintains concept focus while adapting difficulty
 
-#### Story 11.2: Practice Problem Interface & Adaptive Generation
-
-As a student,
-I want to access generated practice problems easily and have them adapt to my skill level,
-So that I can practice independently and build mastery with appropriately challenging problems.
-
-**Acceptance Criteria:**
-1. "Generate Practice Problem" button after solving
-2. Generated problem displayed clearly
-3. Can work on practice problem in same interface
-4. Can generate multiple practice problems
-5. Practice problems are clearly distinguished from original
-6. "Generate Problem Set" option available
-7. Creates 3-5 related practice problems
-8. Problems progress in difficulty within set
-9. Set maintains focus on same concept
-10. Can navigate through problem set sequentially
-11. Tracks student performance on practice problems
-12. Adjusts difficulty based on success rate
-13. Generates easier problems if student struggles
-14. Generates harder problems if student excels
-15. Maintains concept focus while adapting difficulty
-
-**Prerequisites:** Story 11.1 (problem analysis and generation exist), Epic 10 complete (difficulty modes exist)
+**Prerequisites:** Epic 3 complete (Socratic logic exists), Epic 10 complete (difficulty modes exist)
 
 ---
 
@@ -1173,7 +1129,7 @@ Epic 4 (Math Rendering) Story 4.1 can run in parallel with other foundation stor
 
 **Parallel Development Opportunities:**
 - Epic 6 (Whiteboard) and Epic 7 (Step Visualization) can run in parallel
-- Epic 8 (Voice Interface) and Epic 9 (Avatar) can run in parallel (Epic 9 depends on Epic 8 Story 8.2)
+- Epic 8 (Voice Interface) and Epic 9 (Avatar) can run in parallel (Epic 9 requires Epic 8 for lip-sync)
 - Epic 10 (Difficulty Modes) and Epic 11 (Problem Generation) can run in parallel (Epic 11 depends on Epic 10)
 
 **Phase 2 Sequencing:**
@@ -1185,19 +1141,19 @@ Epic 4 (Math Rendering) Story 4.1 can run in parallel with other foundation stor
    - Story 6.1 → 6.2 → 6.3
 
 3. **Epic 7: Step Visualization** (requires Epic 3, Epic 4)
-   - Story 7.1 → 7.2
+   - Story 7.1 (Complete Step Visualization System)
 
 4. **Epic 8: Voice Interface** (requires Epic 2)
-   - Story 8.1 → 8.2 → 8.3
+   - Story 8.1 (Complete Voice Interface System)
 
-5. **Epic 9: Animated Avatar** (requires Epic 5, Epic 8 Story 8.2)
-   - Story 9.1 → 9.2 (requires Epic 8 Story 8.2) → 9.3
+5. **Epic 9: Animated Avatar** (requires Epic 5, Epic 8 Story 8.1 for lip-sync)
+   - Story 9.1 (Complete Animated Avatar System)
 
 6. **Epic 10: Difficulty Modes** (requires Epic 3, Epic 5)
-   - Story 10.1 → 10.2
+   - Story 10.1 (Complete Difficulty Modes System)
 
 7. **Epic 11: Problem Generation** (requires Epic 3, Epic 10)
-   - Story 11.1 → 11.2 (requires Epic 10)
+   - Story 11.1 (Complete Problem Generation System)
 
 ### Dependency Graph Summary
 
@@ -1216,7 +1172,7 @@ Epic 12: Depends on Story 0.2 (Firebase setup), recommended before Epic 6 Story 
 Epic 6: Depends on Epic 5, Epic 12 Story 12.1 (for proper session history)
 Epic 7: Depends on Epic 3, Epic 4
 Epic 8: Depends on Epic 2
-Epic 9: Depends on Epic 5, Epic 8 Story 8.2
+Epic 9: Depends on Epic 5, Epic 8 Story 8.1 (for lip-sync)
 Epic 10: Depends on Epic 3, Epic 5
 Epic 11: Depends on Epic 3, Epic 10
 ```

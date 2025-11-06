@@ -92,38 +92,31 @@ development_status:
   # Epic 6: Interactive Whiteboard (Requires Epic 12 for proper session history)
   epic-6: backlog
   6-1-session-history-tracking: done
-  6-2-whiteboard-foundation-and-drawing-tools: drafted
-  6-3-real-time-synchronization-and-persistence: backlog
+  6-2-whiteboard-foundation-and-drawing-tools: done
+  6-3-real-time-synchronization-and-persistence: in-progress
   epic-6-retrospective: optional
 
   # Epic 7: Step Visualization
   epic-7: backlog
-  7-1-step-breakdown-and-progressive-reveal: backlog
-  7-2-visual-representation-animations-and-insights: backlog
+  7-1-complete-step-visualization-system: backlog
   epic-7-retrospective: optional
 
   # Epic 8: Voice Interface
   epic-8: backlog
-  8-1-voice-input-and-natural-language-processing: backlog
-  8-2-voice-output-and-commands: backlog
-  8-3-voice-settings-and-preferences: backlog
+  8-1-complete-voice-interface-system: backlog
   epic-8-retrospective: optional
 
   # Epic 9: Animated Avatar
   epic-9: backlog
-  9-1-avatar-character-and-expression-system: backlog
-  9-2-animations-and-voice-synchronization: backlog
-  9-3-avatar-customization: backlog
+  9-1-complete-animated-avatar-system: backlog
   epic-9-retrospective: optional
 
   # Epic 10: Difficulty Modes
   epic-10: backlog
-  10-1-difficulty-level-selection-and-adaptation: backlog
-  10-2-adaptive-scaffolding-and-progressive-adjustment: backlog
+  10-1-complete-difficulty-modes-system: backlog
   epic-10-retrospective: optional
 
   # Epic 11: Problem Generation
   epic-11: backlog
-  11-1-problem-analysis-and-generation-algorithm: backlog
-  11-2-practice-problem-interface-and-adaptive-generation: backlog
+  11-1-complete-problem-generation-system: backlog
   epic-11-retrospective: optional
