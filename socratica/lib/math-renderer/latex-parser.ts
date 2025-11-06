@@ -251,13 +251,182 @@ export function parseLaTeX(text: string): ParsedSegment[] {
 }
 
 /**
+ * Converts multi-line fractions to LaTeX format.
+ * 
+ * Detects patterns like:
+ *   numerator
+ *   ---------
+ *   denominator
+ * 
+ * And converts them to \frac{numerator}{denominator}
+ * Handles cases where there's text before the fraction (e.g., "A) x - 5 -" before the fraction)
+ * 
+ * @param text - Text that may contain multi-line fractions
+ * @returns Text with multi-line fractions converted to LaTeX format
+ */
+function convertMultiLineFractions(text: string): string {
+  if (!text || text.trim() === "") return text;
+  
+  // Split into lines for processing
+  const lines = text.split(/\r?\n/);
+  const result: string[] = [];
+  let i = 0;
+  
+  while (i < lines.length) {
+    const currentLine = lines[i].trim();
+    
+    // Check if this line looks like a separator (dashes, underscores, or equal signs)
+    const separatorPattern = /^[-=_]{3,}$/;
+    if (separatorPattern.test(currentLine) && i > 0 && i < lines.length - 1) {
+      const numeratorLine = lines[i - 1].trim();
+      const denominatorLine = lines[i + 1].trim();
+      
+      // Check if numerator and denominator look like math expressions
+      // Numerator should have variables/numbers/operators
+      // Denominator should have variables/numbers/operators
+      const mathPattern = /[a-zA-Z0-9\^+\-*\/\s()]+/;
+      if (mathPattern.test(numeratorLine) && mathPattern.test(denominatorLine)) {
+        // Check if numerator or denominator contains variables (more likely to be math)
+        const hasVariable = /[a-zA-Z]/.test(numeratorLine) || /[a-zA-Z]/.test(denominatorLine);
+        // Or if it has operators
+        const hasOperators = /[\+\-\*\/\^=]/.test(numeratorLine) || /[\+\-\*\/\^=]/.test(denominatorLine);
+        
+        if (hasVariable || hasOperators) {
+          // Check if numerator line has text before the fraction (like "A) x - 5 -" before "20")
+          // The numerator might be just a number at the end of the line, or the whole line
+          let fractionNumerator = numeratorLine;
+          let prefixBeforeFraction = "";
+          
+          // Pattern: Check if line ends with a standalone number (the fraction numerator)
+          // and has text before it (like "A) x - 5 - 20")
+          const endsWithNumberPattern = /^(.+?)\s+(\d+)$/;
+          const endsWithNumberMatch = numeratorLine.match(endsWithNumberPattern);
+          
+          if (endsWithNumberMatch) {
+            // Line ends with a number, extract it as the numerator
+            prefixBeforeFraction = endsWithNumberMatch[1].trim();
+            fractionNumerator = endsWithNumberMatch[2].trim();
+          } else {
+            // Check for option label pattern at the start: "A) x - 5 -" pattern
+            const optionLabelPattern = /^([A-Z]\)\s*[^-]*?\s*-\s*)?(.+)$/;
+            const numeratorMatch = numeratorLine.match(optionLabelPattern);
+            
+            if (numeratorMatch && numeratorMatch[1]) {
+              // There's text before the fraction (like "A) x - 5 -")
+              prefixBeforeFraction = numeratorMatch[1].trim();
+              fractionNumerator = numeratorMatch[2].trim();
+            }
+          }
+          
+          // Convert to LaTeX fraction format (only the fraction part)
+          const latexFraction = `\\frac{${fractionNumerator.trim()}}{${denominatorLine.trim()}}`;
+          
+          // Remove the last line we added (numerator line) and replace with prefix + LaTeX fraction
+          result.pop();
+          if (prefixBeforeFraction) {
+            // Preserve text before the fraction (like "A) x - 5 -")
+            // Check if prefix starts with an option label
+            const optionLabelMatch = prefixBeforeFraction.match(/^([A-Z]\)\s*)(.+)$/);
+            if (optionLabelMatch) {
+              // Split option label from math expression
+              const label = optionLabelMatch[1];
+              const mathExpr = optionLabelMatch[2].trim();
+              // Keep label as plain text, wrap the math expression + fraction together
+              // The mathExpr already ends with "-" if needed, so just concatenate
+              result.push(label + `$${mathExpr} ${latexFraction}$`);
+            } else {
+              // No option label, wrap prefix + fraction together in math
+              result.push(`$${prefixBeforeFraction.trim()} ${latexFraction}$`);
+            }
+          } else {
+            result.push(latexFraction);
+          }
+          
+          // Skip the separator line and denominator line
+          i += 2;
+          continue;
+        }
+      }
+    }
+    
+    result.push(lines[i]);
+    i++;
+  }
+  
+  return result.join("\n");
+}
+
+/**
+ * Converts inline fraction patterns to LaTeX format.
+ * 
+ * Detects patterns like:
+ * - x^2 - 2x - 5 / x - 3
+ * - (numerator) / (denominator)
+ * 
+ * @param text - Text that may contain inline fractions
+ * @returns Text with inline fractions converted to LaTeX format
+ */
+function convertInlineFractions(text: string): string {
+  if (!text || text.trim() === "") return text;
+  
+  // Pattern: numerator / denominator where numerator or denominator contains variables
+  // Look for patterns like: expression / expression
+  // Where expressions contain variables or math operators
+  const fractionPattern = /([a-zA-Z0-9\s()^+\-*]+)\s*\/\s*([a-zA-Z0-9\s()^+\-*]+)/g;
+  
+  const matches: Array<{ start: number; end: number; numerator: string; denominator: string }> = [];
+  let match: RegExpExecArray | null;
+  
+  // Find all fraction matches first
+  while ((match = fractionPattern.exec(text)) !== null) {
+    const numerator = match[1];
+    const denominator = match[2];
+    
+    // Check if this looks like a math fraction (not just numbers)
+    const hasVariable = /[a-zA-Z]/.test(numerator) || /[a-zA-Z]/.test(denominator);
+    const hasOperators = /[\+\-\*\/\^=]/.test(numerator) || /[\+\-\*\/\^=]/.test(denominator);
+    
+    // Skip if it's just plain numbers (e.g., "3 / 4" should stay as is unless context suggests math)
+    if (!hasVariable && !hasOperators) {
+      continue;
+    }
+    
+    // Check if already wrapped in delimiters
+    const beforeMatch = text.substring(Math.max(0, match.index - 1), match.index);
+    const afterMatch = text.substring(match.index + match[0].length, Math.min(text.length, match.index + match[0].length + 1));
+    
+    if (beforeMatch === "$" || afterMatch === "$") {
+      continue;
+    }
+    
+    matches.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      numerator: numerator.trim(),
+      denominator: denominator.trim(),
+    });
+  }
+  
+  // Replace matches in reverse order to maintain correct indices
+  matches.sort((a, b) => b.start - a.start);
+  let result = text;
+  for (const m of matches) {
+    const latexFraction = `\\frac{${m.numerator}}{${m.denominator}}`;
+    result = result.substring(0, m.start) + latexFraction + result.substring(m.end);
+  }
+  
+  return result;
+}
+
+/**
  * Auto-detects mathematical expressions in plain text and wraps them in LaTeX delimiters.
  * 
  * Detects patterns like:
  * - Polynomial expressions: (x^2-11x+30), x^2+5x+6
  * - Equations: (x^2-5x+5)=1, x^2 = 4
  * - Expressions with exponents: x^2, y^3
- * - Fractions: 3/4, (a+b)/(c+d)
+ * - Fractions: 3/4, (a+b)/(c+d), multi-line fractions
+ * - Expressions with variables and operators
  * 
  * Only wraps expressions that look like math (contain variables, exponents, operators, etc.)
  * and aren't already wrapped in delimiters.
@@ -279,7 +448,12 @@ export function autoWrapMath(text: string): string {
     return text;
   }
 
-  let result = text;
+  // First, convert multi-line fractions to LaTeX format
+  let result = convertMultiLineFractions(text);
+  
+  // Then, convert inline fractions to LaTeX format
+  result = convertInlineFractions(result);
+  
   const matches: Array<{ start: number; end: number; content: string }> = [];
   
   // Pattern 1: Fractions with variables: (a+b)/(c+d)
@@ -287,7 +461,7 @@ export function autoWrapMath(text: string): string {
   const fractionPattern = /\([^)]*[a-zA-Z][^)]*\)\s*\/\s*\([^)]*[a-zA-Z][^)]*\)/g;
   let match: RegExpExecArray | null;
   
-  while ((match = fractionPattern.exec(text)) !== null) {
+  while ((match = fractionPattern.exec(result)) !== null) {
     const content = match[0];
     matches.push({
       start: match.index,
@@ -296,12 +470,64 @@ export function autoWrapMath(text: string): string {
     });
   }
   
-  // Pattern 2: Equations with variables (extends beyond parentheses)
+  // Pattern 2: LaTeX fractions that now exist: \frac{...}{...}
+  const latexFractionPattern = /\\frac\{[^}]+\}\{[^}]+\}/g;
+  while ((match = latexFractionPattern.exec(result)) !== null) {
+    const content = match[0];
+    // Avoid duplicates
+    const isDuplicate = matches.some(m => 
+      match!.index >= m.start && match!.index < m.end ||
+      match!.index < m.start && match!.index + content.length > m.start
+    );
+    if (!isDuplicate) {
+      matches.push({
+        start: match.index,
+        end: match.index + content.length,
+        content: content,
+      });
+    }
+  }
+  
+  // Pattern 3: Expressions with variables and exponents: x^2, x^2+5x+6, etc.
+  // BUT exclude option labels like "A)", "B)", "C)", "D)"
+  const expressionPattern = /[a-zA-Z]\^?\d*([\+\-\*\/][a-zA-Z]\^?\d*)*([\+\-\*\/]\d+)*/g;
+  while ((match = expressionPattern.exec(result)) !== null) {
+    const content = match[0];
+    // Skip if it's just a single variable without operators
+    if (content.length === 1 && /^[a-zA-Z]$/.test(content)) {
+      continue;
+    }
+    
+    // Check if this is part of an option label (like "A)" or "B)" followed by expression)
+    // Look backwards to see if there's an option label pattern before this match
+    const beforeMatch = result.substring(Math.max(0, match.index - 5), match.index);
+    const optionLabelPattern = /^[A-Z]\)\s*$/;
+    if (optionLabelPattern.test(beforeMatch.trim())) {
+      // This is likely part of an option label expression, skip wrapping just the variable part
+      // The whole expression including the label will be handled separately
+      continue;
+    }
+    
+    // Avoid duplicates
+    const isDuplicate = matches.some(m => 
+      match!.index >= m.start && match!.index < m.end ||
+      match!.index < m.start && match!.index + content.length > m.start
+    );
+    if (!isDuplicate) {
+      matches.push({
+        start: match.index,
+        end: match.index + content.length,
+        content: content,
+      });
+    }
+  }
+  
+  // Pattern 4: Equations with variables (extends beyond parentheses)
   // Matches: (x^2-5x+5)=1, x^2+5x+6=1, etc.
   // Pattern: (expression)=number or variable=number
   const equationPattern = /(\([^)]*[a-zA-Z]\^?\d*[^)]*\)|[a-zA-Z]\^?\d*([\+\-\*\/]?[a-zA-Z]?\d*)*)\s*=\s*[0-9]+/g;
   
-  while ((match = equationPattern.exec(text)) !== null) {
+  while ((match = equationPattern.exec(result)) !== null) {
     const content = match[0];
     // Avoid duplicates with existing matches
     const isDuplicate = matches.some(m => 
@@ -317,13 +543,13 @@ export function autoWrapMath(text: string): string {
     }
   }
   
-  // Pattern 3: Parenthesized expressions with variables and exponents
+  // Pattern 5: Parenthesized expressions with variables and exponents
   // Matches: (x^2-11x+30), (x^2-5x+5), etc.
   // Must contain at least one variable with optional exponent
   // Only match if not already part of a fraction or equation
   const parenPattern = /\([^)]*[a-zA-Z]\^?\d*[^)]*\)/g;
   
-  while ((match = parenPattern.exec(text)) !== null) {
+  while ((match = parenPattern.exec(result)) !== null) {
     const content = match[0];
     // Check if it looks like math (has variables and operators)
     if (/[a-zA-Z]\^?\d*/.test(content) && /[\+\-\*\/=<>≤≥≠]/.test(content)) {
@@ -354,6 +580,19 @@ export function autoWrapMath(text: string): string {
     // Don't wrap if already in delimiters
     if (beforeMatch === "$" || afterMatch === "$") {
       continue;
+    }
+    
+    // Check if this match would include an option label (A), B), C), D))
+    // Look backwards to see if there's an option label that should stay separate
+    const textBeforeMatch = result.substring(Math.max(0, match.start - 5), match.start);
+    const optionLabelPattern = /([A-Z]\)\s*)$/;
+    const labelMatch = textBeforeMatch.match(optionLabelPattern);
+    
+    if (labelMatch) {
+      // There's an option label before this match - ensure it stays as plain text
+      // The label should not be part of the math expression
+      // Just wrap the match content normally, the label will remain separate
+      // (This is fine because the label is already outside the match bounds)
     }
     
     // Wrap the match

@@ -93,7 +93,7 @@ development_status:
   epic-6: backlog
   6-1-session-history-tracking: done
   6-2-whiteboard-foundation-and-drawing-tools: done
-  6-3-real-time-synchronization-and-persistence: in-progress
+  6-3-real-time-synchronization-and-persistence: done
   epic-6-retrospective: optional
 
   # Epic 7: Step Visualization
